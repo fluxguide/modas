@@ -1,0 +1,28 @@
+@import url('https://fonts.cdnfonts.com/css/general-sans');
+
+body {
+    margin: 0;
+    padding: 0;
+    color: #000;
+    font-family: 'General Sans', 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 400;
+    line-height: 1.4;
+    background-attachment: fixed;
+}
+
+body:has(.thuringia-app) {
+    background-image: linear-gradient(rgba(197, 176, 255, 1), rgba(255, 0, 0, 0));
+}
+
+body:has(.vrr-app) {
+    background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(225, 255, 214, 1), rgba(214, 245, 255, 1));
+    background-size: cover;
+}
+
+body:has(.dresden-app) {
+    background-image: url('/src/components/modas/img/Dresden/BGTexture.svg');
+    font-family: Bedstead;
+    font-style: normal;
+    line-height: normal;
+    font-weight: 400;
+}
