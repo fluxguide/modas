@@ -10,19 +10,15 @@ body {
     background-attachment: fixed;
 }
 
-body:has(.thuringia-app) {
+.story-container:has(.thuringia-app) {
     background-image: linear-gradient(rgba(197, 176, 255, 1), rgba(255, 0, 0, 0));
 }
 
-body:has(.vrr-app) {
+.story-container:has(.vrr-app) {
     background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(225, 255, 214, 1), rgba(214, 245, 255, 1));
-    background-size: cover;
 }
 
-body:has(.dresden-app) {
-    background-image: url('/src/components/modas/img/Dresden/BGTexture.svg');
+.story-container:has(.dresden-app) {
+    background-image: url('@img/Dresden/BGTexture.svg');
     font-family: Bedstead;
-    font-style: normal;
-    line-height: normal;
-    font-weight: 400;
 }

@@ -163,7 +163,7 @@ onMounted(async () => {
   <div class="thuringia-app" ref="scrollContainer">
     <div class="scroll-wrapper" :style="{ height: `${scrollHeight}px` }">
       <div class="init-mid" ref="initMidElement">
-        <img src="../img/Thuringia/Emblem.png" alt="Emblem" id="emblemImage" />
+        <img src="@img/Thuringia/Emblem.png" alt="Emblem" id="emblemImage" />
         <h1>
           Thüringen hat <span>353 Rathäuser</span> und
           <span>662 Haltestellen innerhalb von 300 Metern</span> rund um Rathäuser.
@@ -175,8 +175,8 @@ onMounted(async () => {
     <div class="main" :style="{ '--selectedColour': selectedColour }">
       <div class="above-ground">
         <div class="cityHall">
-          <img src="../img/Thuringia/Clouds.png" alt="Clouds" id="cloudsImage" />
-          <img src="../img/Thuringia/Rathaus.png" alt="Rathaus" id="cityHallImage" />
+          <img src="@img/Thuringia/Clouds.png" alt="Clouds" id="cloudsImage" />
+          <img src="@img/Thuringia/Rathaus.png" alt="Rathaus" id="cityHallImage" />
         </div>
         <div class="arrow" :class="{ visible: arrowVisible }" v-if="arrowVisible">
           <ArrowChart ref="arrowChartRef" :stats="stats" :currentRange="currentRange" v-if="stats" />
@@ -184,10 +184,10 @@ onMounted(async () => {
             :currentRange="currentRange" v-if="stats" />
         </div>
         <div class="character">
-          <img src="../img/Thuringia/Bus_Stop.png" alt="Bus Stop" id="busStopImage" />
-          <img src="../img/Thuringia/Bus.png" alt="Bus" id="busImage" />
+          <img src="@img/Thuringia/Bus_Stop.png" alt="Bus Stop" id="busStopImage" />
+          <img src="@img/Thuringia/Bus.png" alt="Bus" id="busImage" />
           <SpeechBubble :arrow-range="currentRange" v-if="arrowVisible" />
-          <img src="../img/Thuringia/Inge.png" alt="Inge" id="ingeImage" />
+          <img src="@img/Thuringia/Inge.png" alt="Inge" id="ingeImage" />
         </div>
         <div v-if="showMapScrollytelling" class="map-scrollytelling">
           <div class="map-intro">
@@ -267,14 +267,12 @@ p {
   bottom: 0;
   left: 0;
   width: 100%;
-  padding: 20px;
+  padding: 0px;
   overflow: visible;
   z-index: 3;
   box-sizing: border-box;
   display: flex;
   flex-direction: column;
-  justify-content: flex-end;
-  align-items: center;
   transition: height 0.8s ease-in-out;
 }
 

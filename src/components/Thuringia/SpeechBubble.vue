@@ -10,11 +10,11 @@ const props = defineProps({
 const speechBubbleImg = computed(() => {
     switch (props.arrowRange) {
         case 0:
-            return 'src/components/img/Thuringia/speechBubbles/speechbubble.svg';
+            return './assets/img/Thuringia/speechBubbles/speechbubble.svg';
         case 1:
-            return 'src/components/img/Thuringia/speechBubbles/speechbubble-1.svg';
+            return './assets/img/Thuringia/speechBubbles/speechbubble-1.svg';
         case 2:
-            return 'src/components/img/Thuringia/speechBubbles/speechbubble-2.svg';
+            return './assets/img/Thuringia/speechBubbles/speechbubble-2.svg';
     }
 });
 </script>
