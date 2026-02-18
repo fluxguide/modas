@@ -234,22 +234,6 @@ onMounted(async () => {
 </template>
 
 <style scoped>
-@import url('https://fonts.cdnfonts.com/css/general-sans');
-
-body {
-    margin: 0;
-    padding: 0;
-    color: #000;
-    font-family: 'General Sans', 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
-    font-weight: 400;
-    line-height: 1.4;
-    background-attachment: fixed;
-}
-
-body:has(.thuringia-app) {
-    background-image: linear-gradient(rgba(197, 176, 255, 1), rgba(255, 0, 0, 0));
-}
-
 .thuringia-app {
   height: 100vh;
   overflow-y: auto;
