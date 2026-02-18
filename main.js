@@ -1,5 +1,5 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import "@assets/global.css";
+import "@assets/stories_style.css";
 
 createApp(App).mount("#app");

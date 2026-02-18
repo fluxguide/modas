@@ -245,7 +245,7 @@ p {
 }
 
 .main {
-  height: 35vh;
+  height: 30vh;
   background-color: #E8DFC5;
   position: sticky;
   bottom: 0;
@@ -265,7 +265,7 @@ p {
   bottom: 100%;
   left: 0;
   width: 100%;
-  height: 65vh;
+  height: 70vh;
   z-index: 4;
   opacity: 1;
   transition: opacity 0.2s ease-out;
@@ -334,7 +334,7 @@ p {
   width: 50%;
   margin-left: calc(25% + 50% / 5);
   margin-right: calc(100% - (25% + 50% / 5));
-  margin-top: 5%;
+  margin-top: 15vh;
 }
 
 .init-mid h1 {

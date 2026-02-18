@@ -19,6 +19,10 @@
     height: 100vh;
 }
 
+.st-emotion-cache-tn0cau {
+    gap: 0;
+}
+
 div[data-testid="stMarkdownContainer"] {
     margin: 0;
 }
