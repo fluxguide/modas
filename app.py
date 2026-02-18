@@ -3,7 +3,7 @@ import pandas as pd
 import base64
 from shared import setup_page
 
-setup_page()
+setup_page(show_top_bar=False)
 
 with open("assets/img/Suite/modas-side-img.svg", "r") as f:
     svg_content = f.read()

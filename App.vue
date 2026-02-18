@@ -20,12 +20,12 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
   if (args.mode) mode.value = args.mode;
   if (args.template) template.value = args.template;
   // Set iframe to full viewport height
-  Streamlit.setFrameHeight(window.screen.height);
+  Streamlit.setFrameHeight(window.screen.height - 250);
 });
 
 onMounted(() => {
   Streamlit.setComponentReady();
-  Streamlit.setFrameHeight(window.screen.height);
+  Streamlit.setFrameHeight(window.screen.height - 250);
 });
 </script>
 

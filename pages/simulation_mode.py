@@ -2,7 +2,7 @@ import streamlit as st
 from components import story_viewer
 from shared import setup_page
 
-setup_page()
+setup_page(show_top_bar=True)
 
 st.markdown("""
     <style>
@@ -21,5 +21,5 @@ if "data" not in st.session_state or st.session_state.data is None:
 story_viewer(
     template="thuringia",
     data=st.session_state.data,
-    mode="simulation",
+    mode="simulation"
 )
