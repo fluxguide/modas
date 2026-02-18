@@ -245,7 +245,7 @@ p {
 }
 
 .main {
-  height: 30vh;
+  height: 35vh;
   background-color: #E8DFC5;
   position: sticky;
   bottom: 0;
@@ -265,7 +265,7 @@ p {
   bottom: 100%;
   left: 0;
   width: 100%;
-  height: 70vh;
+  height: 65vh;
   z-index: 4;
   opacity: 1;
   transition: opacity 0.2s ease-out;
