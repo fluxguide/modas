@@ -7,5 +7,5 @@ setup_page(
         {"label": "Templates", "href": "/template_selection"},
         {"label": "About MoDaS", "href": "/about_modas"},
     ],
-    active_page="/template_selection",
+    active_page="/about_modas",
 )
