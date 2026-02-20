@@ -10,6 +10,7 @@ setup_page(
         {"label": f"{selected.title()} Story", "href": "/simulation_mode"},
     ],
     active_page="/simulation_mode",
+    top_bar_right_button={"label": "Leave Simulation Mode", "href": "/"},
 )
 
 data = st.session_state.get("data")

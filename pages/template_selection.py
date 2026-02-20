@@ -11,6 +11,7 @@ setup_page(
         {"label": "About MoDaS", "href": "/about_modas"},
     ],
     active_page="/template_selection",
+    top_bar_right_button={"label": "Reupload file", "href": "/"},
 )
 
 IMG_BASE = "/app/static/img/Suite/Template_Previews"

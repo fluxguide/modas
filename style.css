@@ -96,6 +96,28 @@ div[data-testid="stFileUploader"] section {
     text-underline-position: from-font;
 }
 
+.top-bar-left {
+    display: flex;
+    gap: 18px;
+    align-items: center;
+}
+
+.top-bar-right {
+    display: flex;
+    align-items: center;
+}
+
+.top-bar-action {
+    padding: 8px 12px;
+    border-radius: 10px;
+    background: #010080;
+    color: #fff !important;
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 14px;
+    line-height: 1;
+}
+
 .template-grid {
     /* height: 90vh;
     width: 100%; */
