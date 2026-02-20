@@ -2,26 +2,21 @@ import streamlit as st
 from components import story_viewer
 from shared import setup_page
 
+selected = st.session_state.get("selected_template", "thuringia")
+
 setup_page(
     show_top_bar=True,
     top_bar_links=[
-        {"label": "Thuringia Story", "href": "/simulation_mode"},
+        {"label": f"{selected.title()} Story", "href": "/simulation_mode"},
     ],
     active_page="/simulation_mode",
 )
 
-st.markdown(
-    """
-    <style>
-        .stMainBlockContainer { padding: 0; margin: 0; max-width: 100%; }
-        .stAppHeader { display: none; }
-        section[data-testid="stSidebar"] { display: none; }
-    </style>
-""",
-    unsafe_allow_html=True,
-)
+data = st.session_state.get("data")
+if not data:
+    st.warning("No uploaded data found in this session. Please upload your CSV first.")
+    if st.button("Go to upload", use_container_width=True):
+        st.switch_page("app.py")
+    st.stop()
 
-if "data" not in st.session_state or st.session_state.data is None:
-    st.switch_page("app.py")
-
-story_viewer(template="thuringia", data=st.session_state.data, mode="simulation")
+story_viewer(template=selected, data=data, mode="simulation")

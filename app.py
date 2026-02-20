@@ -5,7 +5,7 @@ from shared import setup_page
 
 setup_page(show_top_bar=False)
 
-with open("assets/img/Suite/modas-side-img.svg", "r") as f:
+with open("static/img/Suite/modas-side-img.svg", "r") as f:
     svg_content = f.read()
 b64 = base64.b64encode(svg_content.encode()).decode()
 
@@ -36,7 +36,7 @@ with col1:
 
         if st.button("Submit", width='stretch'):
             st.session_state.data = df.to_dict(orient="records")
-            st.switch_page("pages/simulation_mode.py")
+            st.switch_page("pages/template_selection.py")
 
     st.markdown(
         f"""
