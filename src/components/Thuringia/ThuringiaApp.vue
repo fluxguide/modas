@@ -334,7 +334,7 @@ p {
   width: 50%;
   margin-left: calc(25% + 50% / 5);
   margin-right: calc(100% - (25% + 50% / 5));
-  margin-top: 15vh;
+  margin-top: 5vh;
 }
 
 .init-mid h1 {
