@@ -15,7 +15,7 @@ setup_page(
 
 data = st.session_state.get("data")
 if not data:
-    st.warning("No uploaded data found in this session. Please upload your CSV first.")
+    st.warning("No uploaded data found in this session. Please reupload your file.")
     if st.button("Go to upload", use_container_width=True):
         st.switch_page("app.py")
     st.stop()
