@@ -14,7 +14,7 @@
 
 .stVerticalBlock {
     gap: 0;
-    justify-content: center;
+    justify-content: space-evenly;
     align-items: center;
     height: 100vh;
 }
@@ -23,19 +23,26 @@
     gap: 0;
 }
 
+iframe[title="components.thuringia_story"] {
+    position: fixed;
+    top: 10vh;
+    height: 90vh;
+}
+
 div[data-testid="stMarkdownContainer"] {
     margin: 0;
 }
 
 div[data-testid="stColumn"]:has(.left-container) {
     width: 100%;
-    padding: 0 5vw;
+    padding: 0 7vw;
 }
 
 div[data-testid="stFileUploader"] section {
-    border: 2px dashed #6366f1;
+    border: 2px dashed #010080;
     border-radius: 15px;
     background-color: #F3F3F3;
+    margin-top: -20px;
 }
 
 .right-container {
@@ -44,32 +51,36 @@ div[data-testid="stFileUploader"] section {
     height: 100vh;
 }
 
-.left-container {
-    text-align: center;
+.left-container h1 {
+    color: #010080;
+    font-size: 36px;
 }
 
-.left-container h2 {
-    font-size: 38px;
-    font-weight: 400;
-    line-height: normal;
+.left-container h3 {
+    margin: 4vh 0 0 0;
 }
 
 .left-container p {
-    margin: 0.5rem 0;
+    font-size: 17px;
+    font-style: normal;
+    font-weight: 400;
+    line-height: 1.5;
 }
 
 .explore-link {
     text-align: center;
+    padding-bottom: 2vh;
 }
 
 .top-bar {
-    position: sticky;
+    position: fixed;
     top: 0;
     width: 100%;
     height: 10vh;
     background: #F3F3F3;
     display: flex;
     align-items: center;
+    justify-content: space-between;
     padding: 0 40px;
     border-bottom: 2px solid #010080;
     gap: 35px;
@@ -107,83 +118,72 @@ div[data-testid="stFileUploader"] section {
     align-items: center;
 }
 
+.top-bar-right a {
+    color: #fff;
+    border: 2px solid #010080;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.40);
+}
+
 .top-bar-action {
-    padding: 8px 12px;
-    border-radius: 10px;
+    padding: 10px 16px;
+    border-radius: 12px;
     background: #010080;
-    color: #fff !important;
     text-decoration: none;
     font-weight: 700;
     font-size: 14px;
     line-height: 1;
 }
 
-.template-grid {
-    /* height: 90vh;
-    width: 100%; */
-    padding: 3vh 6vw;
-}
-
-.template-grid h2 {
+.template-page-title h2 {
     color: black;
     font-size: 32px;
     font-style: normal;
     font-weight: 700;
     line-height: normal;
-    margin-bottom: 20px;
+    padding: 40px 70px 10px 70px;
 }
 
-.card {
-    width: fit-content;
-    height: 30vh;
-    position: relative;
-    break-inside: avoid;
-}
-
-.card img {
-    width: 100%;
-    height: 100%;
-    display: block;
-    object-fit: cover;
+/* Base style for Streamlit buttons */
+div.stButton>button {
+    /* width: 100%; */
     border-radius: 12px;
-    box-shadow: 1px 1px 8px 1px rgba(0, 0, 0, 0.20);
+    /* padding: 0.75rem 1rem; */
+    border: none;
+    font-weight: 700;
     transition: all 120ms ease;
 }
 
-.card h3 {
-    font-weight: 700;
-    font-size: 24px;
-}
-
-.card-label {
-    width: 100%;
-    height: 25%;
-    position: absolute;
-    display: flex;
-    flex-direction: row;
-    justify-content: space-between;
-    align-items: center;
-    bottom: 0px;
-    left: 0px;
-    padding: 0px 20px;
-    border-radius: 0 0 12px 12px;
-    /* background: rgba(255, 255, 255, 0.12); */
-    /*not sure if needed*/
-    backdrop-filter: blur(4px);
-    -webkit-backdrop-filter: blur(4px);
-}
-
-.card-label a {
-    display: inline-flex;
-    padding: 8px 20px;
+/* Disabled state */
+div.stButton>button:disabled {
+    background: #9D9D9D;
+    color: #ffffff;
+    padding: 16px 28px;
     justify-content: center;
-    border-radius: 10px;
+    align-items: center;
+    opacity: 1;
+    cursor: not-allowed;
+}
+
+/* Enabled state */
+div.stButton>button:not(:disabled) {
     background: #010080;
     box-shadow: 1.5px 1.5px 5px 0 rgba(0, 0, 0, 0.40);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+div[data-testid="stVerticalBlock"]:has(.submit-tmpl-btn) div.stButton>button {
+    width: fit-content;
+    position: fixed;
+    bottom: 5vh;
+    right: 5vw;
+    border-radius: 12px;
+    padding: 14px 24px;
     border: none;
-    color: #FFF;
-    font-size: 18px;
-    font-weight: 400;
-    line-height: normal;
-    text-decoration: none;
+    transition: all 120ms ease;
+}
+
+div.stButton > button:disabled:hover {
+  background: #9D9D9D;
+  color: #fff;
 }

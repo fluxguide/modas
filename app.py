@@ -17,10 +17,15 @@ with col1:
     st.markdown(
         """
         <div class="left-container">
-            <p>A brief Explanation here</p>
-            <p>Before you start please watch the video with instructions</p>
-            <h2>Upload File</h2>
-            <p>Select and upload the file of your choice</p>
+            <h1>Mobility Data Story Suite (MoDaS)</h1>
+            <p>How can mobility data be communicated in an understandable and effective way? As a technology partner for the mfund project MoDaS, we developed a platform that translates abstract mobility data into comprehensible storytelling formats.</p>
+            <p>Together with our research partner TU Ilmenau, we developed a ‘Mobility Data Story Suite’ that visualises traffic data through digital storytelling. The target group is mobility planners, political decision-makers and citizens. The Mobility Data Story Suite makes complex data interactively available using innovative storytelling methods, thereby improving the efficiency of mobility planning processes.</p>
+            <h3>Ready to create your own story?</h3>
+            <ol>
+                <li><p>Upload your data file and submit it</p></li>
+                <li><p>Select one of the available templates</p></li>
+                <li><p>Proceed to the simulation mode, and make some changes in the template if needed</p></li>
+            </ol>
         </div>
     """,
         unsafe_allow_html=True,
@@ -32,9 +37,8 @@ with col1:
 
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
-        st.dataframe(df.head(), width='stretch')
 
-        if st.button("Submit", width='stretch'):
+        if st.button("Submit", width="stretch"):
             st.session_state.data = df.to_dict(orient="records")
             st.switch_page("pages/template_selection.py")
 

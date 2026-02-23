@@ -2,7 +2,12 @@ import streamlit as st
 from st_clickable_images import clickable_images
 from shared import setup_page
 
-st.write("Has data:", "data" in st.session_state, "len:", len(st.session_state.get("data", [])))
+print(
+    "Has data:",
+    "data" in st.session_state,
+    "len:",
+    len(st.session_state.get("data", [])),
+)
 
 setup_page(
     show_top_bar=True,
@@ -26,7 +31,7 @@ templates = [
 
 
 st.markdown(
-    '<div class="template-grid"><h2>Choose the template for your story</h2>',
+    '<div class="template-page-title"><h2>Choose the template for your story</h2>',
     unsafe_allow_html=True,
 )
 
@@ -37,10 +42,11 @@ clicked = clickable_images(
         "display": "grid",
         "gridTemplateColumns": "repeat(3, 1fr)",
         "gap": "30px",
+        "margin": "0 70px",
     },
     img_style={
-        "width": "100%",
-        "height": "25vh",
+        "width": "90%",
+        "height": "fit-content",
         "objectFit": "cover",
         "borderRadius": "12px",
         "boxShadow": "0 2px 6px rgba(0,0,0,0.14)",
@@ -52,17 +58,12 @@ if clicked > -1:
     st.session_state.selected_template = templates[clicked][0]
     st.session_state.selected_template_label = templates[clicked][1]
 
+st.markdown("</div>", unsafe_allow_html=True)
+
 selected_key = st.session_state.get("selected_template", "")
 selected_label = st.session_state.get("selected_template_label", "")
 
-if selected_key:
-    st.markdown(f"**Selected:** {selected_label}")
-else:
-    st.markdown("Click a template to select it.")
+st.markdown('<div class="submit-tmpl-btn"></div>', unsafe_allow_html=True)
 
-st.markdown("</div>", unsafe_allow_html=True)
-
-if st.button(
-    "Submit your choice", use_container_width=True, disabled=not bool(selected_key)
-):
+if st.button("Submit your choice", disabled=not bool(selected_key), key=selected_key):
     st.switch_page("pages/simulation_mode.py")
