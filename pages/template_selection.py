@@ -25,8 +25,8 @@ templates = [
     ("thuringia", "Thuringia", f"{IMG_BASE}/Thuringia-Preview.png"),
     ("vrr", "VRR", f"{IMG_BASE}/VRR-Preview.png"),
     ("dresden", "Dresden", f"{IMG_BASE}/Dresden-Preview.png"),
-    ("story4", "Story 4", f"{IMG_BASE}/Thuringia-Preview.png"),
-    ("story5", "Story 5", f"{IMG_BASE}/VRR-Preview.png"),
+    ("story4", "Story 4", f"{IMG_BASE}/Dortmund-Preview.png"),
+    ("story5", "Story 5", f"{IMG_BASE}/Ilmenau-Preview.png"),
 ]
 
 
