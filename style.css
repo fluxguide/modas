@@ -172,6 +172,16 @@ div.stButton>button:not(:disabled) {
     cursor: pointer;
 }
 
+button[data-testid="stBaseButton-secondary"] {
+    background: #010080;
+    color: #fff;
+    border-radius: 8px;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.40);
+    font-style: normal;
+    font-weight: 400;
+    line-height: normal;
+}
+
 div[data-testid="stVerticalBlock"]:has(.submit-tmpl-btn) div.stButton>button {
     width: fit-content;
     position: fixed;
@@ -183,7 +193,7 @@ div[data-testid="stVerticalBlock"]:has(.submit-tmpl-btn) div.stButton>button {
     transition: all 120ms ease;
 }
 
-div.stButton > button:disabled:hover {
-  background: #9D9D9D;
-  color: #fff;
+div.stButton>button:disabled:hover {
+    background: #9D9D9D;
+    color: #fff;
 }
