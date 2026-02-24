@@ -182,6 +182,11 @@ button[data-testid="stBaseButton-secondary"] {
     line-height: normal;
 }
 
+button[data-testid="stBaseButton-secondary"]:hover {
+    background: #010080;
+    color: #fff;
+}
+
 div[data-testid="stVerticalBlock"]:has(.submit-tmpl-btn) div.stButton>button {
     width: fit-content;
     position: fixed;
