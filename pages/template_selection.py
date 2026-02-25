@@ -1,6 +1,7 @@
 import streamlit as st
 from st_clickable_images import clickable_images
 from shared import setup_page
+import html
 
 # Debug
 print(
@@ -66,10 +67,19 @@ templates = [
     },
 ]
 
+uploaded_filename = html.escape(st.session_state.get("uploaded_filename", ""))
+
 st.markdown(
-    # TODO: add the thumbs up comment that the file was uploaded successfully
-    # TODO: add the instructions once again of what happened / will happen
-    '<div class="template-page-title"><h2>Choose the template for your story</h2>',
+    f"""
+    <div class="template-page-instructions">
+        <p>
+            <span>{uploaded_filename}</span> has been uploaded successfully.
+        </p>
+        <h4>
+            Click a template preview to view details and select the layout for your story simulation.
+        </h4>
+    </div>
+    """,
     unsafe_allow_html=True,
 )
 

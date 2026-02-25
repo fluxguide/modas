@@ -141,13 +141,31 @@ div[data-testid="stFileUploader"] section {
     line-height: 1;
 }
 
-.template-page-title h2 {
+.template-page-instructions {
+    margin: 6vh 5vw 0 5vw;
+}
+
+.template-page-instructions p,
+.template-page-instructions h4 {
     color: black;
-    font-size: 32px;
     font-style: normal;
-    font-weight: 700;
     line-height: normal;
-    padding: 0px 5vw;
+}
+
+.template-page-instructions p {
+    font-size: 20px;
+    font-weight: 400;
+}
+
+.template-page-instructions span {
+    font-weight: 700;
+}
+
+.template-page-instructions h4 {
+    font-size: 24px;
+    font-weight: 500;
+    margin-top: 24px;
+    margin-bottom: -10px;
 }
 
 /* Base style for Streamlit buttons */
@@ -247,4 +265,3 @@ div[data-testid="stDialog"] div.stButton {
     margin-right: auto;
     margin-left: 1rem;
 }
-

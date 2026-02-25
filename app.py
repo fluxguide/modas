@@ -37,6 +37,8 @@ with col1:
 
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
+        
+        st.session_state.uploaded_filename = uploaded_file.name
 
         if st.button("Submit", width="stretch"):
             st.session_state.data = df.to_dict(orient="records")
