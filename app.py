@@ -46,7 +46,7 @@ with col1:
         f"""
         <p class="explore-link">
             Do not have any data yet? 
-            <span style="color:{primary}; font-weight:bold">Explore Mobilithek</span>
+            <a href="https://mobilithek.info/">Explore Mobilithek</a>
         </p>
     """,
         unsafe_allow_html=True,
