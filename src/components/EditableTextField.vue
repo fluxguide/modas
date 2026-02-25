@@ -8,6 +8,7 @@ const props = defineProps({
     width: { type: String, default: '60%' },
     fontSize: { type: String, default: '36px' },
     lineHeight: { type: Number, default: '1.3' },
+    topBottomPadding: { type: String, default: '5vh' }
 });
 
 const emit = defineEmits(['update:textContent']);
@@ -26,7 +27,7 @@ watch(() => props.activeMode, (newMode) => {
     <v-textarea ref="textAreaRef" :text-content="textContent"
         @update:text-content="val => emit('update:textContent', val)" :readonly="activeMode !== 'edit'" variant="plain"
         hide-details no-resize :rows="rows" class="editable-text-comp"
-        :style="{ '--custom-font-size': fontSize, '--custom-width': width, '--rows': rows, '--custom-line-height': lineHeight }"></v-textarea>
+        :style="{ '--custom-font-size': fontSize, '--custom-width': width, '--rows': rows, '--custom-line-height': lineHeight, '--top-bottom-padding': topBottomPadding }"></v-textarea>
 </template>
 
 <style scoped>
@@ -65,6 +66,6 @@ watch(() => props.activeMode, (newMode) => {
 
 .editable-text-comp :deep(.v-input__control) {
     height: fit-content;
-    padding: 5vh 0;
+    padding: var(--top-bottom-padding) 0;
 }
 </style>

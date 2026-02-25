@@ -225,8 +225,6 @@ div[data-testid="stDialog"] [aria-label="dialog"] {
     padding: 2vh 3vw;
 }
 
-div[data-testid="stDialog"] [aria-label="dialog"]>div {}
-
 div[data-testid="stDialog"] h1,
 div[data-testid="stDialog"] h2,
 div[data-testid="stDialog"] h3 {

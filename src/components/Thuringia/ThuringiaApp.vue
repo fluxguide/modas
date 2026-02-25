@@ -175,7 +175,8 @@ onMounted(async () => {
     <div class="scroll-wrapper" :style="{ height: `${scrollHeight}px` }">
       <div class="init-mid" ref="initMidElement">
         <img src="@img/Thuringia/Emblem.png" alt="Emblem" id="emblemImage" />
-        <EditableTextField v-model="textFields.first" :active-mode="activeMode" :rows="7" :width="`60%`" :font-size="`36px`" :line-height="1.3"  />
+        <EditableTextField v-model="textFields.first" :active-mode="activeMode" :rows="7" :width="`60%`"
+          :font-size="`36px`" :line-height="1.3" :top-bottom-padding="`3vh`" />
       </div>
     </div>
     <div class="main" :style="{ '--selectedColour': selectedColour }">
@@ -187,7 +188,7 @@ onMounted(async () => {
         <div class="arrow" :class="{ visible: arrowVisible }" v-if="arrowVisible">
           <ArrowChart ref="arrowChartRef" :stats="stats" :currentRange="currentRange" v-if="stats" />
           <HeaderRange ref="headerRangeRef" :stats="stats" :stats-percentages="statsPercentages"
-            :currentRange="currentRange" v-if="stats" />
+            :currentRange="currentRange" v-if="stats" :active-mode="activeMode" />
         </div>
         <div class="character">
           <img src="@img/Thuringia/Bus_Stop.png" alt="Bus Stop" id="busStopImage" />
@@ -197,7 +198,8 @@ onMounted(async () => {
         </div>
         <div v-if="showMapScrollytelling" class="map-scrollytelling">
           <div class="map-intro">
-            <EditableTextField v-model="textFields.second" :active-mode="activeMode" :rows="12" :width="`100%`" :font-size="`24px`" :line-height="1.8"  />
+            <EditableTextField v-model="textFields.second" :active-mode="activeMode" :rows="12" :width="`100%`"
+              :font-size="`24px`" :line-height="1.8" :top-bottom-padding="`5vh`" />
           </div>
           <div class="svg-map-container">
             <MapSVG :csv-data="stats?.stops_within_300m" />
@@ -205,7 +207,8 @@ onMounted(async () => {
         </div>
         <div v-if="showMapScrollytelling2" class="map-scrollytelling-2">
           <div class="map-intro">
-            <EditableTextField v-model="textFields.third" :active-mode="activeMode" :rows="12" :width="`100%`" :font-size="`24px`" :line-height="1.8" />
+            <EditableTextField v-model="textFields.third" :active-mode="activeMode" :rows="12" :width="`100%`"
+              :font-size="`24px`" :line-height="1.8" :top-bottom-padding="`5vh`" />
           </div>
           <div class="svg-map-container">
             <MapSVG :csv-data="stats?.townhallsWithoutStopsWithin300m" :color-fill="'#E14A2C'" />
@@ -213,7 +216,8 @@ onMounted(async () => {
         </div>
         <div v-if="showMapButton" class="pre-map-view">
           <div class="map-intro">
-            <EditableTextField v-model="textFields.forth" :active-mode="activeMode" :rows="7" :width="`100%`" :font-size="`28px`" :line-height="1.8"  />
+            <EditableTextField v-model="textFields.forth" :active-mode="activeMode" :rows="7" :width="`100%`"
+              :font-size="`28px`" :line-height="1.8" :top-bottom-padding="`5vh`" />
           </div>
           <button class="open-map-btn" @click="showMapOverlay = true">Erkunden Sie die
             Karte</button>

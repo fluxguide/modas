@@ -2,17 +2,23 @@
 import { useTextStats } from '@composables/Thuringia/useTextStats.js';
 import { computed } from 'vue';
 import { scaleRange, isMobile } from '@src/composables/utils.js';
+import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
   stats: Object,
   statsPercentages: Object,
-  currentRange: Number
+  currentRange: Number,
+  activeMode: String
 });
 
 const {
   headerData,
   showHeaderRange
 } = useTextStats(computed(() => props.stats), computed(() => props.statsPercentages), computed(() => props.currentRange));
+
+const getHeaderString = (header) => {
+  return `Im Umkreis von ${header.distance} haben ${header.stops}% der Rathäuser mindestens eine Haltestelle, ${header.noStops}% haben keine Haltestelle.`;
+};
 
 defineExpose({
   showHeaderRange
@@ -21,12 +27,10 @@ defineExpose({
 
 <template>
   <div class="headerRange">
-    <div v-for="(header, index) in headerData" :key="index" :id="`headerRange${index}`" class="header-item"
+    <div v-for="(header, index) in headerData" :key="index" v-show="currentRange === index" class="header-item"
       :style="`width: ${isMobile() ? 52 : 85 * scaleRange(props.currentRange)}%`">
-      <h2>Im Umkreis von {{ header.distance }} haben <br /><span>{{ header.stops }}%</span> der Rathäuser
-        <span>mindestens
-          eine Haltestelle</span>, <br /><span>{{ header.noStops }}%</span> haben <span>keine Haltestelle</span>.
-      </h2>
+      <EditableTextField :model-value="getHeaderString(header)" :active-mode="activeMode" :rows="3" :width="`100%`"
+        :font-size="`24px`" :line-height="1.6" :top-bottom-padding="`0`" />
     </div>
   </div>
 </template>
@@ -49,17 +53,12 @@ defineExpose({
   background-color: rgba(255, 255, 255, 0.9);
   border-radius: 10px;
   transition: width 0.7s ease-in-out;
+  padding: 5px 20px 15px 20px;
+  pointer-events: none;
 }
 
-.headerRange h2 {
-  line-height: 1.6;
-  font-weight: 400;
-  text-align: left;
-  padding: 10px 0px;
-}
-
-.headerRange h2 span {
-  font-weight: 700;
+.header-item.visible {
+  pointer-events: auto;
 }
 
 @media (max-width: 768px) {
