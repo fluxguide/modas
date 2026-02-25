@@ -13,6 +13,7 @@ import LeafletMap from '@src/components/Thuringia/LeafletMap.vue';
 import MapSVG from '@src/components/Thuringia/MapSVG.vue';
 import SpeechBubble from '@src/components/Thuringia/SpeechBubble.vue';
 import SideMenu from '@src/components/SideMenu.vue';
+import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
   data: { type: Object, default: null },
@@ -33,6 +34,14 @@ const headerRangeRef = ref(null);
 const textRangeRef = ref(null);
 const arrowChartRef = ref(null);
 const scrollContainer = ref(null);
+const activeMode = ref('view');
+
+const textFields = ref({
+  first: "STADT hat ANZAHL Rathäuser und ANZAHL Haltestellen innerhalb von 300 Metern. \n\nUnd was bedeutet das für Inge?",
+  second: "Ein genauerer Blick auf die Karte zeigt, in welchen Teilen des Landes Rathäuser gut erreichbar sind und wo der öffentliche Nahverkehr eher Lücken aufweist.",
+  third: "Wirklich abgehängt ist kaum ein Rathaus. Nur 7 Prozent liegen weiter als 300 Meter von der nächsten Haltestelle entfernt. Das heißt aber auch: Für einige bleibt der Weg zur Bushaltestelle ein kleiner Spaziergang.",
+  forth: "Erkunden Sie selbst, wie gut Thüringens Rathäuser erreichbar sind. \n\nNutzen Sie die Filter und klicken Sie auf die Marker für Details.",
+})
 
 const { visibleLayers, handleMapReady, handleMarkerClick, handleLayerToggle } = useMapControls();
 
@@ -162,20 +171,11 @@ onMounted(async () => {
 
 <template>
   <div class="thuringia-app" ref="scrollContainer">
-    <SideMenu />
+    <SideMenu :active-mode="activeMode" @mode-change="(val) => activeMode = val" />
     <div class="scroll-wrapper" :style="{ height: `${scrollHeight}px` }">
       <div class="init-mid" ref="initMidElement">
         <img src="@img/Thuringia/Emblem.png" alt="Emblem" id="emblemImage" />
-        <!-- before -->
-        <!-- <h1>
-          Thüringen hat <span>353 Rathäuser</span> und
-          <span>662 Haltestellen innerhalb von 300 Metern</span> rund um Rathäuser.
-        </h1> -->
-        <h1>
-          STADT hat <span>ANZAHL Rathäuser</span> und <span>ANZAHL Haltestellen innerhalb von 300 Metern</span> rund um
-          Rathäuser.
-        </h1>
-        <h1><span>Und was bedeutet das für Inge?</span></h1>
+        <EditableTextField v-model="textFields.first" :active-mode="activeMode" :rows="7" :width="`60%`" :font-size="`36px`" :line-height="1.3"  />
       </div>
     </div>
     <div class="main" :style="{ '--selectedColour': selectedColour }">
@@ -197,8 +197,7 @@ onMounted(async () => {
         </div>
         <div v-if="showMapScrollytelling" class="map-scrollytelling">
           <div class="map-intro">
-            <h2>Ein genauerer Blick auf die Karte zeigt, in welchen Teilen des Landes Rathäuser gut erreichbar sind
-              und wo der öffentliche Nahverkehr eher Lücken aufweist.</h2>
+            <EditableTextField v-model="textFields.second" :active-mode="activeMode" :rows="12" :width="`100%`" :font-size="`24px`" :line-height="1.8"  />
           </div>
           <div class="svg-map-container">
             <MapSVG :csv-data="stats?.stops_within_300m" />
@@ -206,10 +205,7 @@ onMounted(async () => {
         </div>
         <div v-if="showMapScrollytelling2" class="map-scrollytelling-2">
           <div class="map-intro">
-            <h2>Wirklich abgehängt ist kaum ein Rathaus. <span>Nur 7 Prozent</span> liegen weiter als 300 Meter von der
-              nächsten
-              Haltestelle entfernt. Das heißt aber auch: Für einige bleibt der Weg zur Bushaltestelle ein kleiner
-              Spaziergang.</h2>
+            <EditableTextField v-model="textFields.third" :active-mode="activeMode" :rows="12" :width="`100%`" :font-size="`24px`" :line-height="1.8" />
           </div>
           <div class="svg-map-container">
             <MapSVG :csv-data="stats?.townhallsWithoutStopsWithin300m" :color-fill="'#E14A2C'" />
@@ -217,9 +213,7 @@ onMounted(async () => {
         </div>
         <div v-if="showMapButton" class="pre-map-view">
           <div class="map-intro">
-            <h1>Erkunden Sie selbst, wie gut Thüringens Rathäuser erreichbar sind.</h1>
-            <br>
-            <h2>Nutzen Sie die Filter und klicken Sie auf die Marker für Details.</h2>
+            <EditableTextField v-model="textFields.forth" :active-mode="activeMode" :rows="7" :width="`100%`" :font-size="`28px`" :line-height="1.8"  />
           </div>
           <button class="open-map-btn" @click="showMapOverlay = true">Erkunden Sie die
             Karte</button>
@@ -227,9 +221,6 @@ onMounted(async () => {
       </div>
       <div class="ground-content">
         <TextRange ref="textRangeRef" :stats="stats" :currentRange="currentRange" v-if="stats && arrowVisible" />
-        <div class="sources" v-if="showMapButton">
-          <p>Sources:</p>
-        </div>
       </div>
       <div v-if="showMapOverlay" class="map-overlay">
         <LeafletMap :data="rawData" :stats="stats" :visible-layers="visibleLayers" @map-ready="handleMapReady"
@@ -275,6 +266,7 @@ p {
   z-index: 4;
   opacity: 1;
   transition: opacity 0.2s ease-out;
+  pointer-events: none;
 }
 
 .cityHall,
@@ -337,21 +329,13 @@ p {
 }
 
 .init-mid {
+  position: relative;
   width: 50%;
   margin-left: calc(25% + 50% / 5);
   margin-right: calc(100% - (25% + 50% / 5));
   margin-top: 5vh;
-}
-
-.init-mid h1 {
-  width: 60%;
-  text-align: left;
-  font-size: 36px;
-  font-weight: 400;
-}
-
-.init-mid h1 span {
-  font-weight: 700;
+  z-index: 10;
+  pointer-events: auto;
 }
 
 #ingeImage {
@@ -436,32 +420,6 @@ p {
   transition: opacity 0.5s ease-in-out;
 }
 
-.map-intro h1 {
-  text-align: left;
-  font-size: 36px;
-  font-weight: 600;
-  line-height: 2;
-}
-
-.map-intro h2 {
-  text-align: left;
-  font-size: 24px;
-  font-weight: 400;
-  line-height: 1.5;
-}
-
-.map-scrollytelling .map-intro h2,
-.map-scrollytelling-2 .map-intro h2 {
-  text-align: left;
-  font-size: 26px;
-  font-weight: 400;
-  line-height: 2;
-}
-
-.map-scrollytelling-2 .map-intro h2 span {
-  font-weight: 700;
-}
-
 #mapImage {
   width: 40%;
 }
@@ -483,17 +441,6 @@ p {
 .open-map-btn:hover {
   background: #415a77;
   color: white;
-}
-
-.sources {
-  width: 100%;
-  height: 100%;
-  font-size: 18px;
-  display: flex;
-  flex-direction: column;
-  justify-content: start;
-  align-items: start;
-  margin-left: 5%;
 }
 
 .map-overlay {
