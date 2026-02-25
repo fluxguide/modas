@@ -24,9 +24,11 @@
     "d3": "^7.9.0",
     "leaflet": "^1.9.4",
     "streamlit-component-lib": "^2.0.0",
-    "vue": "^3.5.28"
+    "vue": "^3.5.28",
+    "vuetify": "^4.0.0"
   },
   "devDependencies": {
+    "@mdi/font": "^7.4.47",
     "@vitejs/plugin-vue": "^6.0.4",
     "vite": "^7.3.1"
   }
