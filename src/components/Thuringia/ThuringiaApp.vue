@@ -12,6 +12,7 @@ import TextRange from '@src/components/Thuringia/TextRange.vue';
 import LeafletMap from '@src/components/Thuringia/LeafletMap.vue';
 import MapSVG from '@src/components/Thuringia/MapSVG.vue';
 import SpeechBubble from '@src/components/Thuringia/SpeechBubble.vue';
+import SideMenu from '@src/components/SideMenu.vue';
 
 const props = defineProps({
   data: { type: Object, default: null },
@@ -161,14 +162,19 @@ onMounted(async () => {
 
 <template>
   <div class="thuringia-app" ref="scrollContainer">
+    <SideMenu />
     <div class="scroll-wrapper" :style="{ height: `${scrollHeight}px` }">
       <div class="init-mid" ref="initMidElement">
         <img src="@img/Thuringia/Emblem.png" alt="Emblem" id="emblemImage" />
-        <h1>
+        <!-- before -->
+        <!-- <h1>
           Thüringen hat <span>353 Rathäuser</span> und
           <span>662 Haltestellen innerhalb von 300 Metern</span> rund um Rathäuser.
+        </h1> -->
+        <h1>
+          STADT hat <span>ANZAHL Rathäuser</span> und <span>ANZAHL Haltestellen innerhalb von 300 Metern</span> rund um
+          Rathäuser.
         </h1>
-        <br />
         <h1><span>Und was bedeutet das für Inge?</span></h1>
       </div>
     </div>
