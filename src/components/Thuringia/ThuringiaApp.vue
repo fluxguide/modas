@@ -37,7 +37,7 @@ const scrollContainer = ref(null);
 const activeMode = ref('view');
 
 const textFields = ref({
-  first: "STADT hat ANZAHL Rathäuser und ANZAHL Haltestellen innerhalb von 300 Metern. \n\nUnd was bedeutet das für Inge?",
+  first: "STADT hat ANZAHL Rathäuser und ANZAHL Haltestellen innerhalb von ANZAHL Metern. \n\nUnd was bedeutet das für Inge?",
   second: "Ein genauerer Blick auf die Karte zeigt, in welchen Teilen des Landes Rathäuser gut erreichbar sind und wo der öffentliche Nahverkehr eher Lücken aufweist.",
   third: "Wirklich abgehängt ist kaum ein Rathaus. Nur 7 Prozent liegen weiter als 300 Meter von der nächsten Haltestelle entfernt. Das heißt aber auch: Für einige bleibt der Weg zur Bushaltestelle ein kleiner Spaziergang.",
   forth: "Erkunden Sie selbst, wie gut Thüringens Rathäuser erreichbar sind. \n\nNutzen Sie die Filter und klicken Sie auf die Marker für Details.",
@@ -399,6 +399,7 @@ p {
   flex-direction: column;
   margin-left: 5%;
   z-index: 3;
+  pointer-events: auto;
 }
 
 .svg-map-container {
