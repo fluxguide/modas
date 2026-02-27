@@ -164,8 +164,22 @@ div[data-testid="stFileUploader"] section {
 .template-page-instructions h4 {
     font-size: 24px;
     font-weight: 500;
-    margin-top: 24px;
+    margin-top: 20px;
     margin-bottom: -10px;
+}
+
+.template-caption-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    margin: -20px 5vw 10px 5vw;
+}
+
+.template-caption {
+    font-size: 24px;
+    font-weight: 700;
+    color: #000;
+    text-align: left;
 }
 
 /* Base style for Streamlit buttons */

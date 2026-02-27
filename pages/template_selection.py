@@ -24,7 +24,7 @@ setup_page(
 IMG_URL_BASE = "/app/static/img/Suite/Template_Previews"  # for clickable_images
 IMG_FILE_BASE = "static/img/Suite/Template_Previews"  # for st.image local file read
 
-templates = [
+templates_first_row = [
     {
         "key": "thuringia",
         "label": "Thuringia",
@@ -49,6 +49,9 @@ templates = [
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
         "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
     },
+]
+
+templates_second_row = [
     {
         "key": "story4",
         "label": "Story 4",
@@ -83,9 +86,14 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-clicked = clickable_images(
-    [t["img_url"] for t in templates],
-    titles=[t["label"] for t in templates],
+if "last_clicked_row_1" not in st.session_state:
+    st.session_state.last_clicked_row_1 = -1
+if "last_clicked_row_2" not in st.session_state:
+    st.session_state.last_clicked_row_2 = -1
+
+clicked1 = clickable_images(
+    [t["img_url"] for t in templates_first_row],
+    titles=[t["label"] for t in templates_first_row],
     div_style={
         "display": "grid",
         "gridTemplateColumns": "repeat(3, 1fr)",
@@ -93,23 +101,79 @@ clicked = clickable_images(
         "margin": "0 5vw",
     },
     img_style={
-        "width": "100%",
+        "width": "90%",
         "height": "fit-content",
         "objectFit": "cover",
         "borderRadius": "12px",
         "boxShadow": "0 2px 6px rgba(0,0,0,0.14)",
         "cursor": "pointer",
     },
+    key="templates_row_1",
 )
 
-if clicked > -1:
-    st.session_state.preview_template = templates[clicked]["key"]
+if clicked1 > -1 and clicked1 != st.session_state.last_clicked_row_1:
+    st.session_state.last_clicked_row_1 = clicked1
+    st.session_state.preview_template = templates_first_row[clicked1]["key"]
 
-template_by_key = {t["key"]: t for t in templates}
+st.markdown(
+    """
+    <div class="template-caption-grid">
+    """
+    + "".join(
+        f'<div class="template-caption">{t["label"]}</div>' for t in templates_first_row
+    )
+    + """
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+clicked2 = clickable_images(
+    [t["img_url"] for t in templates_second_row],
+    titles=[t["label"] for t in templates_second_row],
+    div_style={
+        "display": "grid",
+        "gridTemplateColumns": "repeat(3, 1fr)",
+        "gap": "50px",
+        "margin": "0 5vw",
+    },
+    img_style={
+        "width": "90%",
+        "height": "fit-content",
+        "objectFit": "cover",
+        "borderRadius": "12px",
+        "boxShadow": "0 2px 6px rgba(0,0,0,0.14)",
+        "cursor": "pointer",
+    },
+    key="templates_row_2",
+)
+
+if clicked2 > -1 and clicked2 != st.session_state.last_clicked_row_2:
+    st.session_state.last_clicked_row_2 = clicked2
+    st.session_state.preview_template = templates_second_row[clicked2]["key"]
+
+st.markdown(
+    """
+    <div class="template-caption-grid">
+    """
+    + "".join(
+        f'<div class="template-caption">{t["label"]}</div>'
+        for t in templates_second_row
+    )
+    + """
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
+
+
+template_by_key_all = {
+    t["key"]: t for t in (templates_first_row + templates_second_row)
+}
 preview_key = st.session_state.get("preview_template")
 
-if preview_key and preview_key in template_by_key:
-    tpl = template_by_key[preview_key]
+if preview_key and preview_key in template_by_key_all:
+    tpl = template_by_key_all[preview_key]
 
     @st.dialog(f"{tpl['label']} story")
     def template_dialog():
@@ -134,7 +198,7 @@ if preview_key and preview_key in template_by_key:
             if st.button(
                 "Select this template",
                 width="stretch",
-                key="tpl_select",
+                key=f"tpl_select_{tpl['key']}",
             ):
                 st.session_state.selected_template = tpl["key"]
                 st.session_state.selected_template_label = tpl["label"]
