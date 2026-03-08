@@ -13,11 +13,15 @@ else:
     _component = components.declare_component("story_viewer", path=_build_dir)
 
 
-def story_viewer(template, data=None, mode="view", key=None):
+def story_viewer(
+    template, data=None, columnLabelMap=None, mode="view", height=900, key=None
+):
     return _component(
         template=template,
         data=data,
+        columnLabelMap=columnLabelMap,
         mode=mode,
         key=key,
         default=None,
+        height=height,
     )

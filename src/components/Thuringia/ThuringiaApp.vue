@@ -1,10 +1,11 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
+import { ref, onMounted, onUnmounted, watch, computed, toRef } from 'vue';
 import { useScroll } from '@vueuse/core';
 import { getScrollRange, selectedColour, isMobile } from '@src/composables/utils.js';
 import { useUIControls } from '@src/composables/Thuringia/useUIControls.js';
 import { useMapControls } from '@src/composables/Thuringia/useMapControls.js';
 import { computeStats } from '@composables/Thuringia/useDataProcessing';
+import { useColumnLabels } from '@composables/useColumnLabels';
 
 import ArrowChart from '@src/components/Thuringia/ArrowChart.vue';
 import HeaderRange from '@src/components/Thuringia/HeaderRange.vue';
@@ -17,6 +18,7 @@ import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
   data: { type: Object, default: null },
+  columnLabelMap: { type: Object, default: () => ({}) },
   mode: { type: String, default: 'view' },
 });
 
@@ -35,6 +37,7 @@ const textRangeRef = ref(null);
 const arrowChartRef = ref(null);
 const scrollContainer = ref(null);
 const activeMode = ref('view');
+const isPresenting = ref(false);
 
 const textFields = ref({
   first: "STADT hat ANZAHL Rathäuser und ANZAHL Haltestellen innerhalb von ANZAHL Metern. \n\nUnd was bedeutet das für Inge?",
@@ -51,6 +54,45 @@ const { y: scrollY, isScrolling } = useScroll(scrollContainer, {
   throttle: 16,
   idle: 200,
 });
+
+const { col } = useColumnLabels(toRef(props, "columnLabelMap"));
+
+const handleModeChange = (newMode) => {
+  if (newMode === "presenter") {
+    const storyContainer = document.querySelector('.thuringia-app');
+    if (storyContainer?.requestFullscreen) {
+      storyContainer.requestFullscreen();
+      isPresenting.value = true;
+    }
+  } else {
+    activeMode.value = newMode;
+  }
+};
+
+const exitPresenter = () => {
+  if (document.exitFullscreen) {
+    document.exitFullscreen();
+  }
+  isPresenting.value = false;
+};
+
+watch(
+  () => props.columnLabelMap,
+  (map) => {
+    console.log("columnLabelMap updated:", map);
+    if (!map || Object.keys(map).length === 0) return;
+
+    const cityCol = col("townhall_city", "Stadt");
+    const townhallCol = col("townhall_name", "Rathäuser");
+    const stops300Col = col("stops_within_300m", "Haltestellen (300m)");
+
+    textFields.value.first =
+      `[${cityCol}] hat [anzahl] [${townhallCol}] und [anzahl] Haltestellen innerhalb von 300 Metern.\n\nUnd was bedeutet das für Inge?`;
+  },
+  { immediate: true }
+);
+
+console.log("props.columnLabelMap at mount:", props.columnLabelMap);
 
 watch(scrollY, (newScrollY) => {
   if (!initMidElement.value) return;
@@ -146,6 +188,12 @@ const scrollHeight = computed(() => {
 });
 
 onMounted(async () => {
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) {
+      isPresenting.value = false;
+    }
+  })
+
   if (!props.data) return; // no data yet, nothing to render
 
   const rawData_parsed = props.data.map(d => ({
@@ -167,11 +215,16 @@ onMounted(async () => {
 
   initializeUI();
 });
+
+onUnmounted(() => {
+  document.removeEventListener("fullscreenchange", () => { });
+});
 </script>
 
 <template>
   <div class="thuringia-app" ref="scrollContainer">
-    <SideMenu :active-mode="activeMode" @mode-change="(val) => activeMode = val" />
+    <SideMenu v-if="!isPresenting" :active-mode="activeMode" @mode-change="handleModeChange" />
+    <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Exit Presenter View</button>
     <div class="scroll-wrapper" :style="{ height: `${scrollHeight}px` }">
       <div class="init-mid" ref="initMidElement">
         <img src="@img/Thuringia/Emblem.png" alt="Emblem" id="emblemImage" />
@@ -188,7 +241,8 @@ onMounted(async () => {
         <div class="arrow" :class="{ visible: arrowVisible }" v-if="arrowVisible">
           <ArrowChart ref="arrowChartRef" :stats="stats" :currentRange="currentRange" v-if="stats" />
           <HeaderRange ref="headerRangeRef" :stats="stats" :stats-percentages="statsPercentages"
-            :currentRange="currentRange" v-if="stats" :active-mode="activeMode" />
+            :currentRange="currentRange" v-if="stats" :active-mode="activeMode"
+            :columnLabelMap="props.columnLabelMap" />
         </div>
         <div class="character">
           <img src="@img/Thuringia/Bus_Stop.png" alt="Bus Stop" id="busStopImage" />
@@ -467,6 +521,39 @@ p {
 #busStopImage.visible,
 .arrow.visible {
   opacity: 1;
+}
+
+.exit-presenter {
+  position: fixed;
+  top: 20px;
+  right: 20px;
+  z-index: 1001;
+  padding: 10px 20px;
+  font-size: 16px;
+  background-color: #010080;
+  color: white;
+  border: none;
+  border-radius: 8px;
+  cursor: pointer;
+  box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.40);
+  font-style: normal;
+  font-weight: 500;
+  line-height: normal;
+}
+
+.thuringia-app:fullscreen::backdrop {
+  background: linear-gradient(rgba(197, 176, 255, 1),
+      rgba(255, 0, 0, 0)) !important;
+}
+
+.thuringia-app:fullscreen {
+  background: transparent !important;
+}
+
+.thuringia-app:-webkit-full-screen,
+.thuringia-app:-moz-full-screen,
+.thuringia-app:-ms-fullscreen {
+  background: transparent !important;
 }
 
 @media (max-width: 768px) {
