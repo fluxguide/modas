@@ -124,6 +124,37 @@ In simulation mode, your data is loaded into the selected story template. You ca
 
 ---
 
+## Project structure
+
+```
+modas/
+├── app.py                  # Main entry point (home / upload screen)
+├── shared.py               # Shared layout helpers (top bar, page setup)
+├── style.css               # Global styles
+├── pages/
+│   ├── template_selection.py   # Template browsing and selection
+│   ├── simulation_mode.py      # Interactive story simulation
+│   └── about_modas.py          # About page
+├── components/             # Reusable UI components
+├── src/                    # Core logic and data processing
+├── static/                 # Images, GIFs, and other static assets
+├── assets/                 # Additional assets
+└── .streamlit/             # Streamlit configuration
+```
+
+---
+
+## Requirements
+
+All dependencies are listed in `requirements.txt`. Key packages:
+
+- [Streamlit](https://streamlit.io/) — web app framework
+- [Pandas](https://pandas.pydata.org/) — data handling
+- [Pillow](https://python-pillow.org/) — image processing
+- [st-clickable-images](https://github.com/vivien000/st-clickable-images) — clickable template previews
+
+---
+
 ## Troubleshooting
 
 **`streamlit: command not found`**
