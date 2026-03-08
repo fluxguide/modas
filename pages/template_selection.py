@@ -14,11 +14,11 @@ print(
 setup_page(
     show_top_bar=True,
     top_bar_links=[
-        {"label": "Templates", "href": "/template_selection"},
+        {"label": "Vorlagenagen", "href": "/template_selection"},
         # {"label": "About MoDaS", "href": "/about_modas"},
     ],
     active_page="/template_selection",
-    top_bar_right_button={"label": "Reupload file", "href": "/"},
+    top_bar_right_button={"label": "Datei erneut hochladen", "href": "/"},
 )
 
 IMG_URL_BASE = "/app/static/img/Suite/Template_Previews"  # for clickable_images
@@ -92,10 +92,10 @@ st.markdown(
     f"""
     <div class="template-page-instructions">
         <p>
-            <span>{uploaded_filename}</span> has been uploaded successfully.
+            <span>{uploaded_filename}</span> wurde erfolgreich hochgeladen.
         </p>
         <h4>
-            Click a template preview to view details and select the layout for your story simulation.
+            Klicken Sie auf eine Vorlage, um Details anzuzeigen und das Layout für Ihre Story-Simulation auszuwählen.
         </h4>
     </div>
     """,
@@ -115,6 +115,7 @@ clicked1 = clickable_images(
         "gridTemplateColumns": "repeat(3, 1fr)",
         "gap": "50px",
         "margin": "0 5vw",
+        "padding-bottom": "10px",
     },
     img_style={
         "width": "90%",
@@ -152,6 +153,7 @@ clicked2 = clickable_images(
         "gridTemplateColumns": "repeat(3, 1fr)",
         "gap": "50px",
         "margin": "0 5vw",
+        "padding-bottom": "10px",
     },
     img_style={
         "width": "90%",
@@ -198,8 +200,9 @@ if preview_key and preview_key in template_by_key_all:
         with left:
             st.markdown(
                 f"""
-                <img src="{tpl["gif_file"]}"
-                    style="width:100%; border-radius:12px; box-shadow:1px 1px 8px rgba(0,0,0,0.18);" />
+                <div class="gif-top-align">
+                    <img src="{tpl["gif_file"]}" alt="Preview GIF">
+                </div>
                 """,
                 unsafe_allow_html=True,
             )
@@ -222,7 +225,7 @@ if preview_key and preview_key in template_by_key_all:
             )
 
             if st.button(
-                "Select this template",
+                "Wählen Sie diese Vorlage aus",
                 width="stretch",
                 key=f"tpl_select_{tpl['key']}",
             ):
