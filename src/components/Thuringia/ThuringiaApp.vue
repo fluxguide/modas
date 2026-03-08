@@ -1,10 +1,11 @@
 <script setup>
-import { ref, onMounted, onUnmounted, watch, computed } from 'vue';
+import { ref, onMounted, onUnmounted, watch, computed, toRef } from 'vue';
 import { useScroll } from '@vueuse/core';
 import { getScrollRange, selectedColour, isMobile } from '@src/composables/utils.js';
 import { useUIControls } from '@src/composables/Thuringia/useUIControls.js';
 import { useMapControls } from '@src/composables/Thuringia/useMapControls.js';
 import { computeStats } from '@composables/Thuringia/useDataProcessing';
+import { useColumnLabels } from '@composables/useColumnLabels';
 
 import ArrowChart from '@src/components/Thuringia/ArrowChart.vue';
 import HeaderRange from '@src/components/Thuringia/HeaderRange.vue';
@@ -17,6 +18,7 @@ import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
   data: { type: Object, default: null },
+  columnLabelMap: { type: Object, default: () => ({}) },
   mode: { type: String, default: 'view' },
 });
 
@@ -53,6 +55,8 @@ const { y: scrollY, isScrolling } = useScroll(scrollContainer, {
   idle: 200,
 });
 
+const { col } = useColumnLabels(toRef(props, "columnLabelMap"));
+
 const handleModeChange = (newMode) => {
   if (newMode === "presenter") {
     const storyContainer = document.querySelector('.thuringia-app');
@@ -71,6 +75,24 @@ const exitPresenter = () => {
   }
   isPresenting.value = false;
 };
+
+watch(
+  () => props.columnLabelMap,
+  (map) => {
+    console.log("columnLabelMap updated:", map);
+    if (!map || Object.keys(map).length === 0) return;
+
+    const cityCol = col("townhall_city", "Stadt");
+    const townhallCol = col("townhall_name", "Rathäuser");
+    const stops300Col = col("stops_within_300m", "Haltestellen (300m)");
+
+    textFields.value.first =
+      `[${cityCol}] hat [anzahl] [${townhallCol}] und [anzahl] Haltestellen innerhalb von 300 Metern.\n\nUnd was bedeutet das für Inge?`;
+  },
+  { immediate: true }
+);
+
+console.log("props.columnLabelMap at mount:", props.columnLabelMap);
 
 watch(scrollY, (newScrollY) => {
   if (!initMidElement.value) return;
@@ -219,7 +241,8 @@ onUnmounted(() => {
         <div class="arrow" :class="{ visible: arrowVisible }" v-if="arrowVisible">
           <ArrowChart ref="arrowChartRef" :stats="stats" :currentRange="currentRange" v-if="stats" />
           <HeaderRange ref="headerRangeRef" :stats="stats" :stats-percentages="statsPercentages"
-            :currentRange="currentRange" v-if="stats" :active-mode="activeMode" />
+            :currentRange="currentRange" v-if="stats" :active-mode="activeMode"
+            :columnLabelMap="props.columnLabelMap" />
         </div>
         <div class="character">
           <img src="@img/Thuringia/Bus_Stop.png" alt="Bus Stop" id="busStopImage" />

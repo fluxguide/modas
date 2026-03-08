@@ -39,12 +39,18 @@ const setActive = (tileName) => {
                     fill="none" />
             </svg>
         </span> -->
-        <span class="presenter-tile" :class="{ 'is-active': activeMode === 'presenter' }" @click="setActive('presenter')">
-            <svg width="40" height="40" viewBox="0 0 40 40" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <path
-                    d="M20 0C8.9725 0 0 8.9725 0 20C0 31.0275 8.9725 40 20 40C31.0275 40 40 31.0275 40 20C40 8.9725 31.0275 0 20 0ZM20.0001 37.5C11.7157 37.5 4.99994 30.7842 4.99994 22.4998C4.99994 14.2154 11.7157 7.49963 20.0001 7.49963C28.2844 7.49963 35.0002 14.2154 35.0002 22.4998C35.0002 30.7842 28.2844 37.5 20.0001 37.5ZM19.9999 10C18.3436 10 16.9999 11.3438 16.9999 13C16.9999 14.6563 18.3436 16 19.9999 16C21.6563 16 22.9999 14.6563 22.9999 13C22.9999 11.3438 21.6563 10 19.9999 10Z"
-                    fill="none" />
-                
+        <span class="presenter-tile" :class="{ 'is-active': activeMode === 'presenter' }"
+            @click="setActive('presenter')" title="Presenter view">
+            <svg width="28" height="28" viewBox="0 0 24 24" fill="none" aria-hidden="true">
+                <path d="M8 3H5.5C4.67 3 4 3.67 4 4.5V7" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" />
+                <path d="M16 3h2.5c.83 0 1.5.67 1.5 1.5V7" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" />
+                <path d="M8 21H5.5c-.83 0-1.5-.67-1.5-1.5V17" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" />
+                <path d="M16 21h2.5c.83 0 1.5-.67 1.5-1.5V17" stroke="currentColor" stroke-width="1.8"
+                    stroke-linecap="round" />
+                <path d="M9.5 9l5 3-5 3V9Z" fill="currentColor" />
             </svg>
         </span>
     </div>

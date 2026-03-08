@@ -20,5 +20,13 @@ if not data:
     if st.button("Go to upload", width="stretch"):
         st.switch_page("app.py")
     st.stop()
+    
+print("columnLabelMap in session:", bool(st.session_state.get("columnLabelMap")))
+print("keys sample:", list((st.session_state.get("columnLabelMap") or {}).items())[:5])
 
-story_viewer(template=selected, data=data, mode="simulation")
+story_viewer(
+    template=selected,
+    data=st.session_state.data,
+    columnLabelMap=st.session_state.get("columnLabelMap"),
+    mode="simulation",
+)

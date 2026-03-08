@@ -1,5 +1,6 @@
 import streamlit as st
 import pandas as pd
+import re
 import base64
 from shared import setup_page
 
@@ -34,9 +35,15 @@ st.markdown(
 """,
     unsafe_allow_html=True,
 )
+
 with open("static/img/Suite/modas-side-img.svg", "r") as f:
     svg_content = f.read()
 b64 = base64.b64encode(svg_content.encode()).decode()
+
+
+def norm(s: str) -> str:
+    return re.sub(r"[^a-z0-9]+", "_", s.strip().lower()).strip("_")
+
 
 col1, col2 = st.columns(2, gap="small")
 
@@ -66,6 +73,8 @@ with col1:
 
     if uploaded_file:
         df = pd.read_csv(uploaded_file)
+        st.session_state.columnLabelMap = {norm(c): c for c in df.columns}
+        st.session_state.data = df.to_dict(orient="records")
 
         st.session_state.uploaded_filename = uploaded_file.name
 
