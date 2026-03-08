@@ -3,11 +3,13 @@ const props = defineProps({
     activeMode: { type: String, default: 'view' }
 });
 
-const emit = defineEmits(['mode-change']);
+const emit = defineEmits(['mode-change', 'edit-data']);
 
 const setActive = (tileName) => {
     emit('mode-change', tileName);
 }
+
+const openDataEditor = () => emit("edit-data");
 </script>
 
 <template>
@@ -19,7 +21,7 @@ const setActive = (tileName) => {
                     fill="none" />
             </svg>
         </span>
-        <span class="edit-mode-tile" :class="{ 'is-active': activeMode === 'edit' }" @click="setActive('edit')">
+        <span class="edit-mode-tile" :class="{ 'is-active': activeMode === 'edit' }" @click="setActive('edit'); openDataEditor();">
             <svg width="46" height="46" viewBox="0 0 46 46" fill="none" xmlns="http://www.w3.org/2000/svg">
                 <path
                     d="M45.3179 4.50123C45.6098 4.79411 45.7738 5.1908 45.7738 5.60435C45.7738 6.01791 45.6098 6.41459 45.3179 6.70748L42.0585 9.96998L35.8085 3.71998L39.0679 0.457479C39.3609 0.164555 39.7582 0 40.1726 0C40.5869 0 40.9842 0.164555 41.2772 0.457479L45.3179 4.4981V4.50123ZM39.8491 12.1762L33.5991 5.92623L12.3085 27.22C12.1365 27.3919 12.007 27.6017 11.9304 27.8325L9.41474 35.3762C9.36911 35.5138 9.36264 35.6613 9.39603 35.8023C9.42942 35.9433 9.50137 36.0722 9.60382 36.1746C9.70628 36.2771 9.83521 36.349 9.97621 36.3824C10.1172 36.4158 10.2647 36.4093 10.4022 36.3637L17.946 33.8481C18.1765 33.7724 18.3862 33.644 18.5585 33.4731L39.8491 12.1762Z"

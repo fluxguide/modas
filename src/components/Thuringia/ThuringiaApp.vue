@@ -6,6 +6,7 @@ import { useUIControls } from '@src/composables/Thuringia/useUIControls.js';
 import { useMapControls } from '@src/composables/Thuringia/useMapControls.js';
 import { computeStats } from '@composables/Thuringia/useDataProcessing';
 import { useColumnLabels } from '@composables/useColumnLabels';
+import { Streamlit } from "streamlit-component-lib";
 
 import ArrowChart from '@src/components/Thuringia/ArrowChart.vue';
 import HeaderRange from '@src/components/Thuringia/HeaderRange.vue';
@@ -17,7 +18,7 @@ import SideMenu from '@src/components/SideMenu.vue';
 import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
-  data: { type: Object, default: null },
+  data: { type: Array, default: () => [] },
   columnLabelMap: { type: Object, default: () => ({}) },
   mode: { type: String, default: 'view' },
 });
@@ -56,6 +57,11 @@ const { y: scrollY, isScrolling } = useScroll(scrollContainer, {
 });
 
 const { col } = useColumnLabels(toRef(props, "columnLabelMap"));
+
+const requestCsvEdit = () => {
+  // Ask Streamlit to open editor dialog
+  Streamlit.setComponentValue({ action: "open_data_editor" });
+};
 
 const handleModeChange = (newMode) => {
   if (newMode === "presenter") {
@@ -182,6 +188,37 @@ watch(scrollY, (newScrollY) => {
   immediate: true // Run immediately onmount
 });
 
+watch(
+  () => props.data,
+  (newData) => {
+    if (!Array.isArray(newData) || newData.length === 0) return;
+
+    const rawData_parsed = newData.map(d => ({
+      id: +d.id,
+      townHall: d.townhall_name || '',
+      city: d.townhall_city || '',
+      street: d.townhall_street || '',
+      latitude: +d.townhall_latitude || 0,
+      longitude: +d.townhall_longitude || 0,
+      stops100m: +d.stops_within_100m || 0,
+      stops200m: +d.stops_within_200m || 0,
+      stops300m: +d.stops_within_300m || 0,
+    }));
+
+    const { stats: loadedStats, statsPercentages: loadedStatsPercentages } =
+      computeStats(rawData_parsed);
+
+    rawData.value = rawData_parsed;
+    stats.value = loadedStats;
+    statsPercentages.value = loadedStatsPercentages;
+  },
+  { immediate: true }
+);
+
+watch(() => props.data, (d) => {
+  console.log("props.data updated rows:", Array.isArray(d) ? d.length : "not array");
+}, { immediate: true });
+
 const scrollHeight = computed(() => {
   if (!scrollContainer.value) return 0;
   return scrollContainer.value.scrollHeight - scrollContainer.value.clientHeight;
@@ -194,25 +231,6 @@ onMounted(async () => {
     }
   })
 
-  if (!props.data) return; // no data yet, nothing to render
-
-  const rawData_parsed = props.data.map(d => ({
-    id: +d.id,
-    townHall: d.townhall_name || '',
-    city: d.townhall_city || '',
-    street: d.townhall_street || '',
-    latitude: +d.townhall_latitude || 0,
-    longitude: +d.townhall_longitude || 0,
-    stops100m: +d.stops_within_100m || 0,
-    stops200m: +d.stops_within_200m || 0,
-    stops300m: +d.stops_within_300m || 0,
-  }));
-
-  const { stats: loadedStats, statsPercentages: loadedStatsPercentages } = computeStats(rawData_parsed);
-  rawData.value = rawData_parsed;
-  stats.value = loadedStats;
-  statsPercentages.value = loadedStatsPercentages;
-
   initializeUI();
 });
 
@@ -223,7 +241,8 @@ onUnmounted(() => {
 
 <template>
   <div class="thuringia-app" ref="scrollContainer">
-    <SideMenu v-if="!isPresenting" :active-mode="activeMode" @mode-change="handleModeChange" />
+    <SideMenu v-if="!isPresenting" :active-mode="activeMode" @mode-change="handleModeChange"
+      @edit-data="requestCsvEdit" />
     <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Exit Presenter View</button>
     <div class="scroll-wrapper" :style="{ height: `${scrollHeight}px` }">
       <div class="init-mid" ref="initMidElement">
