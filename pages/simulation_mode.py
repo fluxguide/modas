@@ -3,14 +3,15 @@ from components import story_viewer
 from shared import setup_page
 
 selected = st.session_state.get("selected_template", "thuringia")
+selected_template_label = st.session_state.get("selected_template_label", "")
 
 setup_page(
     show_top_bar=True,
     top_bar_links=[
-        {"label": f"{selected.title()} Story", "href": "/simulation_mode"},
+        {"label": f"{selected_template_label.title()}", "href": "/simulation_mode"},
     ],
     active_page="/simulation_mode",
-    top_bar_right_button={"label": "Leave Simulation Mode", "href": "/"},
+    top_bar_right_button={"label": "Datei ändern", "href": "/"},
 )
 
 data = st.session_state.get("data")

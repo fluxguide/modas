@@ -35,7 +35,7 @@ div[data-testid="stMarkdownContainer"] {
 
 div[data-testid="stColumn"]:has(.left-container) {
     width: 100%;
-    padding: 0 7vw;
+    padding: 0 4vw;
 }
 
 div[data-testid="stFileUploader"] section {
@@ -53,15 +53,16 @@ div[data-testid="stFileUploader"] section {
 
 .left-container h1 {
     color: #010080;
-    font-size: 36px;
+    font-size: 32px;
 }
 
 .left-container h3 {
     margin: 4vh 0 0 0;
+    font-size: 24px;
 }
 
 .left-container p {
-    font-size: 17px;
+    font-size: 16px;
     font-style: normal;
     font-weight: 400;
     line-height: 1.5;
@@ -162,7 +163,7 @@ div[data-testid="stFileUploader"] section {
 }
 
 .template-page-instructions h4 {
-    font-size: 24px;
+    font-size: 22px;
     font-weight: 500;
     margin-top: 20px;
     margin-bottom: -10px;
@@ -176,7 +177,7 @@ div[data-testid="stFileUploader"] section {
 }
 
 .template-caption {
-    font-size: 24px;
+    font-size: 18px;
     font-weight: 700;
     color: #000;
     text-align: left;
@@ -184,9 +185,7 @@ div[data-testid="stFileUploader"] section {
 
 /* Base style for Streamlit buttons */
 div.stButton>button {
-    /* width: 100%; */
     border-radius: 12px;
-    /* padding: 0.75rem 1rem; */
     border: none;
     font-weight: 700;
     transition: all 120ms ease;
@@ -225,6 +224,57 @@ button[data-testid="stBaseButton-secondary"]:hover {
     background: #010080;
     color: #fff;
 }
+
+/* browse button */
+[data-testid="stFileUploader"] button[data-testid="stBaseButton-secondary"] {
+    color: transparent !important;
+    position: relative;
+    min-width: 210px !important;
+}
+
+[data-testid="stFileUploader"] button[data-testid="stBaseButton-secondary"]::after {
+    content: var(--label-button);
+    color: #fff !important;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: absolute;
+    inset: 0;
+    visibility: visible;
+}
+
+/* instructions */
+[data-testid="stFileUploaderDropzoneInstructions"] div>span:nth-child(1) {
+    visibility: hidden;
+    display: block;
+    line-height: 0;
+}
+
+[data-testid="stFileUploaderDropzoneInstructions"] div>span:nth-child(1)::after {
+    content: var(--label-instructions);
+    visibility: visible;
+    display: block;
+    line-height: normal;
+    color: #000;
+    margin-bottom: 2px;
+}
+
+/* limits */
+[data-testid="stFileUploaderDropzoneInstructions"] div>span:nth-child(2) {
+    visibility: hidden;
+    display: block;
+    line-height: 0;
+}
+
+[data-testid="stFileUploaderDropzoneInstructions"] div>span:nth-child(2)::after {
+    content: var(--label-limits);
+    visibility: visible;
+    display: block;
+    line-height: normal;
+    color: #666;
+    font-size: 0.8rem;
+}
+
 
 .template-dialog-text {
     font-size: 15px;
@@ -276,4 +326,21 @@ div[data-testid="stDialog"] div.stButton {
     width: fit-content !important;
     margin-right: auto;
     margin-left: 1rem;
+}
+
+[data-testid="stVerticalBlock"]:has(.gif-top-align) {
+    justify-content: flex-start !important;
+    gap: 0 !important;
+}
+
+.gif-top-align {
+    margin-top: 0 !important;
+    padding-top: 0 !important;
+    width: 100%;
+}
+
+.gif-top-align img {
+    display: block;
+    width: 100%;
+    border-radius: 12px;
 }
