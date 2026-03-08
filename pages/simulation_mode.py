@@ -46,12 +46,12 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
             key="csv_editor",
         )
 
-        c1, c2 = st.columns(2)
+        c1, c2 = st.columns([1, 1], gap="small")
         with c1:
-            if st.button("Abbrechen", use_container_width=True):
+            if st.button("Abbrechen", width='content'):
                 st.rerun()
         with c2:
-            if st.button("Speichern", use_container_width=True):
+            if st.button("Speichern", width='content'):
                 st.session_state.data = edited_df.to_dict(orient="records")
                 st.rerun()
 
