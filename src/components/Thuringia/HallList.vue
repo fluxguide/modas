@@ -192,6 +192,7 @@ watch(() => props.selectedMarkerId, (newSelectedId) => {
     border-radius: 20px;
     font-size: 0.9rem;
     background-color: white;
+    color: #666;
 }
 
 .searchBar input:focus {
