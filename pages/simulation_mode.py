@@ -41,17 +41,14 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
 
         edited_df = st.data_editor(
             df,
-            use_container_width=True,
+            width="stretch",
             num_rows="dynamic",
             key="csv_editor",
         )
 
-        c1, c2 = st.columns([1, 1], gap="small")
-        with c1:
-            if st.button("Abbrechen", width='content'):
-                st.rerun()
-        with c2:
-            if st.button("Speichern", width='content'):
+        spacer, right = st.columns([8, 2])
+        with right:
+            if st.button("Speichern", use_container_width=True, key="csv_save_btn"):
                 st.session_state.data = edited_df.to_dict(orient="records")
                 st.rerun()
 
