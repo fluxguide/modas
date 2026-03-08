@@ -28,30 +28,36 @@ GIF_FILE_BASE = "/app/static/gif"
 templates_first_row = [
     {
         "key": "thuringia",
-        "label": "Thuringia",
+        "label": "ÖPNV-Erreichbarkeit von Points of Interest",
         "img_url": f"{IMG_URL_BASE}/Thuringia-Preview.png",
         "img_file": f"{IMG_FILE_BASE}/Thuringia-Preview.png",
         "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
-        "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
+        "description": "Diese Vorlage veranschaulicht die ÖPNV-Erreichbarkeit von Points of Interest, wie beispielsweise Rathäusern oder Schulen. Zur Visualisierung der Distanzen zwischen Points of Interest und Haltestellen werden 2D-Darstellungen sowie statische und interaktive Karten eingesetzt. Ziel ist es, Potenziale und Lücken in der Anbindung sichtbar zu machen.",
+        "structure-interaction": " Zu Beginn führt ein Scrollytelling-Abschnitt mit klarer Nutzerführung durch die zentralen Erkenntnisse. Am Ende steht eine interaktive Karte zur freien Exploration. Eine erzählende Figur („Inge“) begleitet die Story und ordnet die Ergebnisse ein.",
+        "data-requirements": "Name (optional), Stadt, Straße, Koordinaten (Lat/Long), Anzahl der Haltestellen in definierten Radien.",
+        "suitable_for": "Diese Vorlage eignet sich zur Darstellung von Distanzen und zur Analyse der räumlichen Erreichbarkeit von Standorten, insbesondere im Kontext von Mobilität und Infrastruktur.",
     },
     {
         "key": "vrr",
-        "label": "VRR",
+        "label": "Veränderungen in Projekten",
         "img_url": f"{IMG_URL_BASE}/VRR-Preview.png",
         "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
         "img_file": f"{IMG_FILE_BASE}/VRR-Preview.png",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
-        "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
+        "description": "Diese Vorlage zeigt, wie sich z. B. Verkehrsunternehmen oder (Mobilitäts-) Projekte im Laufe der letzten Jahre verändert haben. Dies kann verschiedene Fachbereiche des Unternehmens betreffen, z. B. die Kundenkommunikation.",
+        "structure-interaction": "Die Data Story folgt dem Scrollytelling-Prinzip (vertikales Scrollen), wobei verschiedene Visualisierungstypen wie Zeitstrahle und Kreisdiagramme eingesetzt werden.",
+        "data-requirements": "Strukturierte Daten mit Jahresvergleichen, Daten und Fakten zum Projektablauf und Projektergebnissen",
+        "suitable_for": "Diese Vorlage eignet sich besonders zur interaktiven Darstellung von Projektabläufen, z.B. der Veränderung der Kundenkommunikation in Verkehrsunternehmen in den letzten Jahren.",
     },
     {
         "key": "dresden",
-        "label": "Dresden",
+        "label": "Städte in Bewegung",
         "img_url": f"{IMG_URL_BASE}/Dresden-Preview.png",
         "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
         "img_file": f"{IMG_FILE_BASE}/Dresden-Preview.png",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
-        "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
+        "description": "Diese Vorlage basiert auf Umfragedaten in Städten und bereitet die meist komplexen Umfrageergebnisse verständlich und interaktiv auf. Ziel ist es, unterschiedliche Perspektiven und Nutzungsmuster sichtbar zu machen.",
+        "structure-interaction": "Zu Beginn stehen den Rezipient*innen Auswahloptionen zur Verfügung, mit denen unterschiedliche Kategorien (z. B. Regionen, Merkmale oder Themenbereiche) ausgewählt werden können. Dabei kombiniert die Data Story vertikale und horizontale Scrollbewegungen im Stil einer interaktiven Scrollytelling-Erzählung. Außerdem fällt diese Vorlage durch ihren markanten Pixelstil auf.",
+        "data-requirements": "Strukturierte Umfragedaten mit Kategorien (z. B. Altersgruppen, Stadtteile, Verkehrsmittel), Kennzahlen (z. B. Anteile, Häufigkeiten), Bewertungsdimensionen (z. B. Zufriedenheit, Sicherheit).",
+        "suitable_for": "Diese Vorlage eignet sich besonders zur interaktiven Darstellung und Differenzierung von Umfrageergebnissen. Sie ist ideal, wenn verschiedene Gruppen (z. B. Altersgruppen, Regionen oder Nutzungstypen) vergleichend betrachtet und durch Nutzerauswahl explorierbar gemacht werden sollen.",
     },
 ]
 
@@ -63,6 +69,8 @@ templates_second_row = [
         "img_file": f"{IMG_FILE_BASE}/Dortmund-Preview.png",
         "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
+        "structure-interaction": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
+        "data-requirements": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
         "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
     },
     {
@@ -72,6 +80,8 @@ templates_second_row = [
         "img_file": f"{IMG_FILE_BASE}/Ilmenau-Preview.png",
         "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
+        "structure-interaction": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
+        "data-requirements": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
         "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
     },
 ]
@@ -198,9 +208,13 @@ if preview_key and preview_key in template_by_key_all:
             st.markdown(
                 f"""
                 <div class="template-dialog-text">
-                    <h3>About the original story</h3>
+                    <h3>Über die Vorlage</h3>
                     <p>{tpl["description"]}</p>
-                    <h3>Suitable for</h3>
+                    <h3>Aufbau und Interaktion</h3>
+                    <p>{tpl["structure-interaction"]}</p>
+                    <h3>Benötigte Daten</h3>
+                    <p>{tpl["data-requirements"]}</p>
+                    <h3>Passend für</h3>
                     <p>{tpl["suitable_for"]}</p>
                 </div>
                 """,
