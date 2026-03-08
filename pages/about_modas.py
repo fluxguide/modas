@@ -5,7 +5,7 @@ setup_page(
     show_top_bar=True,
     top_bar_links=[
         {"label": "Templates", "href": "/template_selection"},
-        {"label": "About MoDaS", "href": "/about_modas"},
+        # {"label": "About MoDaS", "href": "/about_modas"},
     ],
     active_page="/about_modas",
 )

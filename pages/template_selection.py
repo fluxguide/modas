@@ -15,7 +15,7 @@ setup_page(
     show_top_bar=True,
     top_bar_links=[
         {"label": "Templates", "href": "/template_selection"},
-        {"label": "About MoDaS", "href": "/about_modas"},
+        # {"label": "About MoDaS", "href": "/about_modas"},
     ],
     active_page="/template_selection",
     top_bar_right_button={"label": "Reupload file", "href": "/"},
@@ -23,6 +23,7 @@ setup_page(
 
 IMG_URL_BASE = "/app/static/img/Suite/Template_Previews"  # for clickable_images
 IMG_FILE_BASE = "static/img/Suite/Template_Previews"  # for st.image local file read
+GIF_FILE_BASE = "/app/static/gif"
 
 templates_first_row = [
     {
@@ -30,6 +31,7 @@ templates_first_row = [
         "label": "Thuringia",
         "img_url": f"{IMG_URL_BASE}/Thuringia-Preview.png",
         "img_file": f"{IMG_FILE_BASE}/Thuringia-Preview.png",
+        "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
         "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
     },
@@ -37,6 +39,7 @@ templates_first_row = [
         "key": "vrr",
         "label": "VRR",
         "img_url": f"{IMG_URL_BASE}/VRR-Preview.png",
+        "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
         "img_file": f"{IMG_FILE_BASE}/VRR-Preview.png",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
         "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
@@ -45,6 +48,7 @@ templates_first_row = [
         "key": "dresden",
         "label": "Dresden",
         "img_url": f"{IMG_URL_BASE}/Dresden-Preview.png",
+        "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
         "img_file": f"{IMG_FILE_BASE}/Dresden-Preview.png",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
         "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
@@ -57,6 +61,7 @@ templates_second_row = [
         "label": "Story 4",
         "img_url": f"{IMG_URL_BASE}/Dortmund-Preview.png",
         "img_file": f"{IMG_FILE_BASE}/Dortmund-Preview.png",
+        "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
         "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
     },
@@ -65,6 +70,7 @@ templates_second_row = [
         "label": "Story 5",
         "img_url": f"{IMG_URL_BASE}/Ilmenau-Preview.png",
         "img_file": f"{IMG_FILE_BASE}/Ilmenau-Preview.png",
+        "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
         "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
     },
@@ -180,7 +186,13 @@ if preview_key and preview_key in template_by_key_all:
         left, right = st.columns([1.15, 1], gap="large")
 
         with left:
-            st.image(tpl["img_file"], width="stretch")
+            st.markdown(
+                f"""
+                <img src="{tpl["gif_file"]}"
+                    style="width:100%; border-radius:12px; box-shadow:1px 1px 8px rgba(0,0,0,0.18);" />
+                """,
+                unsafe_allow_html=True,
+            )
 
         with right:
             st.markdown(
