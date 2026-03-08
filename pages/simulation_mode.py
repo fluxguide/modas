@@ -1,4 +1,5 @@
 import streamlit as st
+import pandas as pd
 from components import story_viewer
 from shared import setup_page
 
@@ -20,13 +21,38 @@ if not data:
     if st.button("Go to upload", width="stretch"):
         st.switch_page("app.py")
     st.stop()
-    
+
 print("columnLabelMap in session:", bool(st.session_state.get("columnLabelMap")))
 print("keys sample:", list((st.session_state.get("columnLabelMap") or {}).items())[:5])
 
-story_viewer(
+result = story_viewer(
     template=selected,
     data=st.session_state.data,
     columnLabelMap=st.session_state.get("columnLabelMap"),
     mode="simulation",
+    key="story",
 )
+
+if result and isinstance(result, dict) and result.get("action") == "open_data_editor":
+
+    @st.dialog("CSV bearbeiten")
+    def edit_csv_dialog():
+        df = pd.DataFrame(st.session_state.data)
+
+        edited_df = st.data_editor(
+            df,
+            use_container_width=True,
+            num_rows="dynamic",
+            key="csv_editor",
+        )
+
+        c1, c2 = st.columns([1, 1], gap="small")
+        with c1:
+            if st.button("Abbrechen", width='content'):
+                st.rerun()
+        with c2:
+            if st.button("Speichern", width='content'):
+                st.session_state.data = edited_df.to_dict(orient="records")
+                st.rerun()
+
+    edit_csv_dialog()

@@ -306,6 +306,12 @@ div[data-testid="stLayoutWrapper"]>.stHorizontalBlock {
     align-items: stretch;
 }
 
+div[data-testid="stLayoutWrapper"]>.stVerticalBlock {
+    flex-direction: column;
+    gap: 2rem !important;
+}
+
+
 .template-dialog-text h3 {
     color: #010080;
     font-size: 20px;
