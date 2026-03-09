@@ -243,7 +243,7 @@ onUnmounted(() => {
   <div class="thuringia-app" ref="scrollContainer">
     <SideMenu v-if="!isPresenting" :active-mode="activeMode" @mode-change="handleModeChange"
       @edit-data="requestCsvEdit" />
-    <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Exit Presenter View</button>
+    <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Präsentationsansicht beenden</button>
     <div class="scroll-wrapper" :style="{ height: `${scrollHeight}px` }">
       <div class="init-mid" ref="initMidElement">
         <img src="@img/Thuringia/Emblem.png" alt="Emblem" id="emblemImage" />

@@ -4,7 +4,7 @@ import streamlit as st
 def top_bar(links=None, active=None, reupload_button=True):
     if links is None:
         links = [
-            {"label": "Vorlagenagen", "href": "/template_selection"},
+            {"label": "Vorlagen", "href": "/template_selection"},
             # {"label": "About MoDaS", "href": "/about_modas"},
         ]
 
