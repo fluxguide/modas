@@ -41,7 +41,7 @@ templates_first_row = [
         "key": "vrr",
         "label": "Veränderungen in Projekten",
         "img_url": f"{IMG_URL_BASE}/VRR-Preview.png",
-        "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
+        "gif_file": f"{GIF_FILE_BASE}/VRR-Preview.gif",
         "img_file": f"{IMG_FILE_BASE}/VRR-Preview.png",
         "description": "Diese Vorlage zeigt, wie sich z. B. Verkehrsunternehmen oder (Mobilitäts-) Projekte im Laufe der letzten Jahre verändert haben. Dies kann verschiedene Fachbereiche des Unternehmens betreffen, z. B. die Kundenkommunikation.",
         "structure-interaction": "Die Data Story folgt dem Scrollytelling-Prinzip (vertikales Scrollen), wobei verschiedene Visualisierungstypen wie Zeitstrahle und Kreisdiagramme eingesetzt werden.",
@@ -52,7 +52,7 @@ templates_first_row = [
         "key": "dresden",
         "label": "Städte in Bewegung",
         "img_url": f"{IMG_URL_BASE}/Dresden-Preview.png",
-        "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
+        "gif_file": f"{GIF_FILE_BASE}/Dresden-Preview.gif",
         "img_file": f"{IMG_FILE_BASE}/Dresden-Preview.png",
         "description": "Diese Vorlage basiert auf Umfragedaten in Städten und bereitet die meist komplexen Umfrageergebnisse verständlich und interaktiv auf. Ziel ist es, unterschiedliche Perspektiven und Nutzungsmuster sichtbar zu machen.",
         "structure-interaction": "Zu Beginn stehen den Rezipient*innen Auswahloptionen zur Verfügung, mit denen unterschiedliche Kategorien (z. B. Regionen, Merkmale oder Themenbereiche) ausgewählt werden können. Dabei kombiniert die Data Story vertikale und horizontale Scrollbewegungen im Stil einer interaktiven Scrollytelling-Erzählung. Außerdem fällt diese Vorlage durch ihren markanten Pixelstil auf.",
@@ -115,6 +115,7 @@ clicked1 = clickable_images(
         "gridTemplateColumns": "repeat(3, 1fr)",
         "gap": "50px",
         "margin": "0 5vw",
+        "padding-top": "40px",
         "padding-bottom": "10px",
     },
     img_style={
@@ -145,44 +146,44 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-clicked2 = clickable_images(
-    [t["img_url"] for t in templates_second_row],
-    titles=[t["label"] for t in templates_second_row],
-    div_style={
-        "display": "grid",
-        "gridTemplateColumns": "repeat(3, 1fr)",
-        "gap": "50px",
-        "margin": "0 5vw",
-        "padding-bottom": "10px",
-    },
-    img_style={
-        "width": "90%",
-        "height": "fit-content",
-        "objectFit": "cover",
-        "borderRadius": "12px",
-        "boxShadow": "0 2px 6px rgba(0,0,0,0.14)",
-        "cursor": "pointer",
-    },
-    key="templates_row_2",
-)
+# clicked2 = clickable_images(
+#     [t["img_url"] for t in templates_second_row],
+#     titles=[t["label"] for t in templates_second_row],
+#     div_style={
+#         "display": "grid",
+#         "gridTemplateColumns": "repeat(3, 1fr)",
+#         "gap": "50px",
+#         "margin": "0 5vw",
+#         "padding-bottom": "10px",
+#     },
+#     img_style={
+#         "width": "90%",
+#         "height": "fit-content",
+#         "objectFit": "cover",
+#         "borderRadius": "12px",
+#         "boxShadow": "0 2px 6px rgba(0,0,0,0.14)",
+#         "cursor": "pointer",
+#     },
+#     key="templates_row_2",
+# )
 
-if clicked2 > -1 and clicked2 != st.session_state.last_clicked_row_2:
-    st.session_state.last_clicked_row_2 = clicked2
-    st.session_state.preview_template = templates_second_row[clicked2]["key"]
+# if clicked2 > -1 and clicked2 != st.session_state.last_clicked_row_2:
+#     st.session_state.last_clicked_row_2 = clicked2
+#     st.session_state.preview_template = templates_second_row[clicked2]["key"]
 
-st.markdown(
-    """
-    <div class="template-caption-grid">
-    """
-    + "".join(
-        f'<div class="template-caption">{t["label"]}</div>'
-        for t in templates_second_row
-    )
-    + """
-    </div>
-    """,
-    unsafe_allow_html=True,
-)
+# st.markdown(
+#     """
+#     <div class="template-caption-grid">
+#     """
+#     + "".join(
+#         f'<div class="template-caption">{t["label"]}</div>'
+#         for t in templates_second_row
+#     )
+#     + """
+#     </div>
+#     """,
+#     unsafe_allow_html=True,
+# )
 
 
 template_by_key_all = {
