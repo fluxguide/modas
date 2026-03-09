@@ -14,7 +14,7 @@ print(
 setup_page(
     show_top_bar=True,
     top_bar_links=[
-        {"label": "Vorlagenagen", "href": "/template_selection"},
+        {"label": "Vorlagen", "href": "/template_selection"},
         # {"label": "About MoDaS", "href": "/about_modas"},
     ],
     active_page="/template_selection",
@@ -193,7 +193,7 @@ preview_key = st.session_state.get("preview_template")
 if preview_key and preview_key in template_by_key_all:
     tpl = template_by_key_all[preview_key]
 
-    @st.dialog(f"{tpl['label']} story")
+    @st.dialog(f"Data Story: {tpl['label']}")
     def template_dialog():
         left, right = st.columns([1.15, 1], gap="large")
 

@@ -53,14 +53,15 @@ with col1:
     st.markdown(
         """
         <div class="left-container">
-            <h1>Mobilitätsdaten-Story-Suite (MoDaS)</h1>
-            <p>Wie lassen sich Mobilitätsdaten verständlich und effektiv vermitteln? Als Technologiepartner für das mfund-Projekt MoDaS haben wir eine Plattform entwickelt, die abstrakte Mobilitätsdaten in verständliche Storytelling-Formate übersetzt.</p>
-            <p>Gemeinsam mit unserem Forschungspartner TU Ilmenau haben wir eine „Mobility Data Story Suite“ entwickelt, die Verkehrsdaten durch digitales Storytelling visualisiert. Die Zielgruppe sind Mobilitätsplaner, politische Entscheidungsträger und Bürger. Die Mobility Data Story Suite macht komplexe Daten mithilfe innovativer Storytelling-Methoden interaktiv zugänglich und verbessert so die Effizienz von Mobilitätsplanungsprozessen. Übersetzt mit DeepL.com (kostenlose Version)</p>
-            <h3>Sind Sie bereit, Ihre eigene Geschichte zu schreiben?</h3>
+            <h1>Mobility Data Story-Suite (MoDaS)</h1>
+            <h4>Von Mobilitätsdaten zum Storytelling</h4>
+            <p>Als Technologiepartner im mfund-Projekt MoDaS haben wir eine Plattform entwickelt, die abstrakte Mobilitätsdaten in leicht verständliche Storytelling-Formate überträgt. In enger Zusammenarbeit mit unserem Forschungspartner TU Ilmenau entstand die „Mobility Data Story Suite“, ein innovatives Tool, das Verkehrsdaten durch digitales Storytelling visualisiert. Zielgruppe sind Mobilitätsplanende, politische Entscheidungstragende und Bürger*innen gleichermaßen.</p>
+            <p>Die Mobility Data Story Suite macht komplexe Daten interaktiv erfahrbar und nutzt moderne Storytelling-Methoden, um Entscheidungsprozesse zu unterstützen. So trägt sie dazu bei, Mobilitätsplanung effizienter, nachvollziehbarer und transparenter zu gestalten.</p>
+            <h3>Sind Sie bereit, Ihre eigene Geschichte zu erstellen?</h3>
             <ol>
-                <li><p>Laden Sie Ihre Datendatei hoch und senden Sie sie ab.</p></li>
+                <li><p>Laden Sie Ihre Datei mit ausgewählten Mobilitätsdaten hoch und senden Sie sie ab.</p></li>
                 <li><p>Wählen Sie eine der verfügbaren Vorlagen aus.</p></li>
-                <li><p>Wechseln Sie in den Simulationsmodus und nehmen Sie bei Bedarf einige Änderungen an der Vorlage vor.</p></li>
+                <li><p>Wechseln Sie in den Simulationsmodus und passen Sie die Vorlage bei Bedarf an.</p></li>
             </ol>
         </div>
     """,
