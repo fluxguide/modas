@@ -258,7 +258,8 @@ onUnmounted(() => {
           <img src="@img/Thuringia/Rathaus.png" alt="Rathaus" id="cityHallImage" />
         </div>
         <div class="arrow" :class="{ visible: arrowVisible }" v-if="arrowVisible">
-          <ArrowChart ref="arrowChartRef" :stats="stats" :currentRange="currentRange" v-if="stats" />
+          <ArrowChart ref="arrowChartRef" :stats="stats" :currentRange="currentRange" :active-mode="activeMode"
+            v-if="stats" />
           <HeaderRange ref="headerRangeRef" :stats="stats" :stats-percentages="statsPercentages"
             :currentRange="currentRange" v-if="stats" :active-mode="activeMode"
             :columnLabelMap="props.columnLabelMap" />
