@@ -1,12 +1,5 @@
 import * as d3 from 'd3';
-import { isMobile, isLongScreen, isLongLongScreen, scaleRange } from '../utils.js';
-
-export const colors = [
-    '#E14A2C', // noStops - red
-    '#9DAEFF', // oneStop - blue
-    '#F0D33E', // twoStops - yellow
-    '#007E4E'  // moreThanTwoStops - green
-];
+import { isMobile, isLongScreen, isLongLongScreen, scaleRange, colors } from '@src/composables/utils.js';
 
 function useArrowChart() {
     function drawArrow(svgEl, stats, currentRange = 0) {
