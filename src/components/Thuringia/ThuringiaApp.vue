@@ -297,7 +297,8 @@ onUnmounted(() => {
         </div>
       </div>
       <div class="ground-content">
-        <TextRange ref="textRangeRef" :stats="stats" :currentRange="currentRange" v-if="stats && arrowVisible" />
+        <TextRange ref="textRangeRef" :stats="stats" :currentRange="currentRange" v-if="stats && arrowVisible"
+          :active-mode="activeMode" :columnLabelMap="props.columnLabelMap" />
       </div>
       <div v-if="showMapOverlay" class="map-overlay">
         <LeafletMap :data="rawData" :stats="stats" :visible-layers="visibleLayers" @map-ready="handleMapReady"
