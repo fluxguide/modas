@@ -191,7 +191,14 @@ watch(scrollY, (newScrollY) => {
 watch(
   () => props.data,
   (newData) => {
-    if (!Array.isArray(newData) || newData.length === 0) return;
+    console.log("props.data changed:", Array.isArray(newData) ? newData.length : newData);
+
+    if (!newData || !Array.isArray(newData) || newData.length === 0) {
+      stats.value = null;
+      statsPercentages.value = null;
+      rawData.value = [];
+      return;
+    }
 
     const rawData_parsed = newData.map(d => ({
       id: +d.id,
@@ -205,12 +212,18 @@ watch(
       stops300m: +d.stops_within_300m || 0,
     }));
 
-    const { stats: loadedStats, statsPercentages: loadedStatsPercentages } =
-      computeStats(rawData_parsed);
-
     rawData.value = rawData_parsed;
-    stats.value = loadedStats;
-    statsPercentages.value = loadedStatsPercentages;
+
+    try {
+      const out = computeStats(rawData_parsed);
+      stats.value = out.stats;
+      statsPercentages.value = out.statsPercentages;
+      console.log("stats computed OK:", stats.value);
+    } catch (e) {
+      console.error("computeStats failed:", e);
+      stats.value = null;
+      statsPercentages.value = null;
+    }
   },
   { immediate: true }
 );
@@ -241,8 +254,7 @@ onUnmounted(() => {
 
 <template>
   <div class="thuringia-app" ref="scrollContainer">
-    <SideMenu v-if="!isPresenting" :active-mode="activeMode" @mode-change="handleModeChange"
-      @edit-data="requestCsvEdit" />
+    <SideMenu v-if="!isPresenting" :active-mode="activeMode" @mode-change="handleModeChange" />
     <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Präsentationsansicht beenden</button>
     <div class="scroll-wrapper" :style="{ height: `${scrollHeight}px` }">
       <div class="init-mid" ref="initMidElement">
