@@ -1,4 +1,5 @@
 <script setup>
+import { text } from 'd3';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
@@ -8,7 +9,8 @@ const props = defineProps({
     width: { type: String, default: '60%' },
     fontSize: { type: String, default: '36px' },
     lineHeight: { type: Number, default: '1.3' },
-    topBottomPadding: { type: String, default: '5vh' }
+    topBottomPadding: { type: String, default: '5vh' },
+    textAlign: { type: String, default: 'left' },
 });
 
 const emit = defineEmits(['update:textContent']);
@@ -27,7 +29,7 @@ watch(() => props.activeMode, (newMode) => {
     <v-textarea ref="textAreaRef" :text-content="textContent"
         @update:text-content="val => emit('update:textContent', val)" :readonly="activeMode !== 'edit'" variant="plain"
         hide-details no-resize :rows="rows" class="editable-text-comp"
-        :style="{ '--custom-font-size': fontSize, '--custom-width': width, '--rows': rows, '--custom-line-height': lineHeight, '--top-bottom-padding': topBottomPadding }"></v-textarea>
+        :style="{ '--custom-font-size': fontSize, '--custom-width': width, '--rows': rows, '--custom-line-height': lineHeight, '--top-bottom-padding': topBottomPadding, '--custom-text-align': textAlign }"></v-textarea>
 </template>
 
 <style scoped>
@@ -50,7 +52,7 @@ watch(() => props.activeMode, (newMode) => {
     font-size: var(--custom-font-size) !important;
     line-height: var(--custom-line-height) !important;
     width: 100%;
-    text-align: left;
+    text-align: var(--custom-text-align);
     height: auto !important;
 }
 

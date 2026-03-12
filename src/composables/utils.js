@@ -9,6 +9,19 @@ const categories = [
     'moreThanTwoStops'
 ];
 
+const colors = [
+    '#E14A2C', // noStops - red
+    '#9DAEFF', // oneStop - blue
+    '#F0D33E', // twoStops - yellow
+    '#007E4E'  // moreThanTwoStops - green
+];
+
+const rangeKeyByRangeIndex = {
+    0: "stops_within_100m",
+    1: "stops_within_200m",
+    2: "stops_within_300m",
+};
+
 const mapLayersConfig = {
     'range-0-100': {
         color: '#3F373B',
@@ -54,4 +67,4 @@ const scaleRange = (range) => {
     }
 };
 
-export { isMobile, isLongScreen, isLongLongScreen, categories, mapLayersConfig, selectedColour, getScrollRange, scaleRange };
+export { isMobile, isLongScreen, isLongLongScreen, categories, mapLayersConfig, selectedColour, getScrollRange, scaleRange, colors, rangeKeyByRangeIndex };

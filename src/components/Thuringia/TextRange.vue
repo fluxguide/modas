@@ -1,11 +1,15 @@
 <script setup>
 import { useTextStats } from '@composables/Thuringia/useTextStats.js';
-import { computed } from 'vue';
-import { colors } from '@src/composables/Thuringia/useArrowChart.js';
+import { computed, toRef } from 'vue';
+import { colors, rangeKeyByRangeIndex } from '@src/composables/utils.js';
+import { useColumnLabels } from '@composables/useColumnLabels.js';
+import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
   stats: Object,
-  currentRange: Number
+  currentRange: Number,
+  activeMode: String,
+  columnLabelMap: { type: Object, default: () => ({}) },
 });
 
 const { showTextRange, hideAllTextRanges } = useTextStats(
@@ -13,11 +17,14 @@ const { showTextRange, hideAllTextRanges } = useTextStats(
   computed(() => props.currentRange)
 );
 
-const rangeDescriptions = [
-  { id: 0, description: 'innerhalb von 100 Metern' },
-  { id: 1, description: 'zwischen 101 und 200 Metern Distanz' },
-  { id: 2, description: 'zwischen 201 und 300 Metern Distanz' }
-];
+const { col } = useColumnLabels(toRef(props, "columnLabelMap"));
+
+const getTextString = (stopType) => {
+  const rangeKey = rangeKeyByRangeIndex[props.currentRange] || "stops_within_300m";
+  const colName = col(rangeKey, `${props.stats[rangeKey]}m`);
+
+  return `Rathäuser haben ${stopType.text} im Umkreis von [${colName}].`;
+}
 
 const stopTypes = [
   { id: 'noStops', text: 'gar keine Haltestelle', color: colors[0] },
@@ -35,12 +42,10 @@ defineExpose({
 
 <template>
   <div class="text-ranges">
-    <div v-for="range in rangeDescriptions" class="textRange" :id="`textRange${range.id}`"
-      :style="range.id !== 0 ? 'display: none;' : ''">
-      <p v-for="stopType in stopTypes" :key="stopType.id">
-        Rathäuser haben <span :style="{ backgroundColor: stopType.color }">{{ stopType.text }}</span> {{
-          range.description }}.
-      </p>
+    <div :id="`textRange${currentRange}`" class="textRange">
+      <EditableTextField v-for="stopType in stopTypes" :key="stopType.id" :model-value="getTextString(stopType)"
+        :active-mode="activeMode" :rows="1" width="70vw" font-size="18px" :line-height="1.3" :top-bottom-padding="`0px`"
+        :text-align="`center`" />
     </div>
   </div>
 </template>
@@ -52,31 +57,6 @@ defineExpose({
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-.textRange {
-  transition: opacity 0.8s ease-in-out, visibility 0.8s ease-in-out;
-  opacity: 0;
-  padding: 10px 0;
-  text-align: left;
-}
-
-.textRange.visible {
-  opacity: 1;
-  visibility: visible;
-}
-
-.textRange p {
-  text-align: left;
-  font-size: 18px;
-}
-
-.textRange p span {
-  padding: 2px 6px;
-  border-radius: 4px;
-  color: white;
-  font-weight: 500;
-  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
 }
 
 @media (max-width: 768px) {

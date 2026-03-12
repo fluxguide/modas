@@ -9,7 +9,7 @@ selected_template_label = st.session_state.get("selected_template_label", "")
 setup_page(
     show_top_bar=True,
     top_bar_links=[
-        {"label": f"{selected_template_label.title()}", "href": "/simulation_mode"},
+        {"label": f"{selected_template_label}", "href": "/simulation_mode"},
     ],
     active_page="/simulation_mode",
     top_bar_right_button={"label": "Datei ändern", "href": "/"},
