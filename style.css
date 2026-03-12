@@ -183,8 +183,7 @@ div[data-testid="stFileUploader"] section {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 50px;
-    margin: 10px 5vw 10px 5vw;
-    /* margin: -20px 5vw 10px 5vw; */
+    margin: 0px 5vw 30px 5vw;
 }
 
 .template-caption {
@@ -286,7 +285,6 @@ button[data-testid="stBaseButton-secondary"]:hover {
     font-size: 0.8rem;
 }
 
-
 .template-dialog-text {
     font-size: 15px;
     line-height: 1.5;
@@ -315,7 +313,7 @@ div[aria-label="dialog"]>button[aria-label="Close"] {
     filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.40));
 }
 
-div[aria-label="dialog"]>button[aria-label="Close"] > svg {
+div[aria-label="dialog"]>button[aria-label="Close"]>svg {
     height: 16px;
     width: 16px;
     color: white;
@@ -375,4 +373,29 @@ div[data-testid="stDialog"] div.stButton {
     display: block;
     width: 100%;
     border-radius: 12px;
+}
+
+div[data-testid="stColorPicker"]>div {
+    background: #fff;
+    border-radius: 18px;
+    padding: 14px 16px;
+    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
+}
+
+/* align picker + text */
+div[data-testid="stColorPicker"]>div>div {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* hide the default "Color" helper spacing */
+div[data-testid="stColorPicker"] label {
+    display: none !important;
+}
+
+.color-chip .hex {
+    font-weight: 800;
+    font-size: 28px;
+    letter-spacing: 0.5px;
 }

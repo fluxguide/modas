@@ -21,6 +21,7 @@ const props = defineProps({
   data: { type: Array, default: () => [] },
   columnLabelMap: { type: Object, default: () => ({}) },
   mode: { type: String, default: 'view' },
+  categoryColours: { type: Object, default: () => [] },
 });
 
 const stats = ref(null);
@@ -270,8 +271,8 @@ onUnmounted(() => {
           <img src="@img/Thuringia/Rathaus.png" alt="Rathaus" id="cityHallImage" />
         </div>
         <div class="arrow" :class="{ visible: arrowVisible }" v-if="arrowVisible">
-          <ArrowChart ref="arrowChartRef" :stats="stats" :currentRange="currentRange" :active-mode="activeMode"
-            v-if="stats" />
+          <ArrowChart v-if="stats" ref="arrowChartRef" :stats="stats" :currentRange="currentRange"
+            :active-mode="activeMode" :categoryColours="props.categoryColours" />
           <HeaderRange ref="headerRangeRef" :stats="stats" :stats-percentages="statsPercentages"
             :currentRange="currentRange" v-if="stats" :active-mode="activeMode"
             :columnLabelMap="props.columnLabelMap" />

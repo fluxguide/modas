@@ -14,12 +14,13 @@ else:
 
 
 def story_viewer(
-    template, data=None, columnLabelMap=None, mode="view", height=900, key=None
+    template, data=None, columnLabelMap=None, categoryColours=None, mode="view", height=900, key=None
 ):
     return _component(
         template=template,
         data=data,
         columnLabelMap=columnLabelMap,
+        categoryColours=categoryColours,
         mode=mode,
         key=key,
         default=None,

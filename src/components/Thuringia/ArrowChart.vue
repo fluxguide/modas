@@ -1,7 +1,7 @@
 <script setup>
-import { ref, onMounted, watch } from 'vue';
+import { ref, onMounted, watch, computed } from 'vue';
 import { useArrowChart } from '@src/composables/Thuringia/useArrowChart.js';
-import { isMobile, scaleRange } from '@src/composables/utils.js';
+import { isMobile, scaleRange, defaultCategoryColours } from '@src/composables/utils.js';
 // import { active } from 'd3';
 import { Streamlit } from 'streamlit-component-lib';
 
@@ -17,35 +17,37 @@ const props = defineProps({
     activeMode: {
         type: String,
         default: 'view'
+    },
+    categoryColours: {
+        type: Object,
+        default: () => []
     }
 });
 
 const svgRef = ref(null);
-const chartContainer = ref(null);
+// const chartContainer = ref(null);
+const resolvedColors = computed(() => {
+    // if Streamlit didn’t send anything, fallback to defaults
+    return (props.categoryColours && Object.keys(props.categoryColours).length === 4) ? props.categoryColours : defaultCategoryColours;
+});
 
 const { drawArrow } = useArrowChart();
+
+const redraw = () => {
+    if (svgRef.value) {
+        drawArrow(svgRef.value, props.stats, props.currentRange, resolvedColors.value);
+    }
+}
 
 const openEditor = () => {
     Streamlit.setComponentValue({ action: "open_data_editor" })
 }
 
-onMounted(async () => {
-    if (svgRef.value) {
-        drawArrow(svgRef.value, props.stats, props.currentRange);
-    }
-});
+onMounted(redraw);
 
-watch(() => props.currentRange, async () => {
-    if (svgRef.value) {
-        drawArrow(svgRef.value, props.stats, props.currentRange);
-    }
-});
-
-watch(() => props.stats, async () => {
-    if (svgRef.value) {
-        drawArrow(svgRef.value, props.stats, props.currentRange);
-    }
-});
+watch(() => props.currentRange, redraw);
+watch(() => props.stats, redraw, { deep: true });
+watch(resolvedColors, redraw, { deep: true });
 </script>
 
 <template>
