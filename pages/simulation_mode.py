@@ -52,31 +52,79 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
             key="csv_editor",
         )
 
+        st.markdown("<h3>Change colours of categories:</h3>", unsafe_allow_html=True)
+
         st.markdown(
-            "<h3 style='margin-bottom: 8px;'>Change colours of categories:</h3>",
+            """
+                <style>
+                div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] {
+                    flex-flow: row !important;
+                    justify-content: flex-start;
+                    gap: 25%;
+                    background: #ffffff;
+                    border-radius: 16px;
+                    border: 1.5px solid #e8e8e8;
+                    padding: 10px 16px;
+                    width: fit-content !important;
+                }
+
+                /* Hide the label */
+                div[data-testid="stColorPicker"] label {
+                    display: none !important;
+                }
+
+                /* Remove default card styling from the picker wrapper */
+                div[data-testid="stColorPicker"] > div {
+                    background: transparent !important;
+                    border-radius: 0 !important;
+                    padding: 0 !important;
+                    box-shadow: none !important;
+                }
+                
+                div[data-testid="stColorPicker"]>div>div {
+                    display: flex;
+                    align-items: center;
+                    gap: 14px;
+                }
+
+                div[data-testid="stColorPicker"] {
+                    flex-shrink: 0;
+                }
+
+                .hex-label {
+                    font-size: 16px;
+                    font-weight: 400;
+                    color: #222222;
+                    white-space: nowrap;
+                    line-height: 1;
+                    margin-right: 15px;
+                }
+
+                [data-testid="stMarkdownContainer"] {
+                    display: flex;
+                    align-items: center;
+                }
+                
+                [data-testid="stMarkdownContainer"] > p {
+                    margin: 0;
+                }
+                </style>
+                """,
             unsafe_allow_html=True,
         )
+        c1, c2, c3, c4 = st.columns(4, gap="medium")
 
-        # 4 chips in one row
-        c1, c2, c3, c4 = st.columns(4, gap="large")
-
-        def color_chip(col, idx):
+        def color_chip(col, id):
             with col:
                 new = st.color_picker(
-                    label="",
-                    value=st.session_state.arrow_colors[idx],
-                    key=f"arrow_color_{idx}",
+                    label="color",
+                    value=st.session_state.arrow_colors[id],
+                    key=f"arrow_color_{id}",
                     label_visibility="collapsed",
                 )
-                st.session_state.arrow_colors[idx] = new
-
-                # Hex label next to the picker
+                st.session_state.arrow_colors[id] = new
                 st.markdown(
-                    f"""
-                    <div class="color-chip">
-                    <span class="hex">{new}</span>
-                    </div>
-                    """,
+                    f'<span class="hex-label">{new}</span>',
                     unsafe_allow_html=True,
                 )
 
@@ -85,10 +133,8 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
         color_chip(c3, 2)
         color_chip(c4, 3)
 
-        spacer, right = st.columns([8, 2])
-        with right:
-            if st.button("Speichern", use_container_width=True, key="csv_save_btn"):
-                st.session_state.data = edited_df.to_dict(orient="records")
-                st.rerun()
+        if st.button("Speichern", width="stretch", key="csv_save_btn"):
+            st.session_state.data = edited_df.to_dict(orient="records")
+            st.rerun()
 
     edit_csv_dialog()
