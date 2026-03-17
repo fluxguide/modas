@@ -374,28 +374,3 @@ div[data-testid="stDialog"] div.stButton {
     width: 100%;
     border-radius: 12px;
 }
-
-div[data-testid="stColorPicker"]>div {
-    background: #fff;
-    border-radius: 18px;
-    padding: 14px 16px;
-    box-shadow: 0 1px 8px rgba(0, 0, 0, 0.08);
-}
-
-/* align picker + text */
-div[data-testid="stColorPicker"]>div>div {
-    display: flex;
-    align-items: center;
-    gap: 14px;
-}
-
-/* hide the default "Color" helper spacing */
-div[data-testid="stColorPicker"] label {
-    display: none !important;
-}
-
-.color-chip .hex {
-    font-weight: 800;
-    font-size: 28px;
-    letter-spacing: 0.5px;
-}
