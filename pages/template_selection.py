@@ -15,7 +15,6 @@ setup_page(
     show_top_bar=True,
     top_bar_links=[
         {"label": "Vorlagen", "href": "/template_selection"},
-        # {"label": "About MoDaS", "href": "/about_modas"},
     ],
     active_page="/template_selection",
     top_bar_right_button={"label": "Datei erneut hochladen", "href": "/"},
@@ -236,5 +235,3 @@ if preview_key and preview_key in template_by_key_all:
                 st.switch_page("pages/simulation_mode.py")
 
     template_dialog()
-
-st.markdown("</div>", unsafe_allow_html=True)
