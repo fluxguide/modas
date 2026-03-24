@@ -106,12 +106,6 @@ div[data-testid="stFileUploader"] section {
     color: #010080;
     font-weight: 700;
     line-height: normal;
-    text-decoration-line: underline;
-    text-decoration-style: solid;
-    text-decoration-skip-ink: auto;
-    text-decoration-thickness: auto;
-    text-underline-offset: auto;
-    text-underline-position: from-font;
 }
 
 .top-bar-left {

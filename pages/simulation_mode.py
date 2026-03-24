@@ -14,7 +14,7 @@ setup_page(
         {"label": f"{selected_template_label}", "href": "/simulation_mode"},
     ],
     active_page="/simulation_mode",
-    top_bar_right_button={"label": "Datei ändern", "href": "/"},
+    top_bar_right_button={"label": "Neustadt", "href": "/"},
 )
 
 data = st.session_state.get("data")

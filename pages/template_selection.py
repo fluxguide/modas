@@ -17,7 +17,6 @@ setup_page(
         {"label": "Vorlagen", "href": "/template_selection"},
     ],
     active_page="/template_selection",
-    top_bar_right_button={"label": "Datei erneut hochladen", "href": "/"},
 )
 
 IMG_URL_BASE = "/app/static/img/Suite/Template_Previews"  # for clickable_images
