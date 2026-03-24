@@ -66,6 +66,7 @@ const requestCsvEdit = () => {
 
 const handleModeChange = (newMode) => {
   if (newMode === "presenter") {
+  activeMode.value = "view";
     const storyContainer = document.querySelector('.thuringia-app');
     if (storyContainer?.requestFullscreen) {
       storyContainer.requestFullscreen();
@@ -81,6 +82,7 @@ const exitPresenter = () => {
     document.exitFullscreen();
   }
   isPresenting.value = false;
+  activeMode.value = "view";
 };
 
 watch(
