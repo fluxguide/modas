@@ -216,6 +216,7 @@ span.is-active path {
     flex-direction: column;
     gap: 14px;
     cursor: default;
+    font-family: 'Albert Sans', sans-serif;
 }
 
 .gradient-picker-header {
