@@ -59,14 +59,9 @@ const { y: scrollY, isScrolling } = useScroll(scrollContainer, {
 
 const { col } = useColumnLabels(toRef(props, "columnLabelMap"));
 
-const requestCsvEdit = () => {
-  // Ask Streamlit to open editor dialog
-  Streamlit.setComponentValue({ action: "open_data_editor" });
-};
-
 const handleModeChange = (newMode) => {
   if (newMode === "presenter") {
-  activeMode.value = "view";
+    activeMode.value = "view";
     const storyContainer = document.querySelector('.thuringia-app');
     if (storyContainer?.requestFullscreen) {
       storyContainer.requestFullscreen();
