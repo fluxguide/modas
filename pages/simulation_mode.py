@@ -52,7 +52,7 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
             key="csv_editor",
         )
 
-        st.markdown("<h3>Change colours of categories:</h3>", unsafe_allow_html=True)
+        st.markdown("<h3>Farben der Kategorien ändern:</h3>", unsafe_allow_html=True)
 
         st.markdown(
             """
