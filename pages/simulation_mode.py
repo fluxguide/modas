@@ -57,6 +57,20 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
         st.markdown(
             """
                 <style>
+                div[data-testid="stLayoutWrapper"]>.stVerticalBlock {
+                    gap: 0.5rem !important;
+                }
+                
+                div[data-testid="stLayoutWrapper"]>.stHorizontalBlock {
+                    gap: 1rem !important;
+                    margin-bottom: 3rem !important;
+                }
+                
+                div[data-testid="stDialog"] div.stButton {
+                    margin-right: 0rem !important;
+                    margin-left: auto !important;
+                }
+                
                 div[data-testid="stColumn"] > div[data-testid="stVerticalBlock"] {
                     flex-flow: row !important;
                     justify-content: flex-start;
@@ -66,6 +80,10 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
                     border: 1.5px solid #e8e8e8;
                     padding: 10px 16px;
                     width: fit-content !important;
+                }
+                
+                div.stButton>button {
+                    padding: 12px 32px;
                 }
 
                 /* Hide the label */
@@ -135,6 +153,7 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
 
         if st.button("Speichern", width="stretch", key="csv_save_btn"):
             st.session_state.data = edited_df.to_dict(orient="records")
+            st.session_state["story"] = None
             st.rerun()
 
     edit_csv_dialog()
