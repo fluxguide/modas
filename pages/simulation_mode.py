@@ -43,13 +43,36 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
 
     @st.dialog("CSV bearbeiten")
     def edit_csv_dialog():
+        CHART_COLUMNS_BY_RANGE = {
+            0: {"townhall_name", "townhall_city", "stops_within_100m"},
+            1: {"townhall_name", "townhall_city", "stops_within_200m"},
+            2: {"townhall_name", "townhall_city", "stops_within_300m"},
+        }
+
+        current_range = result.get("currentRange", 0)
+        chart_columns = CHART_COLUMNS_BY_RANGE.get(
+            current_range, CHART_COLUMNS_BY_RANGE[0]
+        )
+
         df = pd.DataFrame(st.session_state.data)
 
+        column_config = {
+            col: st.column_config.Column(label=f"◆ {col}")
+            for col in df.columns
+            if col in chart_columns
+        }
+        
         edited_df = st.data_editor(
             df,
             width="stretch",
             num_rows="dynamic",
             key="csv_editor",
+            column_config=column_config,
+        )
+
+        st.markdown(
+            '<p style="font-size:12px; color:#666; margin: 0px 0px 10px auto">◆ im Diagramm verwendete Spalten</p>',
+            unsafe_allow_html=True,
         )
 
         st.markdown("<h3>Farben der Kategorien ändern:</h3>", unsafe_allow_html=True)
@@ -58,7 +81,7 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
             """
                 <style>
                 div[data-testid="stLayoutWrapper"]>.stVerticalBlock {
-                    gap: 0.5rem !important;
+                    gap: 0rem !important;
                 }
                 
                 div[data-testid="stLayoutWrapper"]>.stHorizontalBlock {
