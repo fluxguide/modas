@@ -1,8 +1,8 @@
 import * as d3 from 'd3';
-import { isMobile, isLongScreen, isLongLongScreen, scaleRange, colors } from '@src/composables/utils.js';
+import { isMobile, isLongScreen, isLongLongScreen, scaleRange, defaultCategoryColours } from '@src/composables/utils.js';
 
 function useArrowChart() {
-    function drawArrow(svgEl, stats, currentRange = 0) {
+    function drawArrow(svgEl, stats, currentRange = 0, categoryColours = []) {
         const svg = d3.select(svgEl);
 
         const width = parseFloat(svgEl.clientWidth);
@@ -32,7 +32,7 @@ function useArrowChart() {
         const filteredSegments = rangeData
             .map((value, i) => ({
                 value,
-                color: colors[i]
+                color: categoryColours[i]
             }))
             .filter(d => d.value > 0);
 
@@ -72,7 +72,7 @@ function useArrowChart() {
         ${arrowX - leftHeadWidth},${arrowY + arrowHeight / 2}
         ${arrowX},${arrowY + arrowHeight}
       `)
-            .attr('fill', segments.length > 0 ? segments[0].color : colors[0]);
+            .attr('fill', segments.length > 0 ? segments[0].color : defaultCategoryColours[0]);
 
         const rightX = currentX;
         svg.append('polygon')
@@ -81,7 +81,7 @@ function useArrowChart() {
         ${rightX + rightHeadWidth},${arrowY + arrowHeight / 2}
         ${rightX},${arrowY + arrowHeight}
       `)
-            .attr('fill', segments.length > 0 ? segments[segments.length - 1].color : colors[colors.length - 1]);
+            .attr('fill', segments.length > 0 ? segments[segments.length - 1].color : defaultCategoryColours[defaultCategoryColours.length - 1]);
 
         const inverseScale = 1 / scaleRange(currentRange);
 

@@ -106,12 +106,6 @@ div[data-testid="stFileUploader"] section {
     color: #010080;
     font-weight: 700;
     line-height: normal;
-    text-decoration-line: underline;
-    text-decoration-style: solid;
-    text-decoration-skip-ink: auto;
-    text-decoration-thickness: auto;
-    text-underline-offset: auto;
-    text-underline-position: from-font;
 }
 
 .top-bar-left {
@@ -183,8 +177,7 @@ div[data-testid="stFileUploader"] section {
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 50px;
-    margin: 10px 5vw 10px 5vw;
-    /* margin: -20px 5vw 10px 5vw; */
+    margin: 0px 5vw 30px 5vw;
 }
 
 .template-caption {
@@ -286,7 +279,6 @@ button[data-testid="stBaseButton-secondary"]:hover {
     font-size: 0.8rem;
 }
 
-
 .template-dialog-text {
     font-size: 15px;
     line-height: 1.5;
@@ -315,7 +307,7 @@ div[aria-label="dialog"]>button[aria-label="Close"] {
     filter: drop-shadow(1px 1px 4px rgba(0, 0, 0, 0.40));
 }
 
-div[aria-label="dialog"]>button[aria-label="Close"] > svg {
+div[aria-label="dialog"]>button[aria-label="Close"]>svg {
     height: 16px;
     width: 16px;
     color: white;

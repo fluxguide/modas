@@ -1,6 +1,6 @@
 <template>
   <div class="story-container" ref="container">
-    <ThuringiaStory v-if="storyData" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap" />
+    <ThuringiaStory v-if="storyData" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap" :categoryColours="categoryColours" />
     <div v-else class="loading">Loading story...</div>
   </div>
 </template>
@@ -14,6 +14,7 @@ const storyData = ref(null);
 const columnLabelMap = ref({});
 const mode = ref("view");
 const template = ref(null);
+const categoryColours = ref(null);
 
 Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
   const args = event.detail.args;
@@ -24,6 +25,7 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
     columnLabelMap.value = args.columnLabelMap ?? {};
     console.log("Received columnLabelMap:", args.columnLabelMap);
   }
+  if (args.categoryColours) categoryColours.value = args.categoryColours;
   // Set iframe to full viewport height
   Streamlit.setFrameHeight(window.screen.height - 250);
 });

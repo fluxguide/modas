@@ -1,6 +1,6 @@
 # MoDaS — Mobility Data Story Suite
 
-MoDaS is a web application that transforms abstract mobility data into interactive, visual storytelling formats. It was developed as part of the mfund project MoDaS, in collaboration with TU Ilmenau.
+MoDaS is a web application, developed by [Fluxguide](https://www.fluxguide.com/en/projekte/modas/), that transforms abstract mobility data into interactive, visual storytelling formats. It was developed as part of the mfund project MoDaS, in collaboration with TU Ilmenau.
 
 ---
 

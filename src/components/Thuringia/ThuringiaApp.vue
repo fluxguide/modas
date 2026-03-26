@@ -21,6 +21,7 @@ const props = defineProps({
   data: { type: Array, default: () => [] },
   columnLabelMap: { type: Object, default: () => ({}) },
   mode: { type: String, default: 'view' },
+  categoryColours: { type: Object, default: () => [] },
 });
 
 const stats = ref(null);
@@ -58,13 +59,9 @@ const { y: scrollY, isScrolling } = useScroll(scrollContainer, {
 
 const { col } = useColumnLabels(toRef(props, "columnLabelMap"));
 
-const requestCsvEdit = () => {
-  // Ask Streamlit to open editor dialog
-  Streamlit.setComponentValue({ action: "open_data_editor" });
-};
-
 const handleModeChange = (newMode) => {
   if (newMode === "presenter") {
+    activeMode.value = "view";
     const storyContainer = document.querySelector('.thuringia-app');
     if (storyContainer?.requestFullscreen) {
       storyContainer.requestFullscreen();
@@ -80,6 +77,7 @@ const exitPresenter = () => {
     document.exitFullscreen();
   }
   isPresenting.value = false;
+  activeMode.value = "view";
 };
 
 watch(
@@ -270,8 +268,8 @@ onUnmounted(() => {
           <img src="@img/Thuringia/Rathaus.png" alt="Rathaus" id="cityHallImage" />
         </div>
         <div class="arrow" :class="{ visible: arrowVisible }" v-if="arrowVisible">
-          <ArrowChart ref="arrowChartRef" :stats="stats" :currentRange="currentRange" :active-mode="activeMode"
-            v-if="stats" />
+          <ArrowChart v-if="stats" ref="arrowChartRef" :stats="stats" :currentRange="currentRange"
+            :active-mode="activeMode" :categoryColours="props.categoryColours" />
           <HeaderRange ref="headerRangeRef" :stats="stats" :stats-percentages="statsPercentages"
             :currentRange="currentRange" v-if="stats" :active-mode="activeMode"
             :columnLabelMap="props.columnLabelMap" />

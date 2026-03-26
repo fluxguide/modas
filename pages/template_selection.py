@@ -15,10 +15,8 @@ setup_page(
     show_top_bar=True,
     top_bar_links=[
         {"label": "Vorlagen", "href": "/template_selection"},
-        # {"label": "About MoDaS", "href": "/about_modas"},
     ],
     active_page="/template_selection",
-    top_bar_right_button={"label": "Datei erneut hochladen", "href": "/"},
 )
 
 IMG_URL_BASE = "/app/static/img/Suite/Template_Previews"  # for clickable_images
@@ -146,44 +144,44 @@ st.markdown(
     unsafe_allow_html=True,
 )
 
-# clicked2 = clickable_images(
-#     [t["img_url"] for t in templates_second_row],
-#     titles=[t["label"] for t in templates_second_row],
-#     div_style={
-#         "display": "grid",
-#         "gridTemplateColumns": "repeat(3, 1fr)",
-#         "gap": "50px",
-#         "margin": "0 5vw",
-#         "padding-bottom": "10px",
-#     },
-#     img_style={
-#         "width": "90%",
-#         "height": "fit-content",
-#         "objectFit": "cover",
-#         "borderRadius": "12px",
-#         "boxShadow": "0 2px 6px rgba(0,0,0,0.14)",
-#         "cursor": "pointer",
-#     },
-#     key="templates_row_2",
-# )
+clicked2 = clickable_images(
+    [t["img_url"] for t in templates_second_row],
+    titles=[t["label"] for t in templates_second_row],
+    div_style={
+        "display": "grid",
+        "gridTemplateColumns": "repeat(3, 1fr)",
+        "gap": "50px",
+        "margin": "0 5vw",
+        "padding-bottom": "10px",
+    },
+    img_style={
+        "width": "90%",
+        "height": "fit-content",
+        "objectFit": "cover",
+        "borderRadius": "12px",
+        "boxShadow": "0 2px 6px rgba(0,0,0,0.14)",
+        "cursor": "pointer",
+    },
+    key="templates_row_2",
+)
 
-# if clicked2 > -1 and clicked2 != st.session_state.last_clicked_row_2:
-#     st.session_state.last_clicked_row_2 = clicked2
-#     st.session_state.preview_template = templates_second_row[clicked2]["key"]
+if clicked2 > -1 and clicked2 != st.session_state.last_clicked_row_2:
+    st.session_state.last_clicked_row_2 = clicked2
+    st.session_state.preview_template = templates_second_row[clicked2]["key"]
 
-# st.markdown(
-#     """
-#     <div class="template-caption-grid">
-#     """
-#     + "".join(
-#         f'<div class="template-caption">{t["label"]}</div>'
-#         for t in templates_second_row
-#     )
-#     + """
-#     </div>
-#     """,
-#     unsafe_allow_html=True,
-# )
+st.markdown(
+    """
+    <div class="template-caption-grid">
+    """
+    + "".join(
+        f'<div class="template-caption">{t["label"]}</div>'
+        for t in templates_second_row
+    )
+    + """
+    </div>
+    """,
+    unsafe_allow_html=True,
+)
 
 
 template_by_key_all = {
@@ -236,5 +234,3 @@ if preview_key and preview_key in template_by_key_all:
                 st.switch_page("pages/simulation_mode.py")
 
     template_dialog()
-
-st.markdown("</div>", unsafe_allow_html=True)

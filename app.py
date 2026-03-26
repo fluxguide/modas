@@ -59,7 +59,7 @@ with col1:
             <p>Die Mobility Data Story Suite macht komplexe Daten interaktiv erfahrbar und nutzt moderne Storytelling-Methoden, um Entscheidungsprozesse zu unterstützen. So trägt sie dazu bei, Mobilitätsplanung effizienter, nachvollziehbarer und transparenter zu gestalten.</p>
             <h3>Sind Sie bereit, Ihre eigene Geschichte zu erstellen?</h3>
             <ol>
-                <li><p>Laden Sie Ihre Datei mit ausgewählten Mobilitätsdaten hoch und senden Sie sie ab.</p></li>
+                <li><p>Laden Sie Ihre Datei mit den Mobilitätsdaten hoch und senden Sie sie ab.</p></li>
                 <li><p>Wählen Sie eine der verfügbaren Vorlagen aus.</p></li>
                 <li><p>Wechseln Sie in den Simulationsmodus und passen Sie die Vorlage bei Bedarf an.</p></li>
             </ol>

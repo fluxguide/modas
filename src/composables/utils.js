@@ -9,7 +9,7 @@ const categories = [
     'moreThanTwoStops'
 ];
 
-const colors = [
+const defaultCategoryColours = [
     '#E14A2C', // noStops - red
     '#9DAEFF', // oneStop - blue
     '#F0D33E', // twoStops - yellow
@@ -67,4 +67,4 @@ const scaleRange = (range) => {
     }
 };
 
-export { isMobile, isLongScreen, isLongLongScreen, categories, mapLayersConfig, selectedColour, getScrollRange, scaleRange, colors, rangeKeyByRangeIndex };
+export { isMobile, isLongScreen, isLongLongScreen, categories, mapLayersConfig, selectedColour, getScrollRange, scaleRange, defaultCategoryColours, rangeKeyByRangeIndex };

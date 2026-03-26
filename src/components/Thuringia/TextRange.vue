@@ -1,7 +1,7 @@
 <script setup>
 import { useTextStats } from '@composables/Thuringia/useTextStats.js';
 import { computed, toRef } from 'vue';
-import { colors, rangeKeyByRangeIndex } from '@src/composables/utils.js';
+import { defaultCategoryColours, rangeKeyByRangeIndex } from '@src/composables/utils.js';
 import { useColumnLabels } from '@composables/useColumnLabels.js';
 import EditableTextField from '@src/components/EditableTextField.vue';
 
@@ -27,10 +27,10 @@ const getTextString = (stopType) => {
 }
 
 const stopTypes = [
-  { id: 'noStops', text: 'gar keine Haltestelle', color: colors[0] },
-  { id: 'oneStop', text: 'eine Haltestelle', color: colors[1] },
-  { id: 'twoStops', text: 'zwei Haltestellen', color: colors[2] },
-  { id: 'moreThanTwoStops', text: 'mehr als zwei Haltestellen', color: colors[3] }
+  { id: 'noStops', text: 'gar keine Haltestelle', color: defaultCategoryColours[0] },
+  { id: 'oneStop', text: 'eine Haltestelle', color: defaultCategoryColours[1] },
+  { id: 'twoStops', text: 'zwei Haltestellen', color: defaultCategoryColours[2] },
+  { id: 'moreThanTwoStops', text: 'mehr als zwei Haltestellen', color: defaultCategoryColours[3] }
 ];
 
 // Expose functions to parent component

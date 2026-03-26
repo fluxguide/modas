@@ -1,4 +1,6 @@
 <script setup>
+import { ref, watch } from 'vue';
+
 const props = defineProps({
     activeMode: { type: String, default: 'view' }
 });
@@ -9,10 +11,61 @@ const setActive = (tileName) => {
     emit('mode-change', tileName);
 }
 
+const showGradientPicker = ref(false);
+
+const gradientConfig = ref({
+    angle: 180,
+    stops: [
+        { color: '#c5b0ff', position: 0 },
+        { color: '#ffffff', position: 100 },
+    ]
+});
+
+const buildGradient = (config) => {
+    const stops = config.stops
+        .map(s => `${s.color} ${s.position}%`)
+        .join(', ');
+    return `linear-gradient(${config.angle}deg, ${stops})`;
+};
+
+const applyGradient = () => {
+    const gradient = buildGradient(gradientConfig.value);
+    const container = document.querySelector('.story-container');
+    if (container) container.style.backgroundImage = gradient;
+
+    let styleTag = document.getElementById('dynamic-backdrop');
+    if (!styleTag) {
+        styleTag = document.createElement('style');
+        styleTag.id = 'dynamic-backdrop';
+        document.head.appendChild(styleTag);
+    }
+    styleTag.textContent = `
+        .thuringia-app:fullscreen::backdrop {
+            background: ${gradient} !important;
+        }
+    `;
+};
+
+const resetGradient = () => {
+    gradientConfig.value = {
+        angle: 180,
+        stops: [
+            { color: '#c5b0ff', position: 0 },
+            { color: '#ffffff', position: 100 },
+        ]
+    };
+};
+
+watch(gradientConfig, () => applyGradient(), { deep: true });
+
+watch(() => props.activeMode, (mode) => {
+    if (mode !== 'edit') showGradientPicker.value = false;
+});
+
 </script>
 
 <template>
-    <div class="side-menu">
+    <div class="side-menu" :style="{ overflow: activeMode === 'edit' ? 'visible' : 'hidden' }">
         <span class="view-mode-tile" :class="{ 'is-active': activeMode === 'view' }" @click="setActive('view')">
             <svg xmlns="http://www.w3.org/2000/svg" width="50" height="38" viewBox="0 0 50 38" fill="none">
                 <path
@@ -29,6 +82,17 @@ const setActive = (tileName) => {
                     d="M0 40.6262C0 41.8694 0.49386 43.0617 1.37294 43.9408C2.25201 44.8199 3.4443 45.3137 4.6875 45.3137H39.0625C40.3057 45.3137 41.498 44.8199 42.3771 43.9408C43.2561 43.0617 43.75 41.8694 43.75 40.6262V21.8762C43.75 21.4618 43.5854 21.0644 43.2924 20.7714C42.9993 20.4783 42.6019 20.3137 42.1875 20.3137C41.7731 20.3137 41.3757 20.4783 41.0826 20.7714C40.7896 21.0644 40.625 21.4618 40.625 21.8762V40.6262C40.625 41.0406 40.4604 41.438 40.1674 41.7311C39.8743 42.0241 39.4769 42.1887 39.0625 42.1887H4.6875C4.2731 42.1887 3.87567 42.0241 3.58265 41.7311C3.28962 41.438 3.125 41.0406 3.125 40.6262V6.25122C3.125 5.83682 3.28962 5.43939 3.58265 5.14637C3.87567 4.85334 4.2731 4.68872 4.6875 4.68872H25C25.4144 4.68872 25.8118 4.5241 26.1049 4.23108C26.3979 3.93805 26.5625 3.54062 26.5625 3.12622C26.5625 2.71182 26.3979 2.31439 26.1049 2.02137C25.8118 1.72834 25.4144 1.56372 25 1.56372H4.6875C3.4443 1.56372 2.25201 2.05758 1.37294 2.93666C0.49386 3.81573 0 5.00802 0 6.25122V40.6262Z"
                     fill="none" />
             </svg>
+        </span>
+
+        <!-- BG colour tile — only visible in edit mode -->
+        <span v-if="activeMode === 'edit'" class="bg-colour-tile" :class="{ 'is-active': showGradientPicker }"
+            @click="showGradientPicker = !showGradientPicker" title="Hintergrundverlauf">
+            <svg xmlns="http://www.w3.org/2000/svg" width="85" height="86" viewBox="0 0 85 86" fill="none">
+                <path
+                    d="M35.5364 14.2553C32.6739 10.024 29.7427 6.45526 27.0989 3.98651C25.7855 2.70199 24.2903 1.61748 22.6614 0.76776C21.3052 0.117759 19.1614 -0.51349 17.1489 0.64276C14.8552 1.97401 14.4802 4.58026 14.4614 6.24276C14.4427 8.14276 14.8614 10.3928 15.5427 12.7678C16.7677 17.0615 19.0177 22.3178 22.0114 27.7803L1.53644 48.2553C-0.194806 49.9865 -0.144805 52.3553 0.173945 53.9928C0.517695 55.7615 1.34269 57.699 2.42394 59.6365C4.59894 63.5553 8.17394 68.1428 12.5864 72.5615C17.0052 76.9803 21.5927 80.549 25.5114 82.724C27.4489 83.8053 29.3864 84.6303 31.1552 84.974C32.7927 85.2865 35.1552 85.3428 36.8927 83.6115L71.9864 48.5178C72.7239 50.124 72.5614 51.7178 72.2989 54.3865C72.1114 56.2115 71.8739 58.5428 71.8427 61.7365V62.5053H71.8614C71.9924 64.0669 72.7054 65.5224 73.8589 66.5832C75.0124 67.6441 76.5224 68.2328 78.0896 68.2328C79.6567 68.2328 81.1667 67.6441 82.3202 66.5832C83.4738 65.5224 84.1867 64.0669 84.3177 62.5053H84.3364V62.149C84.3424 61.905 84.334 61.6608 84.3114 61.4178C83.9677 53.6053 79.9364 44.3053 72.6864 39.5803C72.3018 38.6504 71.8615 37.7446 71.3677 36.8678C69.1864 32.9553 65.6177 28.3678 61.1989 23.949C56.7802 19.5303 52.1927 15.9553 48.2739 13.7803C46.3364 12.7053 44.3989 11.8803 42.6302 11.5303C40.9927 11.2178 38.6302 11.1678 36.8927 12.899L35.5364 14.2553ZM22.8364 8.54901C25.2177 10.774 28.1114 14.3115 31.0302 18.749L26.6302 23.1553C24.2427 18.6115 22.5052 14.3928 21.5489 11.0428C21.1307 9.67291 20.8563 8.26322 20.7302 6.83651C21.301 7.21151 22.0031 7.78234 22.8364 8.54901ZM25.2989 33.3303C28.6739 38.6553 32.2177 43.124 35.3427 46.0365C35.6431 46.3164 35.9957 46.5344 36.3803 46.678C36.765 46.8216 37.1741 46.888 37.5844 46.8735C37.9947 46.859 38.3982 46.7638 38.7717 46.5934C39.1453 46.423 39.4816 46.1807 39.7614 45.8803C40.0413 45.5799 40.2593 45.2273 40.4029 44.8426C40.5465 44.458 40.613 44.0488 40.5985 43.6385C40.584 43.2282 40.4888 42.8248 40.3184 42.4512C40.1479 42.0777 39.9056 41.7414 39.6052 41.4615C36.7739 38.824 33.2489 34.3615 29.8302 28.7928L36.6302 21.9928C36.9677 22.7469 37.3489 23.5073 37.7739 24.274C39.9552 28.1928 43.5239 32.7803 47.9427 37.199C52.3552 41.6178 56.9427 45.1865 60.8677 47.3615C61.6302 47.7907 62.3906 48.1719 63.1489 48.5053L32.7677 78.8928L32.3427 78.8303C31.4864 78.6615 30.2052 78.1803 28.5427 77.2553C25.2677 75.4303 21.1302 72.2553 17.0052 68.1303C12.8802 64.0053 9.70519 59.8803 7.88019 56.5928C6.96144 54.9365 6.47394 53.6553 6.31144 52.799L6.24894 52.374L25.2989 33.3303ZM43.2364 21.2365C42.5871 20.1367 42.081 18.9584 41.7302 17.7303C42.5739 17.9365 43.7552 18.4178 45.2427 19.2365C48.5177 21.0615 52.6552 24.2365 56.7802 28.3615C59.5927 31.174 61.9677 33.9928 63.7677 36.549C61.5308 36.396 59.2838 36.5879 57.1052 37.1178C55.455 35.7468 53.87 34.2994 52.3552 32.7803C48.2302 28.6553 45.0614 24.5178 43.2427 21.2365H43.2364Z"
+                    fill="black" />
+            </svg>
+
         </span>
         <!-- <span class="export-tile" :class="{ 'is-active': activeMode === 'export' }" @click="setActive('export')">
             <svg width="38" height="50" viewBox="0 0 38 50" fill="none" xmlns="http://www.w3.org/2000/svg">
@@ -54,6 +118,50 @@ const setActive = (tileName) => {
                 <path d="M9.5 9l5 3-5 3V9Z" fill="currentColor" />
             </svg>
         </span>
+
+        <!-- Gradient picker panel — floats to the left of the menu -->
+        <Transition name="panel-slide">
+            <div v-if="showGradientPicker" class="gradient-picker-panel">
+                <div class="gradient-picker-header">
+                    <span>Hintergrundverlauf</span>
+                    <button class="gradient-close" @click="showGradientPicker = false">✕</button>
+                </div>
+
+                <div class="gradient-preview" :style="{ background: buildGradient(gradientConfig) }" />
+
+                <!-- Angle -->
+                <div class="gradient-row">
+                    <label class="gradient-label">Winkel</label>
+                    <div class="gradient-angle-row">
+                        <input type="range" min="0" max="360" v-model.number="gradientConfig.angle"
+                            class="gradient-range" />
+                        <span class="gradient-angle-val">{{ gradientConfig.angle }}°</span>
+                    </div>
+                </div>
+
+                <!-- Color stops -->
+                <div class="gradient-stops">
+                    <div v-for="(stop, i) in gradientConfig.stops" :key="i" class="gradient-stop-row">
+                        <div class="stop-left">
+                            <label class="stop-swatch-label" :title="`Stop ${i + 1} colour`">
+                                <span class="stop-swatch" :style="{ background: stop.color }" />
+                                <input type="color" :value="stop.color" @input="stop.color = $event.target.value"
+                                    class="stop-color-input" />
+                            </label>
+                            <span class="stop-hex">{{ stop.color }}</span>
+                        </div>
+                        <div class="stop-right">
+                            <input type="range" min="0" max="100" v-model.number="stop.position"
+                                class="gradient-range stop-pos-range" />
+                            <span class="stop-pos-val">{{ stop.position }}%</span>
+                        </div>
+                    </div>
+                </div>
+
+                <button class="gradient-reset" @click="resetGradient">Auf Standardwerte zurücksetzen</button>
+            </div>
+        </Transition>
+
     </div>
 </template>
 
@@ -71,7 +179,6 @@ const setActive = (tileName) => {
     border: 1.5px solid #010080;
     background: #F3F3F3;
     z-index: 100;
-    overflow: hidden;
     cursor: pointer;
     transition: all 0.3s ease;
 }
@@ -92,5 +199,178 @@ span.is-active {
 
 span.is-active path {
     fill: #F3F3F3;
+}
+
+/* Gradient picker panel */
+.gradient-picker-panel {
+    position: absolute;
+    right: calc(100% + 12px);
+    top: 0;
+    width: 290px;
+    background: white;
+    border: 1.5px solid #e8e8e8;
+    border-radius: 12px;
+    padding: 16px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.14);
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+    cursor: default;
+    font-family: 'Albert Sans', sans-serif;
+}
+
+.gradient-picker-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 600;
+    font-size: 14px;
+    color: #222;
+}
+
+.gradient-close {
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #888;
+    line-height: 1;
+    padding: 0;
+}
+
+.gradient-close:hover {
+    color: #222;
+}
+
+.gradient-preview {
+    height: 48px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.gradient-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.gradient-label {
+    font-size: 11px;
+    font-weight: 600;
+    color: #888;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+}
+
+.gradient-angle-row {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.gradient-range {
+    flex: 1;
+    accent-color: #010080;
+}
+
+.gradient-angle-val {
+    font-size: 13px;
+    color: #444;
+    min-width: 34px;
+    text-align: right;
+}
+
+.gradient-stops {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.gradient-stop-row {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    padding: 10px 12px;
+    background: #f9f9f9;
+    border-radius: 8px;
+    border: 1px solid #efefef;
+}
+
+.stop-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.stop-swatch-label {
+    position: relative;
+    cursor: pointer;
+}
+
+.stop-swatch {
+    display: block;
+    width: 26px;
+    height: 26px;
+    border-radius: 6px;
+    border: 1.5px solid #ddd;
+}
+
+.stop-color-input {
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
+}
+
+.stop-hex {
+    font-size: 12px;
+    color: #555;
+    font-family: monospace;
+}
+
+.stop-right {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.stop-pos-range {
+    flex: 1;
+    accent-color: #010080;
+}
+
+.stop-pos-val {
+    font-size: 12px;
+    color: #666;
+    min-width: 30px;
+    text-align: right;
+}
+
+.gradient-reset {
+    width: 100%;
+    padding: 8px 0;
+    font-size: 13px;
+    background: none;
+    border: 1px dashed #ccc;
+    border-radius: 7px;
+    color: #888;
+    cursor: pointer;
+}
+
+.gradient-reset:hover {
+    color: #333;
+    border-color: #999;
+}
+
+/* Slide-in transition */
+.panel-slide-enter-active,
+.panel-slide-leave-active {
+    transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.panel-slide-enter-from,
+.panel-slide-leave-to {
+    opacity: 0;
+    transform: translateX(8px);
 }
 </style>
