@@ -6,7 +6,6 @@ import { useUIControls } from '@src/composables/Thuringia/useUIControls.js';
 import { useMapControls } from '@src/composables/Thuringia/useMapControls.js';
 import { computeStats } from '@composables/Thuringia/useDataProcessing';
 import { useColumnLabels } from '@composables/useColumnLabels';
-import { Streamlit } from "streamlit-component-lib";
 
 import ArrowChart from '@src/components/Thuringia/ArrowChart.vue';
 import HeaderRange from '@src/components/Thuringia/HeaderRange.vue';

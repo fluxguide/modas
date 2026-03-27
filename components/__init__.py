@@ -5,7 +5,7 @@ _RELEASE = False
 
 if not _RELEASE:
     _component = components.declare_component(
-        "thuringia_story",
+        "story_viewer",
         url="http://localhost:5173",
     )
 else:
