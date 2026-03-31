@@ -93,6 +93,7 @@ div[data-testid="stFileUploader"] section {
     padding: 0 40px;
     border-bottom: 2px solid #010080;
     gap: 35px;
+    z-index: 1000;
 }
 
 .top-bar a {
@@ -165,8 +166,7 @@ div[data-testid="stFileUploader"] section {
 .template-page-instructions h4 {
     font-size: 22px;
     font-weight: 500;
-    margin-top: 20px;
-    margin-bottom: -10px;
+    margin-bottom: 16px;
 }
 
 /* added for test */
@@ -415,4 +415,15 @@ div[data-testid="stDialog"] div.stButton {
     display: block;
     width: 100%;
     border-radius: 12px;
+}
+
+.data-recommendation {
+    width: fit-content;
+    margin: 0 5vw 16px 5vw;
+    padding: 12px 20px;
+    background: #f0f0ff;
+    border: 1.5px solid #010080;
+    border-radius: 10px;
+    font-size: 16px;
+    color: #010080;
 }

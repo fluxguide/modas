@@ -1,6 +1,7 @@
 import streamlit as st
 from st_clickable_images import clickable_images
-from shared import setup_page
+from shared import setup_page, score_templates
+import pandas as pd
 import html
 
 # Debug
@@ -89,14 +90,9 @@ uploaded_filename = html.escape(st.session_state.get("uploaded_filename", ""))
 st.markdown(
     f"""
     <div class="template-page-instructions">
-        <div>
-            <p>
-                <span>{uploaded_filename}</span> wurde erfolgreich hochgeladen.
-            </p>
-            <h4>
-                Klicken Sie auf eine Vorlage, um Details anzuzeigen und das Layout für Ihre Story-Simulation auszuwählen.
-            </h4>
-        </div>
+        <h4>
+            Klicken Sie auf eine Vorlage, um Details anzuzeigen und das Layout für Ihre Story-Simulation auszuwählen.
+        </h4>
         <div class="template-info-btn">
             <button class="info-btn">
                 Was ist eine Vorlage?
@@ -109,6 +105,26 @@ st.markdown(
     """,
     unsafe_allow_html=True,
 )
+
+if "data" in st.session_state and st.session_state.data:
+    df = pd.DataFrame(st.session_state.data)
+    rec = score_templates(df)
+
+    if rec["confidence"] >= 0.5 and rec["scores"][rec["recommended"]] >= 3:
+        label_map = {
+            "thuringia": "ÖPNV-Erreichbarkeit von Points of Interest",
+            "vrr": "Veränderungen in Projekten",
+            "dresden": "Städte in Bewegung",
+        }
+        rec_label = label_map.get(rec["recommended"], rec["recommended"])
+        st.markdown(
+            f"""
+            <div class="data-recommendation">
+                💡 <strong>{uploaded_filename}</strong> passt am besten zur Vorlage <strong>{rec_label}</strong>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 if "last_clicked_row_1" not in st.session_state:
     st.session_state.last_clicked_row_1 = -1
