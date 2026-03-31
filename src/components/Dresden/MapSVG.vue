@@ -146,8 +146,4 @@
     </svg>
 </template>
 
-<style>
-path:hover {
-    fill: red;
-}
-</style>
+<style></style>
