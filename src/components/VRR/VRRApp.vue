@@ -1,5 +1,8 @@
 <script setup>
-import { ref, watch, computed } from 'vue';
+import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
+import { isMobile } from '@src/composables/utils.js';
+import { loadData } from '@composables/VRR/useDataProcessing';
+
 import ArrowBubbleChart from './ArrowBubbleChart.vue';
 import Timeline from './Timeline.vue';
 import PieChart from './PieChart.vue';
@@ -9,8 +12,8 @@ import PhaseCard from './PhaseCard.vue';
 import ColouredSection from './ColouredSection.vue';
 import BulletList from './BulletList.vue';
 import PartnerLogos from './PartnerLogos.vue';
-import { isMobile } from '@src/composables/utils.js';
-import { loadData } from '@composables/VRR/useDataProcessing';
+import SideMenu from '@src/components/SideMenu.vue';
+import EditableTextField from '@src/components/EditableTextField.vue';
 
 import robotHandsUp from '@img/VRR/Robot/HandsUp.svg';
 import paul from '@img/VRR/Characters/Paul.svg';
@@ -24,6 +27,8 @@ const props = defineProps({
 });
 
 const chartData = ref(null)
+const activeMode = ref('view');
+const isPresenting = ref(false);
 
 // Data for bullet lists
 const testlaufItems = [
@@ -69,14 +74,52 @@ const characterMessage = computed(() => {
     }
 });
 
+const handleModeChange = (newMode) => {
+    if (newMode === "presenter") {
+        activeMode.value = "view";
+        const storyContainer = document.querySelector('.vrr-app');
+        if (storyContainer?.requestFullscreen) {
+            storyContainer.requestFullscreen();
+            isPresenting.value = true;
+        }
+    } else {
+        activeMode.value = newMode;
+    }
+};
+
+const exitPresenter = () => {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    }
+    isPresenting.value = false;
+    activeMode.value = "view";
+};
+
 watch(() => props.data, (newData) => {
     if (!newData || newData.length === 0) return;
     chartData.value = loadData(newData);
 }, { immediate: true });
+
+onMounted(async () => {
+    document.addEventListener("fullscreenchange", () => {
+        if (!document.fullscreenElement) {
+            isPresenting.value = false;
+        }
+    })
+});
+
+onUnmounted(() => {
+    document.removeEventListener("fullscreenchange", () => { });
+});
 </script>
 
 <template>
     <div class="vrr-app">
+        <SideMenu v-if="!isPresenting" :active-mode="activeMode" :default-gradient="{
+            angle: 180,
+            stops: [{ color: '#ffffff', position: 0 }, { color: '#e1ffd6', position: 50 }, { color: '#d6f5ff', position: 100 }]
+        }" @mode-change="handleModeChange" />
+        <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Präsentationsansicht beenden</button>
         <header>
             <img src="@img/VRR/Logo.svg" alt="VRR Logo" />
             <div>
@@ -257,7 +300,6 @@ watch(() => props.data, (newData) => {
                         <h1><span>Durchschnittlich</span> 4 von 5 Sternen</h1>
                     </div>
                     <div class="form">
-                        <!-- TODO: make text and overall form smaller, so that it's more visually appealing -->
                         <h1>Gesprächsbewertung</h1>
                         <h1><span>Vielen Dank für das Gespräch. Konnten wir Ihnen behilflich sein?</span></h1>
                         <img src="@img/VRR/StarsForm.svg" alt="Stars for rating">
@@ -779,251 +821,35 @@ main {
     visibility: visible;
 }
 
-@media (max-width: 756px) {
-    header {
-        width: 100%;
-        margin: 5% 5%;
-        gap: 1.5rem;
-    }
+.exit-presenter {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #010080;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.40);
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
 
-    header img {
-        width: 16%;
-    }
+.vrr-app:fullscreen::backdrop {
+    background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(225, 255, 214, 1), rgba(214, 245, 255, 1)) !important;
+}
 
-    header h1 {
-        width: auto;
-        font-size: 18px;
-    }
+.vrr-app:fullscreen {
+    background: transparent !important;
+}
 
-    .chat-img {
-        width: 100%;
-        height: 50vh;
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        justify-content: start;
-        margin: 5% 0 0 0;
-    }
-
-    #openai-chat {
-        width: 90%;
-    }
-
-    #vrr-chat {
-        position: absolute;
-        bottom: 15%;
-        right: 5%;
-        width: 50%;
-    }
-
-    #red-tram {
-        left: -20%;
-    }
-
-    #red-bus {
-        height: 80%;
-        right: -10%;
-    }
-
-    .bg-img #orange-tram {
-        transform: translateX(-50%);
-        height: 15vh;
-        margin-top: -5vh;
-        margin-bottom: 0;
-    }
-
-    .bg-img #ava {
-        height: 25vh;
-        opacity: 0.08;
-    }
-
-    .chart-overlay {
-        margin-bottom: 60%;
-    }
-
-    .tram-bus {
-        gap: 20%;
-        height: 15vh;
-        transform: translateX(-50%);
-    }
-
-    #green-bus {
-        transform: translateX(50%);
-    }
-
-    #theo,
-    #ava {
-        opacity: 0;
-    }
-
-    #paul {
-        width: 70%;
-    }
-
-    .white-space h1 {
-        font-size: 24px;
-        margin: 0;
-    }
-
-    #theresa {
-        height: 25vh;
-        margin-top: 40vh;
-        opacity: 0.2;
-    }
-
-    #crosswalk {
-        opacity: 0;
-    }
-
-    .phase-cards {
-        height: 100vh;
-        display: flex;
-        flex-direction: column;
-    }
-
-    .characters-tram {
-        align-items: flex-start;
-    }
-
-    .characters-tram #orange-tram {
-        margin: 0;
-        transform: none;
-        height: 15vh;
-        transform: translateX(50%);
-    }
-
-    .characters-tram #theo {
-        height: 15vh;
-    }
-
-    #theresa-phases {
-        height: 30vh;
-        margin: 0;
-        opacity: 0.13;
-        transform: translate(-20%, 80%);
-    }
-
-    #paul-big {
-        width: 30vh;
-        height: auto;
-        left: 0;
-        bottom: 3%;
-        z-index: 3;
-    }
-
-    #robot-cheering {
-        width: 40%;
-        margin-left: 5%;
-        z-index: 100;
-    }
-
-    .robot-chatbot-section {
-        width: 50%;
-    }
-
-    .message {
-        width: fit-content;
-        padding: 10px;
-        border-radius: 0 100px 150px 150px;
-    }
-
-    .message h1 {
-        font-size: 16px;
-        margin-top: 0;
-    }
-
-    .character-chart {
-        height: 70vh;
-        width: 100vw;
-        position: relative;
-    }
-
-    #character-change {
-        max-width: 50%;
-        height: auto;
-        left: 5%;
-        bottom: 20%;
-        z-index: 10;
-    }
-
-    .character-chart>*:nth-child(2) {
-        right: 0;
-        top: 0;
-        bottom: auto;
-    }
-
-    .message-character::before {
-        left: 10%;
-    }
-
-    .message-character {
-        width: 40vw;
-        left: auto;
-        right: 5%;
-        bottom: 15%;
-        padding: 0.5rem 1.5rem;
-        z-index: 10;
-    }
-
-    .message-character h1 {
-        font-size: 16px;
-    }
-
-    .robot-form {
-        height: 75vh;
-        flex-direction: column;
-    }
-
-    .stars-robot {
-        width: 100%;
-        align-items: flex-start;
-        margin-left: 5%;
-    }
-
-    #robot-hands-up-cheering {
-        height: 30vh;
-        width: auto;
-    }
-
-    #stars {
-        width: 40%;
-    }
-
-    .robot-form .white-space h1 {
-        width: 100%;
-        line-height: 1.3;
-        font-size: 16px;
-    }
-
-    .form {
-        width: 80%;
-        height: auto;
-        gap: 1rem;
-    }
-
-    .form span {
-        font-size: 14px;
-    }
-
-    .form img {
-        width: 90%;
-        margin: 2% 0;
-    }
-
-    .submit-button h1 {
-        margin: 3px 0;
-        font-size: 14px !important;
-    }
-
-    .tooltip::before {
-        font-size: 16px;
-        border-radius: 50%;
-        padding: 1.5px 8px;
-    }
-
-    .tooltip p {
-        min-width: 250px;
-        font-size: 12px;
-    }
+.vrr-app:-webkit-full-screen,
+.vrr-app:-moz-full-screen,
+.vrr-app:-ms-fullscreen {
+    background: transparent !important;
 }
 </style>
