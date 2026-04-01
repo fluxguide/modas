@@ -1,16 +1,21 @@
 <script setup>
-defineProps({
-    showLogo: {
-        type: Boolean,
-        default: false
-    }
+import EditableTextField from '@src/components/EditableTextField.vue';
+import { ref, watch } from 'vue';
+
+const props = defineProps({
+    showLogo: { type: Boolean, default: false },
+    activeMode: { type: String, default: 'view' },
+    modelValue: { type: String, default: '' },
 });
+
+const emit = defineEmits(['update:modelValue']);
 </script>
 
 <template>
     <div class="heading" :class="{ 'heading-first': showLogo }">
         <h1>
-            <slot></slot>
+            <EditableTextField :model-value="modelValue" @update:model-value="emit('update:modelValue', $event)"
+                :active-mode="activeMode" :font-size="'24px'" :line-height="1" :top-padding="'0vh'" :bottom-padding="'2vh'" :font-weight="'bold'" :rows="1" :width="'95%'" />
         </h1>
         <img v-if="showLogo" id="logo" src="@img/VRR/Logo.svg" alt="VRR Logo" />
     </div>
@@ -52,21 +57,5 @@ defineProps({
     background-color: #760B5A;
     padding: 0.5rem 0 0.5rem 2rem;
     border-radius: 0 10px 10px 0;
-}
-
-@media (max-width: 768px) {
-
-    .heading-first h1,
-    .heading h1 {
-        width: 70%;
-        height: 50px;
-        font-size: 18px;
-        padding-left: 1rem;
-    }
-
-    .heading-first #logo {
-        width: 10%;
-        margin-right: 5%;
-    }
 }
 </style>

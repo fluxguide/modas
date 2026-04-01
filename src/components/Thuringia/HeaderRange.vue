@@ -38,7 +38,7 @@ defineExpose({
     <div v-for="(header, index) in headerData" :key="index" v-show="currentRange === index" class="header-item"
       :style="`width: ${isMobile() ? 52 : 85 * scaleRange(props.currentRange)}%`">
       <EditableTextField :model-value="getHeaderString(header)" :active-mode="activeMode" :rows="3" :width="`100%`"
-        :font-size="`24px`" :line-height="1.6" :top-bottom-padding="`0`" />
+        :font-size="`24px`" :line-height="1.6" :top-padding="`0`" :bottom-padding="`0`" />
     </div>
   </div>
 </template>

@@ -30,6 +30,18 @@ const chartData = ref(null)
 const activeMode = ref('view');
 const isPresenting = ref(false);
 
+const headers = ref({
+    section1: 'Anfragen über die verschiedenen Kanäle',
+    section2: 'Steigende Erwartungen an digitale Erreichbarkeit',
+    section3: 'Oktober 2022 bis September 2024 – Testlauf Service-Chat',
+    section4: 'Phasenverlauf des Versuchs',
+    section5: 'Service-Chat – Phase 1: Personenbedienter Chat',
+    section6: 'Service-Chat – Phase 2: Q&A-Chatbot',
+    section7: 'Versuch Service-Chat – Zwischenergebnis',
+    section8: 'Ergebnis Service-Chat – Erfolgsroboter',
+    section9: 'Mehrwert ohne Verdrängung'
+});
+
 // Data for bullet lists
 const testlaufItems = [
     'Laufzeit: <span>Oktober</span> 2022 <span>bis September</span> 2024',
@@ -142,9 +154,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 2 -->
-            <SectionHeading :show-logo="true">
-                Anfragen <span>über die</span> verschiedenen Kanäle
-            </SectionHeading>
+            <SectionHeading :show-logo="true" v-model="headers.section1" :active-mode="activeMode" />
 
             <div class="chart-overlay">
                 <ArrowBubbleChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
@@ -159,9 +169,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 3 -->
-            <SectionHeading>
-                <span>Steigende Erwartungen an</span> digitale Erreichbarkeit
-            </SectionHeading>
+            <SectionHeading :show-logo="false" v-model="headers.section2" :active-mode="activeMode" />
 
             <ColouredSection>
                 <template #background>
@@ -185,9 +193,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 4 -->
-            <SectionHeading>
-                <span> Oktober 2022 bis September 2024 –</span> Testlauf Service-Chat
-            </SectionHeading>
+            <SectionHeading :show-logo="false" v-model="headers.section3" :active-mode="activeMode" />
 
             <ColouredSection>
                 <template #background>
@@ -209,9 +215,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 5 -->
-            <SectionHeading>
-                Phasenverlauf <span>des Versuchs</span>
-            </SectionHeading>
+            <SectionHeading :show-logo="false" v-model="headers.section4" :active-mode="activeMode" />
 
             <div class="section-wrapper">
                 <div class="characters-tram">
@@ -232,9 +236,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 6 -->
-            <SectionHeading>
-                Service-Chat – Phase 1: <span>Personenbedienter Chat</span>
-            </SectionHeading>
+            <SectionHeading :show-logo="false" v-model="headers.section5" :active-mode="activeMode" />
 
             <ColouredSection>
                 <BulletList :items="phase1Items" />
@@ -246,9 +248,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 7 -->
-            <SectionHeading>
-                Service-Chat – Phase 2: <span>Q&A-Chatbot</span>
-            </SectionHeading>
+            <SectionHeading :show-logo="false" v-model="headers.section6" :active-mode="activeMode" />
             <div class="whole-robot-section">
                 <img id="robot-cheering" src="@img/VRR/Robot/HandsUpCheering.svg" alt="Robot with hands up cheering">
                 <div class="robot-chatbot-section">
@@ -268,9 +268,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 8 -->
-            <SectionHeading>
-                <span>Versuch</span> Service-Chat – Zwischenergebnis
-            </SectionHeading>
+            <SectionHeading :show-logo="false" v-model="headers.section7" :active-mode="activeMode" />
             <div class="character-chart">
                 <img id="character-change" :src="characterImage" alt="Character">
                 <PieChart :data="chartData?.pieData" @pie-slice-selected="handlePieSliceSelected" />
@@ -281,9 +279,8 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 9 -->
-            <SectionHeading>
-                <span>Ergebnis</span> Service-Chat – Erfolgsroboter
-            </SectionHeading>
+            <SectionHeading :show-logo="false" v-model="headers.section8" :active-mode="activeMode" />
+
             <div class="robot-form">
                 <div class="stars-robot">
                     <img id="stars" src="@img/VRR/Stars.svg" alt="Stars">
@@ -315,9 +312,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 10 -->
-            <SectionHeading>
-                Mehrwert ohne Verdrängung
-            </SectionHeading>
+            <SectionHeading :show-logo="false" v-model="headers.section9" :active-mode="activeMode" />
             <HorizontalScrollChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
                 :year-shift="1" :wrapper-height="isMobile() ? '100vh' : '300vh'" :scroll-sensitivity="0.2"
                 :category-names="chartData?.categoryNames" />

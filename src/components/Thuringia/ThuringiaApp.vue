@@ -260,7 +260,7 @@ onUnmounted(() => {
       <div class="init-mid" ref="initMidElement">
         <img src="@img/Thuringia/Emblem.png" alt="Emblem" id="emblemImage" />
         <EditableTextField v-model="textFields.first" :active-mode="activeMode" :rows="7" :width="`60%`"
-          :font-size="`36px`" :line-height="1.3" :top-bottom-padding="`3vh`" />
+          :font-size="`36px`" :line-height="1.3" :top-padding="`3vh`" :bottom-padding="`3vh`" />
       </div>
     </div>
     <div class="main" :style="{ '--selectedColour': selectedColour }">
@@ -285,7 +285,7 @@ onUnmounted(() => {
         <div v-if="showMapScrollytelling" class="map-scrollytelling">
           <div class="map-intro">
             <EditableTextField v-model="textFields.second" :active-mode="activeMode" :rows="12" :width="`100%`"
-              :font-size="`24px`" :line-height="1.8" :top-bottom-padding="`5vh`" />
+              :font-size="`24px`" :line-height="1.8" :top-padding="`5vh`" :bottom-padding="`5vh`" />
           </div>
           <div class="svg-map-container">
             <MapSVG :csv-data="stats?.stops_within_300m" />
@@ -294,7 +294,7 @@ onUnmounted(() => {
         <div v-if="showMapScrollytelling2" class="map-scrollytelling-2">
           <div class="map-intro">
             <EditableTextField v-model="textFields.third" :active-mode="activeMode" :rows="12" :width="`100%`"
-              :font-size="`24px`" :line-height="1.8" :top-bottom-padding="`5vh`" />
+              :font-size="`24px`" :line-height="1.8" :top-padding="`5vh`" :bottom-padding="`5vh`" />
           </div>
           <div class="svg-map-container">
             <MapSVG :csv-data="stats?.townhallsWithoutStopsWithin300m" :color-fill="'#E14A2C'" />
@@ -303,7 +303,7 @@ onUnmounted(() => {
         <div v-if="showMapButton" class="pre-map-view">
           <div class="map-intro">
             <EditableTextField v-model="textFields.forth" :active-mode="activeMode" :rows="7" :width="`100%`"
-              :font-size="`28px`" :line-height="1.8" :top-bottom-padding="`5vh`" />
+              :font-size="`28px`" :line-height="1.8" :top-padding="`5vh`" :bottom-padding="`5vh`" />
           </div>
           <button class="open-map-btn" @click="showMapOverlay = true">Erkunden Sie die
             Karte</button>

@@ -44,7 +44,7 @@ defineExpose({
   <div class="text-ranges">
     <div :id="`textRange${currentRange}`" class="textRange">
       <EditableTextField v-for="stopType in stopTypes" :key="stopType.id" :model-value="getTextString(stopType)"
-        :active-mode="activeMode" :rows="1" width="70vw" font-size="18px" :line-height="1.3" :top-bottom-padding="`0px`"
+        :active-mode="activeMode" :rows="1" width="70vw" font-size="18px" :line-height="1.3" :top-padding="`0px`" :bottom-padding="`0px`"
         :text-align="`center`" />
     </div>
   </div>

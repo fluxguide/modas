@@ -1,5 +1,4 @@
 <script setup>
-import { text } from 'd3';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
@@ -9,8 +8,10 @@ const props = defineProps({
     width: { type: String, default: '60%' },
     fontSize: { type: String, default: '36px' },
     lineHeight: { type: Number, default: '1.3' },
-    topBottomPadding: { type: String, default: '5vh' },
+    topPadding: { type: String, default: '5vh' },
+    bottomPadding: { type: String, default: '5vh' },
     textAlign: { type: String, default: 'left' },
+    fontWeight: { type: String, default: 'normal' }
 });
 
 const emit = defineEmits(['update:textContent']);
@@ -29,7 +30,7 @@ watch(() => props.activeMode, (newMode) => {
     <v-textarea ref="textAreaRef" :text-content="textContent"
         @update:text-content="val => emit('update:textContent', val)" :readonly="activeMode !== 'edit'" variant="plain"
         hide-details no-resize :rows="rows" class="editable-text-comp"
-        :style="{ '--custom-font-size': fontSize, '--custom-width': width, '--rows': rows, '--custom-line-height': lineHeight, '--top-bottom-padding': topBottomPadding, '--custom-text-align': textAlign }"></v-textarea>
+        :style="{ '--custom-font-size': fontSize, '--custom-width': width, '--rows': rows, '--custom-line-height': lineHeight, '--top-padding': topPadding, '--bottom-padding': bottomPadding, '--custom-text-align': textAlign, '--custom-font-weight': fontWeight }"></v-textarea>
 </template>
 
 <style scoped>
@@ -50,6 +51,7 @@ watch(() => props.activeMode, (newMode) => {
 
 .editable-text-comp :deep(textarea) {
     font-size: var(--custom-font-size) !important;
+    font-weight: var(--custom-font-weight) !important;
     line-height: var(--custom-line-height) !important;
     width: 100%;
     text-align: var(--custom-text-align);
@@ -68,6 +70,7 @@ watch(() => props.activeMode, (newMode) => {
 
 .editable-text-comp :deep(.v-input__control) {
     height: fit-content;
-    padding: var(--top-bottom-padding) 0;
+    padding-top: var(--top-padding);
+    padding-bottom: var(--bottom-padding);
 }
 </style>
