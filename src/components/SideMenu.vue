@@ -2,7 +2,17 @@
 import { ref, watch } from 'vue';
 
 const props = defineProps({
-    activeMode: { type: String, default: 'view' }
+    activeMode: { type: String, default: 'view' },
+    defaultGradient: {
+        type: Object,
+        default: () => ({
+            angle: 180,
+            stops: [
+                { color: '#c5b0ff', position: 0 },
+                { color: '#ffffff', position: 100 },
+            ]
+        })
+    }
 });
 
 const emit = defineEmits(['mode-change']);
@@ -12,14 +22,7 @@ const setActive = (tileName) => {
 }
 
 const showGradientPicker = ref(false);
-
-const gradientConfig = ref({
-    angle: 180,
-    stops: [
-        { color: '#c5b0ff', position: 0 },
-        { color: '#ffffff', position: 100 },
-    ]
-});
+const gradientConfig = ref({ ...props.defaultGradient, stops: props.defaultGradient.stops.map(s => ({ ...s })) });
 
 const buildGradient = (config) => {
     const stops = config.stops
@@ -47,13 +50,7 @@ const applyGradient = () => {
 };
 
 const resetGradient = () => {
-    gradientConfig.value = {
-        angle: 180,
-        stops: [
-            { color: '#c5b0ff', position: 0 },
-            { color: '#ffffff', position: 100 },
-        ]
-    };
+    gradientConfig.value = { ...props.defaultGradient, stops: props.defaultGradient.stops.map(s => ({ ...s })) };
 };
 
 watch(gradientConfig, () => applyGradient(), { deep: true });
