@@ -1,5 +1,5 @@
 <script setup>
-import { ref, computed } from 'vue';
+import { computed } from 'vue';
 import Timeline from './Timeline.vue';
 import LayerArrow from './LayerArrow.vue';
 import BubbleLabel from './BubbleLabel.vue';
@@ -42,56 +42,45 @@ const props = defineProps({
     mehrwertData: {
         type: Array,
         default: () => []
+    },
+    categoryNames: {
+        type: Object,
+        default: () => ({})
     }
 });
-
-const statsData = computed(() => {
-    console.log('statsData prop:', props.statsData);
-    return props.statsData;
-});
-
-const mehrwertData = computed(() => {
-    console.log('mehrwertData prop:', props.mehrwertData);
-    return props.mehrwertData;
-});
-
-const bubbleConfig = {
-    telefon: {
-        label: 'Telefon',
-        color: '#001C0C',
-        fontSize: isMobile() ? '9vw' : '4.5vw',
-        borderRadius: isMobile() ? 25 : 40
-    },
-    bke: {
-        label: 'Brief, Kontaktformular, E-Mail',
-        color: '#004F22',
-        fontSize: isMobile() ? '3.5vw' : '1.5vw',
-        borderRadius: isMobile() ? 12 : 16
-    },
-    sm: {
-        label: 'Social Media',
-        color: '#43A86B',
-        fontSize: isMobile() ? '3vw' : '1.25vw',
-        borderRadius: isMobile() ? 8 : 12
-    },
-    'Klassische Kanäle': {
-        label: 'Klassische Kanäle',
-        color: 'rgba(0, 28, 12, 0.9)',
-        fontSize: isMobile() ? '9vw' : '4.5vw',
-        borderRadius: isMobile() ? 25 : 40
-    }
-};
 
 const chartData = computed(() => {
     return generateChart(props.chartType);
 });
 
-const getBubbleLabel = (type) => bubbleConfig[type]?.label || type;
-const getBubbleColor = (type) => bubbleConfig[type]?.color;
-const getNumberFontSize = (type) => bubbleConfig[type]?.fontSize;
+const statsData = computed(() => {
+    return props.statsData;
+});
+
+const mehrwertData = computed(() => {
+    return props.mehrwertData;
+});
+
+const bubbleColorPalette = [
+    { color: '#001C0C', fontSize: isMobile() ? '9vw' : '4.5vw', borderRadius: isMobile() ? 25 : 40 },
+    { color: '#004F22', fontSize: isMobile() ? '3.5vw' : '1.5vw', borderRadius: isMobile() ? 12 : 16 },
+    { color: '#43A86B', fontSize: isMobile() ? '3vw' : '1.25vw', borderRadius: isMobile() ? 8 : 12 },
+    { color: 'rgba(0, 28, 12, 0.9)', fontSize: isMobile() ? '9vw' : '4.5vw', borderRadius: isMobile() ? 25 : 40 },
+];
+
+const categoryIndexMap = computed(() => {
+    return Object.keys(props.categoryNames).reduce((map, cat, i) => {
+        map[cat] = i % bubbleColorPalette.length;
+        return map;
+    }, {});
+});
+
+const getBubbleLabel = (type) => props.categoryNames[type] ?? type;
+const getBubbleColor = (type) => bubbleColorPalette[categoryIndexMap.value[type] ?? 0].color;
+const getNumberFontSize = (type) => bubbleColorPalette[categoryIndexMap.value[type] ?? 0].fontSize;
 const getBorderRadius = (color) => {
-    const config = Object.values(bubbleConfig).find(c => c.color === color);
-    return config?.borderRadius;
+    const config = bubbleColorPalette.find(c => c.color === color);
+    return config?.borderRadius ?? 8;
 };
 
 const getBubbleSize = (value) => {
@@ -120,19 +109,11 @@ const getBubbleSize = (value) => {
 };
 
 const labelPositions = computed(() => {
-    const bubbles = chartData.value;
-    const types = props.chartType === 'mehrwert'
-        ? ['Klassische Kanäle']
-        : ['sm', 'bke', 'telefon'];
-
-    return types.reduce((positions, type) => {
-        const config = bubbleConfig[type];
-        const bubble = bubbles.find(b => b.label === config?.label);
-
+    return Object.keys(props.categoryNames).reduce((positions, key) => {
+        const bubble = chartData.value.find(b => b.categoryKey === key);
         if (bubble) {
-            positions[type] = bubble.position.y + (bubble.height / 2);
+            positions[key] = bubble.position.y + (bubble.height / 2);
         }
-
         return positions;
     }, {});
 });
@@ -141,12 +122,11 @@ const generateChart = (chartType) => {
     // Chart configuration based on type
     const chartConfigs = {
         stats: {
-            data: statsData.value,
-            dataItems: statsData.value ? [
-                { key: 'telefon', data: statsData.value.telefonRecords },
-                { key: 'bke', data: statsData.value.bkeRecords },
-                { key: 'sm', data: statsData.value.smRecords },
-            ] : [],
+            data: statsData.value?.statsByCat,
+            dataItems: statsData.value ? Object.keys(statsData.value.statsByCat).map(cat => ({
+                key: cat,
+                data: statsData.value.statsByCat[cat]
+            })) : [],
             years: props.years,
             getValue: (dataItem, year) => dataItem.data[`total${year}`],
             getLabel: (dataItem) => getBubbleLabel(dataItem.key),
@@ -155,7 +135,7 @@ const generateChart = (chartType) => {
         },
         mehrwert: {
             data: mehrwertData.value,
-            dataItems: ['Klassische Kanäle', 'Chat'],
+            dataItems: [...new Set(mehrwertData.value?.map(d => d.category) || [])],
             years: props.years,
             getValue: (category, year) => {
                 const dataPoint = mehrwertData.value?.find(d => d.year === year && d.category === category);
@@ -189,7 +169,7 @@ const generateChart = (chartType) => {
             bubbles.push({
                 id: bubbleId++,
                 number: value,
-                label: config.getLabel(dataItem),
+                categoryKey: typeof dataItem === 'string' ? dataItem : dataItem.key,
                 value: value,
                 height: bubbleHeight,
                 position: {
@@ -211,10 +191,7 @@ const generateChart = (chartType) => {
 <template>
     <div class="arrow-bubble-chart" :style="{ height: props.height }">
         <div class="chart-container">
-            <Timeline v-if="isMobile()" :years="props.years" :start-point="props.timelineStart"
-                :markers-gap="props.percentageShift" />
-            <Timeline v-else :years="props.years" :start-point="props.timelineStart"
-                :markers-gap="props.percentageShift" />
+            <Timeline :years="props.years" :start-point="props.timelineStart" :markers-gap="props.percentageShift" />
             <LayerArrow v-if="props.chartType === 'mehrwert'" :startYear="2022" :endYear="2024" :dataPoints="[
                 { year: 2023, month: 10, label: isMobile() ? 'Okt.' : 'Oktober 2023' },
                 { year: 2024, month: 9 }
@@ -228,25 +205,14 @@ const generateChart = (chartType) => {
 
             <div class="category-labels">
                 <div v-if="props.chartType === 'mehrwert'">
-                    <BubbleLabel :text="'Klassische Kanäle'" :color="getBubbleColor('Klassische Kanäle')"
-                        :fontSize="getNumberFontSize('Klassische Kanäle')"
-                        :position="labelPositions['Klassische Kanäle']" :spacing-factor="0.8" />
+                    <BubbleLabel v-for="(position, catKey) in labelPositions" :key="catKey"
+                        :text="getBubbleLabel(catKey)" :color="getBubbleColor(catKey)"
+                        :fontSize="getNumberFontSize(catKey)" :position="position" :spacing-factor="0.8" />
                 </div>
                 <div v-else class="stats-labels">
-                    <div>
-                        <BubbleLabel :text="'Social Media'" :color="getBubbleColor('sm')"
-                            :fontSize="getNumberFontSize('sm')" :position="labelPositions['sm']"
-                            :spacing-factor="2.2" />
-                    </div>
-                    <div>
-                        <BubbleLabel :text="'Brief, Kontaktformular, E-Mail'" :color="getBubbleColor('bke')"
-                            :fontSize="getNumberFontSize('bke')" :position="labelPositions['bke']"
-                            :spacing-factor="1.2" />
-                    </div>
-                    <div>
-                        <BubbleLabel :text="'Telefon'" :color="getBubbleColor('telefon')"
-                            :fontSize="getNumberFontSize('telefon')" :position="labelPositions['telefon']"
-                            :spacing-factor="0.6" />
+                    <div v-for="(position, catKey) in labelPositions" :key="catKey">
+                        <BubbleLabel :text="getBubbleLabel(catKey)" :color="getBubbleColor(catKey)"
+                            :fontSize="getNumberFontSize(catKey)" :position="position" :spacing-factor="0.8" />
                     </div>
                 </div>
             </div>

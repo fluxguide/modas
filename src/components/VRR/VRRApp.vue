@@ -147,12 +147,9 @@ onUnmounted(() => {
             </SectionHeading>
 
             <div class="chart-overlay">
-                <ArrowBubbleChart v-if="isMobile()" :stats-data="chartData?.stats"
-                    :mehrwert-data="chartData?.mehrwertData" chart-type="stats" :height="'75vh'"
-                    :bubble-position="[10, 28, 46]" :timeline-start="0" :percentage-shift="30" :bubble-gap="2" />
-                <ArrowBubbleChart v-else :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
+                <ArrowBubbleChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
                     chart-type="stats" :height="'55vh'" :bubble-position="[28, 51, 75]" :timeline-start="25"
-                    :percentage-shift="23" :bubble-gap="1" />
+                    :percentage-shift="23" :bubble-gap="1" :category-names="chartData?.categoryNames" />
             </div>
 
             <div class="bg-img">
@@ -322,7 +319,8 @@ onUnmounted(() => {
                 Mehrwert ohne Verdrängung
             </SectionHeading>
             <HorizontalScrollChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
-                :year-shift="1" :wrapper-height="isMobile() ? '100vh' : '300vh'" :scroll-sensitivity="0.2" />
+                :year-shift="1" :wrapper-height="isMobile() ? '100vh' : '300vh'" :scroll-sensitivity="0.2"
+                :category-names="chartData?.categoryNames" />
             <!-- ----------------------------------------------------- -->
         </main>
     </div>

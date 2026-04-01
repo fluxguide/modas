@@ -39,6 +39,7 @@ const props = defineProps({
         type: Array,
         default: () => []
     },
+    categoryNames: { type: Object, default: () => ({}) },
 })
 
 // Get all other props to pass to ArrowBubbleChart
