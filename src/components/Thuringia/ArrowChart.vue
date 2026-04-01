@@ -2,7 +2,6 @@
 import { ref, onMounted, watch, computed } from 'vue';
 import { useArrowChart } from '@src/composables/Thuringia/useArrowChart.js';
 import { isMobile, scaleRange, defaultCategoryColours } from '@src/composables/utils.js';
-// import { active } from 'd3';
 import { Streamlit } from 'streamlit-component-lib';
 
 const props = defineProps({
@@ -25,7 +24,6 @@ const props = defineProps({
 });
 
 const svgRef = ref(null);
-// const chartContainer = ref(null);
 const resolvedColors = computed(() => {
     // if Streamlit didn’t send anything, fallback to defaults
     return (props.categoryColours && Object.keys(props.categoryColours).length === 4) ? props.categoryColours : defaultCategoryColours;
@@ -110,12 +108,5 @@ watch(resolvedColors, redraw, { deep: true });
     height: 15%;
     position: absolute;
     bottom: 0;
-}
-
-@media (max-width: 768px) {
-    .arrow-chart {
-        top: 70%;
-        left: 30%;
-    }
 }
 </style>
