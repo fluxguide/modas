@@ -188,7 +188,7 @@ div[data-testid="stFileUploader"] section {
 
 .info-tooltip {
     position: absolute;
-    width: 150%;
+    width: 250%;
     background: #010080;
     color: #fff;
     padding: 12px 14px;
