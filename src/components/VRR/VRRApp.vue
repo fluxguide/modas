@@ -10,8 +10,6 @@ import HorizontalScrollChart from './HorizontalScrollChart.vue';
 import SectionHeading from './SectionHeading.vue';
 import PhaseCard from './PhaseCard.vue';
 import ColouredSection from './ColouredSection.vue';
-import BulletList from './BulletList.vue';
-import PartnerLogos from './PartnerLogos.vue';
 import SideMenu from '@src/components/SideMenu.vue';
 import EditableTextField from '@src/components/EditableTextField.vue';
 
@@ -140,7 +138,6 @@ onUnmounted(() => {
         }" @mode-change="handleModeChange" />
         <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Präsentationsansicht beenden</button>
         <header>
-            <img src="@img/VRR/Logo.svg" alt="VRR Logo" />
             <div>
                 <EditableTextField :model-value="textFields.first" @update:model-value="val => textFields.first = val"
                     :active-mode="activeMode" :rows="1" :width="'100%'" :font-size="'32px'" :line-height="1"
@@ -165,7 +162,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 2 -->
-            <SectionHeading :show-logo="true" v-model="headers.section1" :active-mode="activeMode" />
+            <SectionHeading v-model="headers.section1" :active-mode="activeMode" />
 
             <div class="chart-overlay">
                 <ArrowBubbleChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
@@ -180,7 +177,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 3 -->
-            <SectionHeading :show-logo="false" v-model="headers.section2" :active-mode="activeMode" />
+            <SectionHeading v-model="headers.section2" :active-mode="activeMode" />
 
             <ColouredSection>
                 <template #background>
@@ -203,7 +200,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 4 -->
-            <SectionHeading :show-logo="false" v-model="headers.section3" :active-mode="activeMode" />
+            <SectionHeading v-model="headers.section3" :active-mode="activeMode" />
 
             <ColouredSection>
                 <template #background>
@@ -219,15 +216,11 @@ onUnmounted(() => {
                 <EditableTextField :model-value="textFields.forth" @update:model-value="val => textFields.forth = val"
                     :active-mode="activeMode" :rows="7" :width="'100%'" :font-size="'24px'" :line-height="2"
                     :padding="'0'" />
-
-                <template #extra>
-                    <PartnerLogos />
-                </template>
             </ColouredSection>
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 5 -->
-            <SectionHeading :show-logo="false" v-model="headers.section4" :active-mode="activeMode" />
+            <SectionHeading v-model="headers.section4" :active-mode="activeMode" />
 
             <div class="section-wrapper">
                 <div class="characters-tram">
@@ -254,7 +247,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 6 -->
-            <SectionHeading :show-logo="false" v-model="headers.section5" :active-mode="activeMode" />
+            <SectionHeading v-model="headers.section5" :active-mode="activeMode" />
 
             <ColouredSection>
                 <EditableTextField :model-value="textFields.fifth" @update:model-value="val => textFields.fifth = val"
@@ -268,7 +261,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 7 -->
-            <SectionHeading :show-logo="false" v-model="headers.section6" :active-mode="activeMode" />
+            <SectionHeading v-model="headers.section6" :active-mode="activeMode" />
             <div class="whole-robot-section">
                 <img id="robot-cheering" src="@img/VRR/Robot/HandsUpCheering.svg" alt="Robot with hands up cheering">
                 <div class="robot-chatbot-section">
@@ -291,7 +284,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 8 -->
-            <SectionHeading :show-logo="false" v-model="headers.section7" :active-mode="activeMode" />
+            <SectionHeading v-model="headers.section7" :active-mode="activeMode" />
             <div class="character-chart">
                 <img id="character-change" :src="characterImage" alt="Character">
                 <PieChart :data="chartData?.pieData" :active-mode="activeMode"
@@ -305,7 +298,7 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 9 -->
-            <SectionHeading :show-logo="false" v-model="headers.section8" :active-mode="activeMode" />
+            <SectionHeading v-model="headers.section8" :active-mode="activeMode" />
 
             <div class="robot-form">
                 <div class="stars-robot">
@@ -338,10 +331,10 @@ onUnmounted(() => {
             <!-- ----------------------------------------------------- -->
 
             <!-- Part 10 -->
-            <SectionHeading :show-logo="false" v-model="headers.section9" :active-mode="activeMode" />
-            <HorizontalScrollChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData" :active-mode="activeMode"
-                :year-shift="1" :wrapper-height="isMobile() ? '100vh' : '300vh'" :scroll-sensitivity="0.2"
-                :category-names="chartData?.categoryNames" />
+            <SectionHeading v-model="headers.section9" :active-mode="activeMode" />
+            <HorizontalScrollChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
+                :active-mode="activeMode" :year-shift="1" :wrapper-height="isMobile() ? '100vh' : '300vh'"
+                :scroll-sensitivity="0.2" :category-names="chartData?.categoryNames" />
             <!-- ----------------------------------------------------- -->
         </main>
     </div>
