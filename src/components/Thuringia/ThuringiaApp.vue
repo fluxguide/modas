@@ -1,11 +1,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch, computed, toRef } from 'vue';
-import { useScroll } from '@vueuse/core';
 import { getScrollRange, selectedColour, isMobile } from '@src/composables/utils.js';
 import { useUIControls } from '@src/composables/Thuringia/useUIControls.js';
 import { useMapControls } from '@src/composables/Thuringia/useMapControls.js';
-import { computeStats } from '@composables/Thuringia/useDataProcessing';
-import { useColumnLabels } from '@composables/useColumnLabels';
+import { computeStats } from '@composables/Thuringia/useDataProcessing.js';
+import { useColumnLabels } from '@composables/useColumnLabels.js';
 
 import ArrowChart from '@src/components/Thuringia/ArrowChart.vue';
 import HeaderRange from '@src/components/Thuringia/HeaderRange.vue';
@@ -39,6 +38,8 @@ const arrowChartRef = ref(null);
 const scrollContainer = ref(null);
 const activeMode = ref('view');
 const isPresenting = ref(false);
+const scrollY = ref(0);
+let handleScroll = null;
 
 const textFields = ref({
   first: "STADT hat ANZAHL Rathäuser und ANZAHL Haltestellen innerhalb von ANZAHL Metern. \n\nUnd was bedeutet das für Inge?",
@@ -50,11 +51,6 @@ const textFields = ref({
 const { visibleLayers, handleMapReady, handleMarkerClick, handleLayerToggle } = useMapControls();
 
 const { showMainUI, hideMainUI, initializeUI, showMapImgUI, mapUI } = useUIControls();
-
-const { y: scrollY, isScrolling } = useScroll(scrollContainer, {
-  throttle: 16,
-  idle: 200,
-});
 
 const { col } = useColumnLabels(toRef(props, "columnLabelMap"));
 
@@ -98,6 +94,7 @@ watch(
 console.log("props.columnLabelMap at mount:", props.columnLabelMap);
 
 watch(scrollY, (newScrollY) => {
+  console.log("scrollY changed:", newScrollY)
   if (!initMidElement.value) return;
 
   const windowHeight = window.innerHeight;
@@ -235,17 +232,25 @@ const scrollHeight = computed(() => {
 });
 
 onMounted(async () => {
-  document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) {
-      isPresenting.value = false;
-    }
-  })
-
   initializeUI();
+
+  handleScroll = () => {
+    scrollY.value = scrollContainer.value?.scrollTop ?? window.scrollY;
+  };
+
+  if (scrollContainer.value) {
+    scrollContainer.value.addEventListener('scroll', handleScroll, { passive: true });
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) isPresenting.value = false;
+  });
 });
 
 onUnmounted(() => {
-  document.removeEventListener("fullscreenchange", () => { });
+  scrollContainer.value?.removeEventListener('scroll', handleScroll);
+  window.removeEventListener('scroll', handleScroll);
 });
 </script>
 
