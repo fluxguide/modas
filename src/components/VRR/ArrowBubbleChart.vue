@@ -3,7 +3,6 @@ import { computed } from 'vue';
 import Timeline from './Timeline.vue';
 import LayerArrow from './LayerArrow.vue';
 import BubbleLabel from './BubbleLabel.vue';
-import { isMobile } from '@src/composables/utils.js';
 
 const props = defineProps({
     chartType: {
@@ -62,10 +61,10 @@ const mehrwertData = computed(() => {
 });
 
 const bubbleColorPalette = [
-    { color: '#001C0C', fontSize: isMobile() ? '9vw' : '4.5vw', borderRadius: isMobile() ? 25 : 40 },
-    { color: '#004F22', fontSize: isMobile() ? '3.5vw' : '1.5vw', borderRadius: isMobile() ? 12 : 16 },
-    { color: '#43A86B', fontSize: isMobile() ? '3vw' : '1.25vw', borderRadius: isMobile() ? 8 : 12 },
-    { color: 'rgba(0, 28, 12, 0.9)', fontSize: isMobile() ? '9vw' : '4.5vw', borderRadius: isMobile() ? 25 : 40 },
+    { color: '#001C0C', fontSize: '4.5vw', borderRadius: 40 },
+    { color: '#004F22', fontSize: '3.5vw', borderRadius: 12 },
+    { color: '#43A86B', fontSize: '3vw', borderRadius: 8 },
+    { color: 'rgba(0, 28, 12, 0.9)', fontSize: '9vw', borderRadius: 25 },
 ];
 
 const categoryIndexMap = computed(() => {
@@ -193,15 +192,15 @@ const generateChart = (chartType) => {
         <div class="chart-container">
             <Timeline :years="props.years" :start-point="props.timelineStart" :markers-gap="props.percentageShift" />
             <LayerArrow v-if="props.chartType === 'mehrwert'" :startYear="2022" :endYear="2024" :dataPoints="[
-                { year: 2023, month: 10, label: isMobile() ? 'Okt.' : 'Oktober 2023' },
+                { year: 2023, month: 10, label: 'Oktober 2023' },
                 { year: 2024, month: 9 }
-            ]" :start-point="isMobile() ? 0 : props.timelineStart" :dot-line-length="isMobile() ? 250 : 90"
-                :line-label="'52 200 betreute Dialoge'" :layer-color="'#0E6631'" />
+            ]" :start-point="props.timelineStart" :dot-line-length="90" :line-label="'52 200 betreute Dialoge'"
+                :layer-color="'#0E6631'" />
             <LayerArrow v-if="props.chartType === 'mehrwert'" :startYear="2022" :endYear="2024" :dataPoints="[
-                { year: 2022, month: 10, label: isMobile() ? 'Okt.' : 'Oktober 2022' },
-                { year: 2024, month: 9, label: isMobile() ? 'Sep.' : 'September 2024' }
-            ]" :start-point="isMobile() ? 0 : props.timelineStart" :dot-line-length="isMobile() ? 300 : 180"
-                :line-label="'16 327 Chatbot-Dialoge'" :layer-color="'#43A86B'" />
+                { year: 2022, month: 10, label: 'Oktober 2022' },
+                { year: 2024, month: 9, label: 'September 2024' }
+            ]" :start-point="props.timelineStart" :dot-line-length="180" :line-label="'16 327 Chatbot-Dialoge'"
+                :layer-color="'#43A86B'" />
 
             <div class="category-labels">
                 <div v-if="props.chartType === 'mehrwert'">
@@ -217,18 +216,7 @@ const generateChart = (chartType) => {
                 </div>
             </div>
         </div>
-
-        <div v-if="isMobile()" v-for="bubble in chartData" :key="bubble.id" class="bubble" :style="{
-            top: bubble.position.x + 'vh',
-            left: bubble.position.y + 22 + 'vw',
-            width: getBubbleSize(bubble.value) * props.bubbleGap + 'vw',
-            height: bubble.height / 1.5 + 'vh',
-            backgroundColor: bubble.color,
-            borderRadius: getBorderRadius(bubble.color) + 'px'
-        }">
-            <div class="bubble-number" :style="{ fontSize: bubble.fontSize }">{{ bubble.number }}</div>
-        </div>
-        <div v-if="!isMobile()" v-for="bubble in chartData" :key="bubble.id" class="bubble" :style="{
+        <div v-for="bubble in chartData" :key="bubble.id" class="bubble" :style="{
             left: bubble.position.x + '%',
             bottom: bubble.position.y + 'vh',
             width: getBubbleSize(bubble.value / 1.5) + 'vw',

@@ -1,6 +1,5 @@
 <script setup>
 import { computed } from 'vue';
-import { isMobile } from '@src/composables/utils.js';
 
 const props = defineProps({
     startYear: {
@@ -92,15 +91,9 @@ const dynamicHeight = computed(() => {
 </script>
 
 <template>
-    <div class="layer-arrow"
-        :style="isMobile() ? { left: '20vw' } : { marginTop: props.dotLineLength + 'px' }">
+    <div class="layer-arrow" :style="{ marginTop: props.dotLineLength + 'px' }">
         <!-- Main horizontal line -->
-        <div class="layer-line" :style="isMobile() ? {
-            backgroundColor: layerColor,
-            top: dynamicStartPositionVertical + 'vh',
-            left: props.dotLineLength + 'px',
-            height: dynamicHeight + 'vh'
-        } : {
+        <div class="layer-line" :style="{
             backgroundColor: layerColor,
             left: dynamicStartPositionHorizontal + '%',
             width: dynamicWidth + '%'
@@ -110,20 +103,16 @@ const dynamicHeight = computed(() => {
 
         <!-- Year markers with vertical dotted lines -->
         <div v-for="dataPoint in dataPointPositions" :key="dataPoint.id" class="year-connector"
-            :style="isMobile() ? { top: dataPoint.y + 'vh' } : { left: dataPoint.x + 'vw' }">
-            <div class="vertical-dotted-line" :style="isMobile() ? {
-                borderColor: layerColor,
-                width: props.dotLineLength + 'px'
-            } : {
+            :style="{ left: dataPoint.x + 'vw' }">
+            <div class="vertical-dotted-line" :style="{
                 borderColor: layerColor,
                 height: props.dotLineLength + 'px'
             }"></div>
         </div>
 
         <!-- Data points -->
-        <div v-for="dataPoint in dataPointPositions" :key="dataPoint.id" class="data-point" :style="isMobile() ? {
-            top: dataPoint.y - 1 + 'vh'
-        } : { left: dataPoint.x + 'vw' }">
+        <div v-for="dataPoint in dataPointPositions" :key="dataPoint.id" class="data-point"
+            :style="{ left: dataPoint.x + 'vw' }">
             <!-- Only show data point elements if there's a label -->
             <template v-if="dataPoint.label">
                 <!-- Vertical connector line -->

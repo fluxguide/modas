@@ -1,5 +1,3 @@
-import { isMobile } from '../utils.js';
-
 export function useUIControls() {
   const getElements = () => ({
     arrowSection: document.querySelector('.arrow'),
@@ -25,7 +23,7 @@ export function useUIControls() {
     if (cityHallImage && cloudsImage) {
       const scaleFactorImg = Math.max(0.6, 1.0 - (range * 0.17));
       const cloudsTranslateY = Math.round(range * 40);
-      const transformOrigin = isMobile() ? 'bottom center' : 'bottom left';
+      const transformOrigin = 'bottom left';
 
       [cityHallImage, cloudsImage].forEach(img => {
         img.style.opacity = '1.0';
@@ -96,11 +94,6 @@ export function useUIControls() {
       if (img) img.classList.remove('visible');
     });
     if (ingeImage) ingeImage.classList.remove('scrolled');
-
-    if (isMobile()) {
-      const groundElement = document.querySelector('.main');
-      if (groundElement) groundElement.style.height = '20vh';
-    }
   }
 
   const mapUI = () => {
@@ -114,11 +107,6 @@ export function useUIControls() {
         section.style.transition = 'opacity 0.5s ease-in-out';
       }
     });
-
-    if (isMobile()) {
-      const groundElement = document.querySelector('.main');
-      if (groundElement) groundElement.style.height = '20vh';
-    }
   }
 
   return {

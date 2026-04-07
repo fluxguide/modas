@@ -1,7 +1,7 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import { useArrowChart } from '@src/composables/Thuringia/useArrowChart.js';
-import { isMobile, scaleRange, defaultCategoryColours } from '@src/composables/utils.js';
+import { scaleRange, defaultCategoryColours } from '@src/composables/utils.js';
 import { Streamlit } from 'streamlit-component-lib';
 
 const props = defineProps({
@@ -58,7 +58,7 @@ watch(resolvedColors, redraw, { deep: true });
         </svg>
     </button>
     <div ref="chartContainer" class="arrow-chart"
-        :style="`transform: ${isMobile() ? `scaleY(${scaleRange(props.currentRange)}) rotate(90deg)` : `scaleX(${scaleRange(props.currentRange)})`}; transform-origin: ${isMobile() ? 'top right' : 'right center'};`">
+        :style="`transform: ${`scaleX(${scaleRange(props.currentRange)})`}; transform-origin: 'right center';`">
         <svg ref="svgRef" class="svg" :class="{ 'is-edit': activeMode === 'edit' }"></svg>
     </div>
 </template>

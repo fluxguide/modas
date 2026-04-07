@@ -1,5 +1,5 @@
 import * as d3 from 'd3';
-import { isMobile, isLongScreen, isLongLongScreen, scaleRange, defaultCategoryColours } from '@src/composables/utils.js';
+import { isLongScreen, isLongLongScreen, scaleRange, defaultCategoryColours } from '@src/composables/utils.js';
 
 function useArrowChart() {
     function drawArrow(svgEl, stats, currentRange = 0, categoryColours = []) {
@@ -106,11 +106,7 @@ function useArrowChart() {
                 const centerX = startX + totalWidth / 2;
                 const centerY = arrowY + arrowHeight / 2;
 
-                if (isMobile()) {
-                    return `translate(${centerX}, ${centerY}) rotate(-90) scale(1, ${inverseScale})`;
-                } else {
-                    return `translate(${centerX}, ${centerY}) scale(${inverseScale}, 1)`;
-                }
+                return `translate(${centerX}, ${centerY}) scale(${inverseScale}, 1)`;
             });
 
         textGroups.append('text')
@@ -120,7 +116,7 @@ function useArrowChart() {
             .attr('text-anchor', 'middle')
             .attr('dominant-baseline', 'middle')
             .attr('fill', 'white')
-            .attr('font-size', isLongLongScreen() ? '48px' : isLongScreen() ? '32px' : isMobile() ? '16px' : '24px')
+            .attr('font-size', isLongLongScreen() ? '48px' : isLongScreen() ? '32px' : '24px')
             .attr('font-weight', 'bold')
             .style('text-shadow', isLongLongScreen() ? '2px 2px 4px rgba(0,0,0,1)' : '1px 1px 2px rgba(0,0,0,1)')
             .style('pointer-events', 'none');

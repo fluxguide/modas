@@ -1,5 +1,4 @@
 <script setup>
-import { isMobile } from '@src/composables/utils.js';
 const props = defineProps({
     years: {
         type: Array,
@@ -24,15 +23,7 @@ const props = defineProps({
     <div class="timeline">
         <div class="arrow-line">
             <div v-if="showMarkers" class="year-markers">
-                <div v-if="isMobile()">
-                    <div v-for="(year, index) in years" :key="year" class="year-marker" :style="{
-                        top: (props.startPoint + (index * props.markersGap)) + '%'
-                    }">
-                        <div class="year-label">{{ year }}</div>
-                        <div class="year-dot"></div>
-                    </div>
-                </div>
-                <div v-else v-for="(year, index) in years" :key="year" class="year-marker" :style="{
+                <div v-for="(year, index) in years" :key="year" class="year-marker" :style="{
                     left: (props.startPoint + (index * props.markersGap)) + '%'
                 }">
                     <div class="year-dot"></div>

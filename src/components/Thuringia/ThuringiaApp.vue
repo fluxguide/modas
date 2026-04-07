@@ -1,6 +1,6 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch, computed, toRef } from 'vue';
-import { getScrollRange, selectedColour, isMobile } from '@src/composables/utils.js';
+import { getScrollRange, selectedColour } from '@src/composables/utils.js';
 import { useUIControls } from '@src/composables/Thuringia/useUIControls.js';
 import { useMapControls } from '@src/composables/Thuringia/useMapControls.js';
 import { computeStats } from '@composables/Thuringia/useDataProcessing.js';
@@ -133,29 +133,6 @@ watch(scrollY, (newScrollY) => {
       showMapButton.value = false;
       currentRange.value = newRange;
       showMainUI(newRange, headerRangeRef, textRangeRef, arrowChartRef);
-
-      // Progressive ground scaling for mobile based on arrow stages
-      if (isMobile()) {
-        const groundElement = document.querySelector('.main');
-        const headerRangeElement = document.querySelector('.headerRange');
-        if (groundElement) {
-          let groundHeight;
-          if (newRange === 0) {
-            groundHeight = 70; // Stage 0
-          } else if (newRange === 1) {
-            groundHeight = 75; // Stage 1
-          } else if (newRange === 2) {
-            groundHeight = 80; // Final stage
-          }
-          groundElement.style.height = `${groundHeight}vh`;
-
-          // Move HeaderRange up with ground expansion
-          if (headerRangeElement) {
-            const headerBottomPosition = groundHeight;
-            headerRangeElement.style.bottom = `${headerBottomPosition}vh`;
-          }
-        }
-      }
     }
   } else {
     arrowVisible.value = false;
@@ -164,19 +141,6 @@ watch(scrollY, (newScrollY) => {
     showMapButton.value = false;
     currentRange.value = 0;
     hideMainUI(headerRangeRef, textRangeRef, arrowChartRef);
-
-    // Reset ground height for mobile
-    if (isMobile()) {
-      const groundElement = document.querySelector('.main');
-      const headerRangeElement = document.querySelector('.headerRange');
-      if (groundElement) {
-        groundElement.style.height = '15vh';
-      }
-      // Reset HeaderRange position
-      if (headerRangeElement) {
-        headerRangeElement.style.bottom = '20vh';
-      }
-    }
   }
 }, {
   immediate: true // Run immediately onmount

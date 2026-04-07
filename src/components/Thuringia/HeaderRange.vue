@@ -2,7 +2,7 @@
 import { toRef } from 'vue';
 import { useTextStats } from '@composables/Thuringia/useTextStats.js';
 import { computed } from 'vue';
-import { scaleRange, isMobile, rangeKeyByRangeIndex } from '@src/composables/utils.js';
+import { scaleRange, rangeKeyByRangeIndex } from '@src/composables/utils.js';
 import { useColumnLabels } from '@composables/useColumnLabels.js';
 import EditableTextField from '@src/components/EditableTextField.vue';
 
@@ -36,7 +36,7 @@ defineExpose({
 <template>
   <div class="headerRange">
     <div v-for="(header, index) in headerData" :key="index" v-show="currentRange === index" class="header-item"
-      :style="`width: ${isMobile() ? 52 : 85 * scaleRange(props.currentRange)}%`">
+      :style="`width: ${85 * scaleRange(props.currentRange)}%`">
       <EditableTextField :model-value="getHeaderString(header)" :active-mode="activeMode" :rows="3" :width="`100%`"
         :font-size="`24px`" :line-height="1.6" :padding="`0`" />
     </div>

@@ -1,5 +1,4 @@
 <script setup>
-import { isMobile } from '@src/composables/utils.js';
 defineProps({
     text: String,
     color: String,
@@ -13,15 +12,7 @@ defineProps({
 </script>
 
 <template>
-    <div v-if="isMobile()" class="label-item" :style="{
-        left: (spacingFactor * 35) + 'vw'
-    }">
-        <span class="label-text" :style="{
-            color: color,
-            fontSize: '14px'
-        }">{{ text }}</span>
-    </div>
-    <div v-else class="label-item" :style="{ bottom: position + 'vh' }">
+    <div class="label-item" :style="{ bottom: position + 'vh' }">
         <span class="label-text" :style="{
             color: color,
             fontSize: fontSize

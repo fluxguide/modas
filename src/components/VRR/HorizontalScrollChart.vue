@@ -3,7 +3,6 @@ import { ref, computed, watch, onMounted, onUnmounted } from 'vue'
 import { useScroll, useElementBounding } from '@vueuse/core'
 import ArrowBubbleChart from './ArrowBubbleChart.vue'
 import Timeline from './Timeline.vue'
-import { isMobile } from '@src/composables/utils.js'
 import EditableTextField from '@src/components/EditableTextField.vue'
 
 const props = defineProps({
@@ -103,10 +102,8 @@ defineExpose({
                     <div class="timeline-wrapper" :style="{ width: '100%' }">
                         <div v-if="panelIndex === 1">
                             <ArrowBubbleChart v-if="panelIndex === 1" v-bind="chartProps" :chartType="'mehrwert'"
-                                :years="[2022, 2023, 2024, 2025]" :height="isMobile() ? '75vh' : '45vh'"
-                                :bubble-position="isMobile() ? [8, 30, 53] : [28, 53, 78]"
-                                :timeline-start="isMobile() ? 5 : 25" :percentage-shift="isMobile() ? 30 : 25"
-                                :bubble-gap="2" />
+                                :years="[2022, 2023, 2024, 2025]" :height="'45vh'" :bubble-position="[28, 53, 78]"
+                                :timeline-start="25" :percentage-shift="25" :bubble-gap="2" />
                             <div class="mehrwert-bg-img">
                                 <img id="theo" src="@img/VRR/Characters/Theo.svg" alt="Theo" />
                                 <img id="orange-tram" src="@img/VRR/Transport/TramOrange.svg" alt="Orange Tram" />

@@ -1,6 +1,5 @@
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
-import { isMobile } from '@src/composables/utils.js';
 import { loadData } from '@composables/VRR/useDataProcessing';
 
 import ArrowBubbleChart from './ArrowBubbleChart.vue';
@@ -333,7 +332,7 @@ onUnmounted(() => {
             <!-- Part 10 -->
             <SectionHeading v-model="headers.section9" :active-mode="activeMode" />
             <HorizontalScrollChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
-                :active-mode="activeMode" :year-shift="1" :wrapper-height="isMobile() ? '100vh' : '300vh'"
+                :active-mode="activeMode" :year-shift="1" :wrapper-height="'300vh'"
                 :scroll-sensitivity="0.2" :category-names="chartData?.categoryNames" />
             <!-- ----------------------------------------------------- -->
         </main>
