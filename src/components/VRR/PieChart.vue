@@ -1,9 +1,11 @@
 <script setup>
 import { ref, watch, onMounted } from 'vue';
 import * as d3 from 'd3';
+import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
     data: { type: Array, default: () => [] },
+    activeMode: { type: String, default: 'view' }
 });
 
 const emit = defineEmits(['pieSliceSelected']);
@@ -62,7 +64,10 @@ watch(() => props.data, (newData) => {
                             {{ arc.data.Percentage }}%
                         </div>
                         <div class="description-text">
-                            {{ labels[index] }}
+                            <EditableTextField :model-value="labels[index]" :active-mode="activeMode"
+                                @update:model-value="val => labels[index] = val" :rows="2" :width="'100%'"
+                                :font-size="'12px'" :line-height="1.3" :padding="'0'" :font-weight="'400'"
+                                :border-radius="'8px'" />
                         </div>
                     </div>
                 </foreignObject>
@@ -103,7 +108,6 @@ path[filter="url(#expandedDropShadow)"]:hover {
     font-size: 24px;
     font-weight: 700;
     color: black;
-    margin-bottom: 5px;
 }
 
 .description-text {
@@ -111,17 +115,5 @@ path[filter="url(#expandedDropShadow)"]:hover {
     font-weight: 400;
     color: black;
     line-height: 1.3;
-}
-
-@media (max-width: 768px) {
-    svg {
-        width: 90vw;
-        height: auto;
-    }
-
-    .label-container {
-        width: fit-content;
-        padding-left: 10px;
-    }
 }
 </style>

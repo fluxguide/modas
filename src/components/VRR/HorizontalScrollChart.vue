@@ -4,6 +4,7 @@ import { useScroll, useElementBounding } from '@vueuse/core'
 import ArrowBubbleChart from './ArrowBubbleChart.vue'
 import Timeline from './Timeline.vue'
 import { isMobile } from '@src/composables/utils.js'
+import EditableTextField from '@src/components/EditableTextField.vue'
 
 const props = defineProps({
     // How many additional year panels to create
@@ -11,17 +12,14 @@ const props = defineProps({
         type: Number,
         default: 1
     },
-    // How many years to shift for each panel
     yearShift: {
         type: Number,
         default: 1
     },
-    // Height of the wrapper (affects scroll distance)
     wrapperHeight: {
         type: String,
         default: '300vh'
     },
-    // Show progress indicator
     showProgress: {
         type: Boolean,
         default: true
@@ -40,6 +38,7 @@ const props = defineProps({
         default: () => []
     },
     categoryNames: { type: Object, default: () => ({}) },
+    activeMode: { type: String, default: 'view' }
 })
 
 // Get all other props to pass to ArrowBubbleChart
@@ -48,26 +47,21 @@ const chartProps = computed(() => {
     return rest
 })
 
-// Refs
+const textField = ref('Auf Basis der gesammelten Erfahrungen werden vom VRR folgende Ziele verfolgt:\n\nAufbau eines vollautomatisierten KI-Chatbots inkl. LLM als nächste Entwicklungsstufe\n\nVernetzte, KI-gestützte Serviceplattform')
+
 const containerRef = ref()
 const scrollX = ref(0)
 
-// Use useScroll to track window scroll
 const { y: scrollY } = useScroll(window)
 
-// Get bounding info for the container
 const { top: containerTop, height: containerHeight } = useElementBounding(containerRef)
 
-// Generate panels (same years for all panels, different content)
 const panelCount = computed(() => props.additionalPanels + 1)
 
-// Calculate horizontal scroll progress based on vertical scroll
 const scrollProgress = computed(() => {
     if (!containerTop.value || !containerHeight.value) return 0
 
-    // Start scrolling when the container comes into view
     const scrollStart = containerTop.value + window.innerHeight * props.scrollSensitivity
-    // End scrolling when we've scrolled through the container
     const scrollEnd = containerTop.value + containerHeight.value - window.innerHeight * (1 - props.scrollSensitivity)
 
     if (scrollY.value < scrollStart) return 0
@@ -76,17 +70,13 @@ const scrollProgress = computed(() => {
     return (scrollY.value - scrollStart) / (scrollEnd - scrollStart)
 })
 
-// Watch for scroll progress changes and update horizontal position
 watch(scrollProgress, (progress) => {
-    // Calculate max scroll distance
     // Each panel is 100vw, so total scroll = (number of panels - 1) * viewport width
     const maxScroll = window.innerWidth * (props.additionalPanels)
     scrollX.value = progress * maxScroll
 }, { immediate: true })
 
-// Handle window resize
 const handleResize = () => {
-    // Recalculate scroll position on resize
     const maxScroll = window.innerWidth * (props.additionalPanels)
     scrollX.value = scrollProgress.value * maxScroll
 }
@@ -107,12 +97,9 @@ defineExpose({
 
 <template>
     <div ref="containerRef" class="horizontal-scroll-wrapper" :style="{ height: wrapperHeight }">
-        <!-- Sticky container that holds the horizontally scrolling content -->
         <div class="horizontal-scroll-container">
             <div class="horizontal-content" :style="{ transform: `translateX(-${scrollX}px)` }">
-
                 <div v-for="panelIndex in panelCount" :key="`panel-${panelIndex}`" class="chart-panel">
-                    <!-- Pass through all props to ArrowBubbleChart -->
                     <div class="timeline-wrapper" :style="{ width: '100%' }">
                         <div v-if="panelIndex === 1">
                             <ArrowBubbleChart v-if="panelIndex === 1" v-bind="chartProps" :chartType="'mehrwert'"
@@ -131,18 +118,10 @@ defineExpose({
                                     <img id="waving-robot" src="@img/VRR/Robot/Waving.svg" alt="Waving Robot">
                                     <div class="coloured-space">
                                         <div class="white-space">
-                                            <h1 class="h1-list">
-                                                <ul>
-                                                    <span>
-                                                        Auf Basis der gesammelten Erfahrungen werden vom VRR folgende
-                                                        Ziele
-                                                        verfolgt:
-                                                    </span>
-                                                    <li>Aufbau eines vollautomatisierten KI-Chatbots inkl. LLM als
-                                                        nächste Entwicklungsstufe</li>
-                                                    <li>Vernetzte, KI-gestützte Serviceplattform</li>
-                                                </ul>
-                                            </h1>
+                                            <EditableTextField :model-value="textField"
+                                                @update:model-value="val => textField = val" :active-mode="activeMode"
+                                                :rows="8" :width="'100%'" :font-size="'24px'" :line-height="1.2"
+                                                :text-align="'left'" :font-weight="'normal'" :padding="'3vh'" />
                                         </div>
                                     </div>
                                 </div>
@@ -301,21 +280,6 @@ defineExpose({
     padding: 0px 20px;
 }
 
-
-.white-space .h1-list {
-    width: 100%;
-}
-
-.white-space .h1-list ul span {
-    font-weight: 400;
-}
-
-.white-space h1 {
-    line-height: 1.8;
-    text-wrap: wrap;
-    font-size: 25px;
-}
-
 #waving-robot {
     position: absolute;
     top: -20%;
@@ -337,91 +301,5 @@ defineExpose({
     transform: rotateY(180deg);
     opacity: 0.1;
     z-index: 1;
-}
-
-@media (max-width: 768px) {
-    .horizontal-scroll-container {
-        position: relative;
-        height: auto;
-        overflow: visible;
-    }
-
-    .horizontal-content {
-        display: flex;
-        flex-direction: column;
-        transform: none !important;
-        width: 100%;
-    }
-
-    .chart-panel {
-        width: 100vw;
-        height: 75vh;
-        align-items: start;
-        margin-top: 0;
-    }
-
-    .chart-panel :deep(.arrow-line) {
-        height: 100%;
-    }
-
-    .timeline-wrapper {
-        height: 100%;
-    }
-
-    .panel-content {
-        height: 100%;
-    }
-
-    .coloured-space {
-        width: 60%;
-        padding: 15px 10px;
-        right: 5%;
-        top: 20%;
-    }
-
-    .white-space h1 {
-        font-size: 16px;
-    }
-
-    #waving-robot {
-        top: 0;
-        right: 5%;
-        height: 50%;
-        transform: rotate(-30deg);
-    }
-
-    .bg-theresa {
-        position: relative;
-        z-index: 1;
-    }
-
-    .bg-theresa #theresa {
-        position: absolute;
-        bottom: 0;
-        right: 0;
-        height: 60%;
-    }
-
-    .mehrwert-bg-img {
-        height: 20vh;
-        margin-top: 0;
-    }
-
-    .timeline-wrapper :deep(.chart-container) {
-        margin-top: 0;
-    }
-
-    .timeline-wrapper :deep(.category-labels) {
-        top: 0;
-    }
-
-    .timeline-wrapper :deep(.label-text) {
-        width: fit-content;
-    }
-
-    .timeline-at-bottom {
-        top: 0;
-        height: 100%;
-    }
 }
 </style>

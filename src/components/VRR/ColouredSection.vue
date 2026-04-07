@@ -1,15 +1,3 @@
-<template>
-    <div class="section-wrapper" :class="wrapperClass">
-        <slot name="background"></slot>
-        <div class="coloured-space" :class="colouredClass">
-            <div class="white-space" :class="whiteSpaceClass">
-                <slot></slot>
-            </div>
-        </div>
-        <slot name="extra"></slot>
-    </div>
-</template>
-
 <script setup>
 defineProps({
     wrapperClass: {
@@ -26,6 +14,18 @@ defineProps({
     }
 });
 </script>
+
+<template>
+    <div class="section-wrapper" :class="wrapperClass">
+        <slot name="background"></slot>
+        <div class="coloured-space" :class="colouredClass">
+            <div class="white-space" :class="whiteSpaceClass">
+                <slot></slot>
+            </div>
+        </div>
+        <slot name="extra"></slot>
+    </div>
+</template>
 
 <style scoped>
 .section-wrapper {
@@ -95,47 +95,5 @@ defineProps({
 
 .robot-white {
     padding: 0 10px;
-}
-
-@media (max-width: 768px) {
-    .coloured-space {
-        margin-top: -5vh;
-        width: 80%;
-        padding: 20px 10px;
-    }
-
-    .white-space {
-        flex-direction: column;
-        height: fit-content;
-        gap: 1rem;
-        padding: 15px 20px;
-    }
-
-    .robot-form-wrapper {
-        width: 80vw !important;
-        align-self: center;
-    }
-
-    .robot-form-coloured {
-        width: 100%;
-        top: -25%;
-        left: 0;
-        transform: none;
-    }
-
-    .robot-chatbot-wrapper {
-        margin-top: 20%;
-    }
-
-    .robot-coloured {
-        width: 80vw;
-        height: auto;
-        left: 10%;
-        z-index: 2;
-    }
-
-    .robot-white {
-        padding: 10px;
-    }
 }
 </style>

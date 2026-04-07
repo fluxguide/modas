@@ -1,4 +1,6 @@
 <script setup>
+import EditableTextField from '@src/components/EditableTextField.vue';
+
 defineProps({
     phaseTitle: {
         type: String,
@@ -19,6 +21,10 @@ defineProps({
     phaseClass: {
         type: String,
         default: 'phase1'
+    },
+    activeMode: {
+        type: String,
+        default: 'view'
     }
 });
 </script>
@@ -26,8 +32,15 @@ defineProps({
 <template>
     <div class="phase-card" :class="phaseClass">
         <div class="phase-text">
-            <h1 class="phase-heading">{{ phaseTitle }}</h1>
-            <h1><span>{{ phaseDescription }}</span></h1>
+            <EditableTextField :model-value="phaseTitle" @update:model-value="$emit('update:phaseTitle', $event)"
+                :active-mode="activeMode" :rows="1" :width="'100%'" :font-size="'32px'" :line-height="1.2"
+                :padding="'0'" :font-weight="'bold'" />
+            <EditableTextField :model-value="phaseDescription"
+                @update:model-value="$emit('update:phaseDescription', $event)" :active-mode="activeMode" :rows="2"
+                :width="'100%'" :font-size="'24px'" :line-height="1.5" :padding="'0'"
+                :font-weight="'normal'" />
+            <!-- <h1 class="phase-heading">{{ phaseTitle }}</h1>
+            <h1><span>{{ phaseDescription }}</span></h1> -->
         </div>
         <img :src="characterImage" :alt="characterAlt">
     </div>
@@ -72,6 +85,8 @@ defineProps({
 
 .phase-text {
     width: 100%;
+    padding: 0 24px;
+    z-index: 100;
 }
 
 .phase-heading {
@@ -86,51 +101,5 @@ defineProps({
     bottom: 10%;
     width: 90%;
     max-height: 50%;
-}
-
-@media (max-width: 768px) {
-    .phase-card {
-        width: 70%;
-        height: fit-content;
-        margin: 0;
-        align-items: start;
-        flex-direction: row;
-        padding: 10px 10px 10px 0;
-    }
-
-    .phase1 {
-        top: 23vh;
-    }
-
-    .phase2 {
-        top: 43vh;
-    }
-
-    .phase1,
-    .phase2 {
-        left: auto;
-        right: 5%;
-    }
-
-    .phase-card h1 {
-        font-size: 16px;
-    }
-
-    .phase-card h1 span {
-        font-size: 14px;
-    }
-
-    .phase-text {
-        width: 50%;
-    }
-
-    .phase-card img {
-        position: relative;
-        bottom: auto;
-        width: 50%;
-        height: 15vh;
-        max-height: none;
-        margin: 0;
-    }
 }
 </style>

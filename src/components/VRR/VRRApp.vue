@@ -42,25 +42,32 @@ const headers = ref({
     section9: 'Mehrwert ohne Verdrängung'
 });
 
-// Data for bullet lists
-const testlaufItems = [
-    'Laufzeit: <span>Oktober</span> 2022 <span>bis September</span> 2024',
-    'Ziel: <span>Test eines</span> digitalen, automatisierten Kundenkanals; <span>Erkenntnisgewinnung hinsichtlich</span> Kundenakzeptanz <span>und</span> Möglichkeiten <span>der</span> Substitution klassischer Dialogkanäle',
-    'Technologie: KI-gestützter Chatbot',
-    'Zielgruppe: Fahrgäste <span>mit Serviceanfragen</span>'
-];
+const textFields = ref({
+    first: 'Service-Chat',
+    second: 'Digitale Transformation im Kundenservice',
+    third: '"Wie können wir Fahrgastanfragen schnell, effizient und rund um die Uhr bearbeiten?"',
+    forth: 'Laufzeit: Oktober 2022 bis September 2024\nZiel: Test eines digitalen, automatisierten Kundenkanals; Erkenntnisgewinnung hinsichtlich Kundenakzeptanz und Möglichkeiten der Substitution klassischer Dialogkanäle\nTechnologie: KI-gestützter Chatbot\nZielgruppe: Fahrgäste mit Serviceanfragen',
+    fifth: 'Start: Go-Live am 04.10. (Webseite vrr.de)\nReaktive Anzeige des Chatbuttons\nNutzerbewertung: Abfrage der Zufriedenheit der Nutzer / subjektive Auskunftsqualität in Form einer Sternebewertung',
+    sixth: 'Hallo Mensch!\nIch bin ein Chatbot. Du kannst mich alles fragen!',
+    seventh: 'Q&A Chatbot\n\nAufbau Q&A Chatbot: Modellierung sog. "Flows" (Abläufe) für verschiedene Themenbereiche, in Zukunft KI-gestützt.\nAntwortgenerierung: Ausspielung von bis zu fünf verschiedenen Wissensartikeln, auch als Verlinkung\nIdentifizierung von geeigneten Themen für das (priorisierte) Beauskunften durch Chatbot',
+});
 
-const phase1Items = [
-    'Start: <span>Go-Live am 04.10. (Webseite vrr.de)</span>',
-    'Reaktive Anzeige des Chatbuttons',
-    'Nutzerbewertung: <span>Abfrage der Zufriedenheit der Nutzer / subjektive Auskunftsqualität in Form einer Sternebewertung</span>'
-];
-
-const chatbotItems = [
-    '<span>Aufbau Q&A Chatbot:</span> Modellierung <span>sog.</span> „Flows" <span>(Abläufe) für</span> verschiedene Themenbereiche<span>, in Zukunft KI-gestützt.</span>',
-    'Antwortgenerierung: <span>Ausspielung von bis zu fünf verschiedenen Wissensartikeln, auch als Verlinkung</span>',
-    'Identifizierung <span>von</span> geeigneten Themen <span>für das (priorisierte) Beauskunften durch Chatbot</span>'
-];
+const phases = ref({
+    phase1: {
+        title: 'Phase 1',
+        description: 'Personenbedienter Chat',
+        characterImage: paul,
+        characterAlt: 'Paul',
+        phaseClass: 'phase1'
+    },
+    phase2: {
+        title: 'Phase 2',
+        description: 'Q&A-Chatbot, KI unterstützt',
+        characterImage: robotHandsDown,
+        characterAlt: 'Robot Hands Down',
+        phaseClass: 'phase2'
+    }
+});
 
 const selectedPieSlice = ref(null);
 
@@ -135,8 +142,12 @@ onUnmounted(() => {
         <header>
             <img src="@img/VRR/Logo.svg" alt="VRR Logo" />
             <div>
-                <h1><span>Service-Chat</span></h1>
-                <h1>Digitale Transformation im Kundenservice</h1>
+                <EditableTextField :model-value="textFields.first" @update:model-value="val => textFields.first = val"
+                    :active-mode="activeMode" :rows="1" :width="'100%'" :font-size="'32px'" :line-height="1"
+                    :padding="'0vh'" :font-weight="'normal'" />
+                <EditableTextField :model-value="textFields.second" @update:model-value="val => textFields.second = val"
+                    :active-mode="activeMode" :rows="1" :width="'100%'" :font-size="'32px'" :line-height="1"
+                    :padding="'0vh'" :font-weight="'bold'" />
             </div>
         </header>
         <main>
@@ -185,10 +196,9 @@ onUnmounted(() => {
                 </template>
 
                 <img id="paul" src="@img/VRR/Characters/Paul.svg" alt="Paul">
-                <h1>" <span>Wie können wir Fahrgastanfragen</span> schnell, effizient <span>und</span> rund um
-                    die Uhr
-                    <span>bearbeiten?</span>
-                </h1>
+                <EditableTextField :model-value="textFields.third" @update:model-value="val => textFields.third = val"
+                    :active-mode="activeMode" :rows="6" :width="'100%'" :font-size="'32px'" :line-height="1.6"
+                    :padding="'0'" />
             </ColouredSection>
             <!-- ----------------------------------------------------- -->
 
@@ -206,7 +216,9 @@ onUnmounted(() => {
                     </div>
                 </template>
 
-                <BulletList :items="testlaufItems" />
+                <EditableTextField :model-value="textFields.forth" @update:model-value="val => textFields.forth = val"
+                    :active-mode="activeMode" :rows="7" :width="'100%'" :font-size="'24px'" :line-height="2"
+                    :padding="'0'" />
 
                 <template #extra>
                     <PartnerLogos />
@@ -226,10 +238,16 @@ onUnmounted(() => {
                 <img id="theresa-phases" src="@img/VRR/Characters/Theresa.svg" alt="Theresa">
 
                 <div class="phase-cards">
-                    <PhaseCard phase-title="Phase 1" phase-description="Personenbedienter Chat" :character-image="paul"
-                        character-alt="Paul" phase-class="phase1" />
-                    <PhaseCard phase-title="Phase 2" phase-description="Q&A-Chatbot, KI unterstützt"
-                        :character-image="robotHandsDown" character-alt="Robot Hands Down" phase-class="phase2" />
+                    <PhaseCard :active-mode="activeMode" @update:phaseTitle="val => phases.phase1.title = val"
+                        @update:phaseDescription="val => phases.phase1.description = val"
+                        :phase-title="phases.phase1.title" :phase-description="phases.phase1.description"
+                        :character-image="phases.phase1.characterImage" :character-alt="phases.phase1.characterAlt"
+                        :phase-class="phases.phase1.phaseClass" />
+                    <PhaseCard :active-mode="activeMode" @update:phaseTitle="val => phases.phase2.title = val"
+                        @update:phaseDescription="val => phases.phase2.description = val"
+                        :phase-title="phases.phase2.title" :phase-description="phases.phase2.description"
+                        :character-image="phases.phase2.characterImage" :character-alt="phases.phase2.characterAlt"
+                        :phase-class="phases.phase2.phaseClass" />
                     <Timeline />
                 </div>
             </div>
@@ -239,7 +257,9 @@ onUnmounted(() => {
             <SectionHeading :show-logo="false" v-model="headers.section5" :active-mode="activeMode" />
 
             <ColouredSection>
-                <BulletList :items="phase1Items" />
+                <EditableTextField :model-value="textFields.fifth" @update:model-value="val => textFields.fifth = val"
+                    :active-mode="activeMode" :rows="7" :width="'100%'" :font-size="'24px'" :line-height="2"
+                    :padding="'0'" />
 
                 <template #extra>
                     <img id="paul-big" src="@img/VRR/Characters/Paul.svg" alt="Paul">
@@ -253,14 +273,17 @@ onUnmounted(() => {
                 <img id="robot-cheering" src="@img/VRR/Robot/HandsUpCheering.svg" alt="Robot with hands up cheering">
                 <div class="robot-chatbot-section">
                     <div class="message">
-                        <h1>Hallo Mensch!</h1>
-                        <h1><span>Ich bin ein</span> Chatbot.</h1>
-                        <h1><span>Du kannst mich alles fragen!</span></h1>
+                        <EditableTextField :model-value="textFields.sixth"
+                            @update:model-value="val => textFields.sixth = val" :active-mode="activeMode" :rows="4"
+                            :width="'100%'" :font-size="'32px'" :line-height="1.2" :text-align="'center'"
+                            :font-weight="'normal'" :padding="'3vh'" />
                     </div>
                     <div class="section-wrapper">
                         <ColouredSection wrapper-class="robot-chatbot-wrapper" coloured-class="robot-coloured"
                             white-space-class="robot-white">
-                            <BulletList :title="'Q&A Chatbot'" :items="chatbotItems" />
+                            <EditableTextField :model-value="textFields.seventh"
+                                @update:model-value="val => textFields.seventh = val" :active-mode="activeMode"
+                                :rows="8" :width="'100%'" :font-size="'26px'" :line-height="2" :padding="'3vh'" />
                         </ColouredSection>
                     </div>
                 </div>
@@ -271,9 +294,12 @@ onUnmounted(() => {
             <SectionHeading :show-logo="false" v-model="headers.section7" :active-mode="activeMode" />
             <div class="character-chart">
                 <img id="character-change" :src="characterImage" alt="Character">
-                <PieChart :data="chartData?.pieData" @pie-slice-selected="handlePieSliceSelected" />
+                <PieChart :data="chartData?.pieData" :active-mode="activeMode"
+                    @pie-slice-selected="handlePieSliceSelected" />
                 <div class="message-character">
-                    <h1>{{ characterMessage }}</h1>
+                    <EditableTextField :model-value="characterMessage" :active-mode="activeMode" :rows="2"
+                        :width="'100%'" :font-size="'16px'" :line-height="1.4" :text-align="'center'"
+                        :font-weight="'normal'" :padding="'2vh'" />
                 </div>
             </div>
             <!-- ----------------------------------------------------- -->
@@ -313,7 +339,7 @@ onUnmounted(() => {
 
             <!-- Part 10 -->
             <SectionHeading :show-logo="false" v-model="headers.section9" :active-mode="activeMode" />
-            <HorizontalScrollChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
+            <HorizontalScrollChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData" :active-mode="activeMode"
                 :year-shift="1" :wrapper-height="isMobile() ? '100vh' : '300vh'" :scroll-sensitivity="0.2"
                 :category-names="chartData?.categoryNames" />
             <!-- ----------------------------------------------------- -->
@@ -336,8 +362,11 @@ header {
     align-items: center;
     margin: 2% 0 2% 5%;
     color: #760B5A;
-    line-height: 1;
     gap: 2rem;
+}
+
+header div {
+    width: 80%;
 }
 
 header img {
@@ -361,7 +390,7 @@ main {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-bottom: 2%;
+    margin-top: 2%;
     height: 45vh;
 }
 
@@ -381,7 +410,7 @@ main {
     justify-content: center;
     overflow: hidden;
     height: 25vh;
-    margin-bottom: 5%;
+    margin-bottom: 3%;
 }
 
 #red-tram {
@@ -611,12 +640,6 @@ main {
     background-color: white;
     padding: 2rem 3rem;
     border-radius: 0 150px 230px 190px;
-    line-height: 1.2;
-    text-align: center;
-}
-
-.message h1 {
-    margin-top: 0;
 }
 
 .character-chart {
