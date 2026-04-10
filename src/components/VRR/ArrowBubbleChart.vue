@@ -61,10 +61,10 @@ const mehrwertData = computed(() => {
 });
 
 const bubbleColorPalette = [
-    { color: '#001C0C', fontSize: '4.5vw', borderRadius: 40 },
-    { color: '#004F22', fontSize: '3.5vw', borderRadius: 12 },
-    { color: '#43A86B', fontSize: '3vw', borderRadius: 8 },
-    { color: 'rgba(0, 28, 12, 0.9)', fontSize: '9vw', borderRadius: 25 },
+    { color: '#001C0C', borderRadius: 40 },
+    { color: '#004F22', borderRadius: 12 },
+    { color: '#43A86B', borderRadius: 8 },
+    { color: 'rgba(0, 28, 12, 0.9)', borderRadius: 25 },
 ];
 
 const categoryIndexMap = computed(() => {
@@ -76,7 +76,15 @@ const categoryIndexMap = computed(() => {
 
 const getBubbleLabel = (type) => props.categoryNames[type] ?? type;
 const getBubbleColor = (type) => bubbleColorPalette[categoryIndexMap.value[type] ?? 0].color;
-const getNumberFontSize = (type) => bubbleColorPalette[categoryIndexMap.value[type] ?? 0].fontSize;
+const getNumberFontSize = (bubbleHeight) => {
+    const minFont = 0.8;
+    const maxFont = 4.5;
+    const minHeight = 2;
+    const maxHeight = 25;
+
+    const scaled = minFont + ((bubbleHeight - minHeight) / (maxHeight - minHeight)) * (maxFont - minFont);
+    return Math.max(minFont, Math.min(maxFont, scaled)) + 'vw';
+};
 const getBorderRadius = (color) => {
     const config = bubbleColorPalette.find(c => c.color === color);
     return config?.borderRadius ?? 8;
@@ -205,13 +213,13 @@ const generateChart = (chartType) => {
             <div class="category-labels">
                 <div v-if="props.chartType === 'mehrwert'">
                     <BubbleLabel v-for="(position, catKey) in labelPositions" :key="catKey"
-                        :text="getBubbleLabel(catKey)" :color="getBubbleColor(catKey)"
-                        :fontSize="getNumberFontSize(catKey)" :position="position" :spacing-factor="0.8" />
+                        :text="getBubbleLabel(catKey)" :color="getBubbleColor(catKey)" :fontSize="`20px`"
+                        :position="position" :spacing-factor="0.8" />
                 </div>
                 <div v-else class="stats-labels">
                     <div v-for="(position, catKey) in labelPositions" :key="catKey">
-                        <BubbleLabel :text="getBubbleLabel(catKey)" :color="getBubbleColor(catKey)"
-                            :fontSize="getNumberFontSize(catKey)" :position="position" :spacing-factor="0.8" />
+                        <BubbleLabel :text="getBubbleLabel(catKey)" :color="getBubbleColor(catKey)" :fontSize="`20px`"
+                            :position="position" :spacing-factor="0.8" />
                     </div>
                 </div>
             </div>
@@ -224,7 +232,9 @@ const generateChart = (chartType) => {
             backgroundColor: bubble.color,
             borderRadius: getBorderRadius(bubble.color) + 'px'
         }">
-            <div class="bubble-number" :style="{ fontSize: bubble.fontSize }">{{ bubble.number }}</div>
+            <div class="bubble-number" :style="{ fontSize: getNumberFontSize(bubble.height) }">
+                {{ bubble.number }}
+            </div>
         </div>
     </div>
 </template>

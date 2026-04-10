@@ -120,7 +120,7 @@ if "data" in st.session_state and st.session_state.data:
         st.markdown(
             f"""
             <div class="data-recommendation">
-                💡 <strong>{uploaded_filename}</strong> passt am besten zur Vorlage <strong>{rec_label}</strong>
+                <strong>{uploaded_filename}</strong> passt am besten zur Vorlage <strong>{rec_label}</strong>
             </div>
             """,
             unsafe_allow_html=True,
