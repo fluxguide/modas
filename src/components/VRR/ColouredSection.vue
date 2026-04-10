@@ -64,18 +64,19 @@ defineProps({
 }
 
 .robot-form-wrapper {
-    width: 60%;
+    width: 60% !important;
+    height: 100% !important;
 }
 
 .robot-form-coloured {
-    width: 80%;
-    height: fit-content;
+    width: 100%;
     transform: none;
-    top: 5%;
-    left: 5%;
+    top: -10%;
+    left: 0%;
 }
 
 .robot-form-white {
+    height: 100%;
     flex-direction: column;
     background-color: rgba(255, 255, 255, 0.75);
     align-items: center;

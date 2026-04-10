@@ -44,7 +44,7 @@ const textFields = ref({
     second: 'Digitale Transformation im Kundenservice',
     third: '"Wie können wir Fahrgastanfragen schnell, effizient und rund um die Uhr bearbeiten?"',
     forth: 'Laufzeit: Oktober 2022 bis September 2024\nZiel: Test eines digitalen, automatisierten Kundenkanals; Erkenntnisgewinnung hinsichtlich Kundenakzeptanz und Möglichkeiten der Substitution klassischer Dialogkanäle\nTechnologie: KI-gestützter Chatbot\nZielgruppe: Fahrgäste mit Serviceanfragen',
-    fifth: 'Start: Go-Live am 04.10. (Webseite vrr.de)\nReaktive Anzeige des Chatbuttons\nNutzerbewertung: Abfrage der Zufriedenheit der Nutzer / subjektive Auskunftsqualität in Form einer Sternebewertung',
+    fifth: 'Start: Go-Live am 04.10. \nReaktive Anzeige des Chatbuttons\nNutzerbewertung: Abfrage der Zufriedenheit der Nutzer / subjektive Auskunftsqualität in Form einer Sternebewertung',
     sixth: 'Hallo Mensch!\nIch bin ein Chatbot. Du kannst mich alles fragen!',
     seventh: 'Q&A Chatbot\n\nAufbau Q&A Chatbot: Modellierung sog. "Flows" (Abläufe) für verschiedene Themenbereiche, in Zukunft KI-gestützt.\nAntwortgenerierung: Ausspielung von bis zu fünf verschiedenen Wissensartikeln, auch als Verlinkung\nIdentifizierung von geeigneten Themen für das (priorisierte) Beauskunften durch Chatbot',
 });
@@ -609,7 +609,7 @@ main {
 
 #robot-cheering {
     position: sticky;
-    top: 10%;
+    top: 20%;
     width: 30%;
     margin-left: 10%;
 }
@@ -688,6 +688,13 @@ main {
     flex-direction: row;
     align-items: center;
     justify-content: center;
+    padding: 16px 48px 16px 0;
+    margin: 32px 0;
+}
+
+.robot-form .form {
+    height: fit-content;
+    gap: 0;
 }
 
 .stars-robot {
@@ -697,19 +704,21 @@ main {
     align-items: center;
     display: flex;
     flex-direction: column;
+    justify-content: center;
 }
 
 #robot-hands-up-cheering {
-    height: 100%;
+    height: 80%;
     width: fit-content;
     transform: rotate(-10deg);
 }
 
 #stars {
     position: absolute;
-    top: 5%;
-    width: 60%;
+    top: 0%;
+    width: 50%;
     z-index: 2;
+    margin-left: -24px;
 }
 
 .robot-form .white-space h1 {
@@ -718,10 +727,8 @@ main {
 }
 
 .intro {
-    height: 20%;
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
 }
 
 .intro h1 {

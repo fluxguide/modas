@@ -199,16 +199,6 @@ const generateChart = (chartType) => {
     <div class="arrow-bubble-chart" :style="{ height: props.height }">
         <div class="chart-container">
             <Timeline :years="props.years" :start-point="props.timelineStart" :markers-gap="props.percentageShift" />
-            <LayerArrow v-if="props.chartType === 'mehrwert'" :startYear="2022" :endYear="2024" :dataPoints="[
-                { year: 2023, month: 10, label: 'Oktober 2023' },
-                { year: 2024, month: 9 }
-            ]" :start-point="props.timelineStart" :dot-line-length="90" :line-label="'52 200 betreute Dialoge'"
-                :layer-color="'#0E6631'" />
-            <LayerArrow v-if="props.chartType === 'mehrwert'" :startYear="2022" :endYear="2024" :dataPoints="[
-                { year: 2022, month: 10, label: 'Oktober 2022' },
-                { year: 2024, month: 9, label: 'September 2024' }
-            ]" :start-point="props.timelineStart" :dot-line-length="180" :line-label="'16 327 Chatbot-Dialoge'"
-                :layer-color="'#43A86B'" />
 
             <div class="category-labels">
                 <div v-if="props.chartType === 'mehrwert'">

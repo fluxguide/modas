@@ -46,7 +46,7 @@ const chartProps = computed(() => {
     return rest
 })
 
-const textField = ref('Auf Basis der gesammelten Erfahrungen werden vom VRR folgende Ziele verfolgt:\n\nAufbau eines vollautomatisierten KI-Chatbots inkl. LLM als nächste Entwicklungsstufe\n\nVernetzte, KI-gestützte Serviceplattform')
+const textField = ref('Auf Basis der gesammelten Erfahrungen werden folgende Ziele verfolgt:\n\nAufbau eines vollautomatisierten KI-Chatbots inkl. LLM als nächste Entwicklungsstufe\n\nVernetzte, KI-gestützte Serviceplattform')
 
 const containerRef = ref()
 const scrollX = ref(0)

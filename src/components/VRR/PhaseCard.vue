@@ -39,8 +39,6 @@ defineProps({
                 @update:model-value="$emit('update:phaseDescription', $event)" :active-mode="activeMode" :rows="2"
                 :width="'100%'" :font-size="'24px'" :line-height="1.5" :padding="'0'"
                 :font-weight="'normal'" />
-            <!-- <h1 class="phase-heading">{{ phaseTitle }}</h1>
-            <h1><span>{{ phaseDescription }}</span></h1> -->
         </div>
         <img :src="characterImage" :alt="characterAlt">
     </div>
@@ -68,32 +66,10 @@ defineProps({
     right: 24%;
 }
 
-.phase-card h1 {
-    padding: 0rem 1rem;
-    margin: 15px 0 0 0;
-    word-wrap: break-word;
-    overflow-wrap: break-word;
-    hyphens: auto;
-    text-align: left;
-    width: fit-content;
-    box-sizing: border-box;
-}
-
-.phase-card h1 span {
-    font-weight: 400;
-}
-
 .phase-text {
     width: 100%;
-    padding: 0 24px;
+    padding: 12px 24px;
     z-index: 100;
-}
-
-.phase-heading {
-    color: #760B5A;
-    background-color: white;
-    width: fit-content;
-    border-radius: 0 10px 10px 0;
 }
 
 .phase-card img {
