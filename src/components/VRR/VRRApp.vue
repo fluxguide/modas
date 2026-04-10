@@ -165,7 +165,7 @@ onUnmounted(() => {
 
             <div class="chart-overlay">
                 <ArrowBubbleChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
-                    chart-type="stats" :height="'55vh'" :bubble-position="[28, 51, 75]" :timeline-start="25"
+                    chart-type="stats" :active-mode="activeMode" :height="'40vh'" :bubble-position="[28, 51, 75]" :timeline-start="25"
                     :percentage-shift="23" :bubble-gap="1" :category-names="chartData?.categoryNames" />
             </div>
 
