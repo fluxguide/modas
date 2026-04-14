@@ -90,7 +90,7 @@ watch(resolvedColors, redraw, { deep: true });
     place-items: center;
     cursor: pointer;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.40);
-    z-index: 3;
+    z-index: 5;
     pointer-events: auto !important;
 }
 
