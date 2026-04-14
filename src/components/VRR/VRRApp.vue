@@ -165,8 +165,9 @@ onUnmounted(() => {
 
             <div class="chart-overlay">
                 <ArrowBubbleChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
-                    chart-type="stats" :active-mode="activeMode" :height="'40vh'" :bubble-position="[28, 51, 75]" :timeline-start="25"
-                    :percentage-shift="23" :bubble-gap="1" :category-names="chartData?.categoryNames" />
+                    chart-type="stats" :active-mode="activeMode" :height="'40vh'" :bubble-position="[28, 51, 75]"
+                    :timeline-start="25" :percentage-shift="23" :bubble-gap="1"
+                    :category-names="chartData?.categoryNames" :category-colours="props.categoryColours" />
             </div>
 
             <div class="bg-img">
@@ -332,8 +333,8 @@ onUnmounted(() => {
             <!-- Part 10 -->
             <SectionHeading v-model="headers.section9" :active-mode="activeMode" />
             <HorizontalScrollChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
-                :active-mode="activeMode" :year-shift="1" :wrapper-height="'300vh'"
-                :scroll-sensitivity="0.2" :category-names="chartData?.categoryNames" />
+                :active-mode="activeMode" :year-shift="1" :wrapper-height="'300vh'" :scroll-sensitivity="0.2"
+                :category-names="chartData?.categoryNames" />
             <!-- ----------------------------------------------------- -->
         </main>
     </div>

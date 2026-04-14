@@ -3,10 +3,32 @@ import pandas as pd
 from components import story_viewer
 from shared import setup_page
 
-DEFAULT_COLORS = ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"]
+STORY_COLOURS = {
+    "vrr": ["#001C0C", "#004F22", "#43A86B"],
+    "thuringia": ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
+}
 
-selected = st.session_state.get("selected_template", "thuringia")
+CHART_COLUMNS_BY_TEMPLATE = {
+    "thuringia": {
+        0: {"townhall_name", "townhall_city", "stops_within_100m"},
+        1: {"townhall_name", "townhall_city", "stops_within_200m"},
+        2: {"townhall_name", "townhall_city", "stops_within_300m"},
+    },
+    "vrr": {
+        0: {"category", "2022", "2023", "2024"},
+        1: {"category", "2022", "2023", "2024"},
+    },
+}
+
+selected = st.session_state.get("selected_template", "")
 selected_template_label = st.session_state.get("selected_template_label", "")
+
+data = st.session_state.get("data")
+if not data:
+    st.warning("No uploaded data found in this session. Please reupload your file.")
+    if st.button("Go to upload", width="stretch"):
+        st.switch_page("app.py")
+    st.stop()
 
 setup_page(
     show_top_bar=True,
@@ -17,15 +39,15 @@ setup_page(
     top_bar_right_button={"label": "Neustart", "href": "/"},
 )
 
-data = st.session_state.get("data")
-if not data:
-    st.warning("No uploaded data found in this session. Please reupload your file.")
-    if st.button("Go to upload", width="stretch"):
-        st.switch_page("app.py")
-    st.stop()
 
-if "arrow_colors" not in st.session_state:
-    st.session_state.arrow_colors = DEFAULT_COLORS.copy()
+def get_story_colors(template):
+    return STORY_COLOURS.get(template)
+
+
+colours = get_story_colors(selected)
+
+if "category_colors" not in st.session_state:
+    st.session_state.category_colors = colours.copy()
 
 print("columnLabelMap in session:", bool(st.session_state.get("columnLabelMap")))
 print("keys sample:", list((st.session_state.get("columnLabelMap") or {}).items())[:5])
@@ -34,7 +56,7 @@ result = story_viewer(
     template=selected,
     data=st.session_state.data,
     columnLabelMap=st.session_state.get("columnLabelMap"),
-    categoryColours=st.session_state.arrow_colors,
+    categoryColours=st.session_state.category_colors,
     mode="simulation",
     key="story",
 )
@@ -42,26 +64,18 @@ result = story_viewer(
 if result and isinstance(result, dict) and result.get("action") == "open_data_editor":
 
     @st.dialog("CSV bearbeiten")
-    def edit_csv_dialog():
-        CHART_COLUMNS_BY_RANGE = {
-            0: {"townhall_name", "townhall_city", "stops_within_100m"},
-            1: {"townhall_name", "townhall_city", "stops_within_200m"},
-            2: {"townhall_name", "townhall_city", "stops_within_300m"},
-        }
-
-        current_range = result.get("currentRange", 0)
-        chart_columns = CHART_COLUMNS_BY_RANGE.get(
-            current_range, CHART_COLUMNS_BY_RANGE[0]
-        )
-
+    def edit_csv_dialog(template, current_range=None):
         df = pd.DataFrame(st.session_state.data)
+
+        template_columns = CHART_COLUMNS_BY_TEMPLATE.get(template, {})
+        chart_columns = template_columns.get(current_range or 0, set())
 
         column_config = {
             col: st.column_config.Column(label=f"◆ {col}")
             for col in df.columns
             if col in chart_columns
         }
-        
+
         edited_df = st.data_editor(
             df,
             width="stretch",
@@ -153,30 +167,31 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
                 """,
             unsafe_allow_html=True,
         )
-        c1, c2, c3, c4 = st.columns(4, gap="medium")
+
+        cols = st.columns(len(st.session_state.category_colors), gap="medium")
 
         def color_chip(col, id):
             with col:
                 new = st.color_picker(
                     label="color",
-                    value=st.session_state.arrow_colors[id],
-                    key=f"arrow_color_{id}",
+                    value=st.session_state.category_colors[id],
+                    key=f"category_color_{id}",
                     label_visibility="collapsed",
                 )
-                st.session_state.arrow_colors[id] = new
+                st.session_state.category_colors[id] = new
                 st.markdown(
                     f'<span class="hex-label">{new}</span>',
                     unsafe_allow_html=True,
                 )
 
-        color_chip(c1, 0)
-        color_chip(c2, 1)
-        color_chip(c3, 2)
-        color_chip(c4, 3)
+        for i, col in enumerate(cols):
+            color_chip(col, i)
 
         if st.button("Speichern", width="stretch", key="csv_save_btn"):
             st.session_state.data = edited_df.to_dict(orient="records")
             st.session_state["story"] = None
             st.rerun()
 
-    edit_csv_dialog()
+
+if result and isinstance(result, dict) and result.get("action") == "open_data_editor":
+    edit_csv_dialog(selected, result.get("currentRange"))

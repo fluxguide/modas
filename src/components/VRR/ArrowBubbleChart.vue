@@ -3,7 +3,6 @@ import { computed } from 'vue';
 import Timeline from './Timeline.vue';
 import BubbleLabel from './BubbleLabel.vue';
 import { Streamlit } from 'streamlit-component-lib';
-import { active } from 'd3';
 
 const props = defineProps({
     chartType: {
@@ -50,6 +49,10 @@ const props = defineProps({
     activeMode: {
         type: String,
         default: 'view'
+    },
+    categoryColours: {
+        type: Array,
+        default: () => []
     }
 });
 
@@ -69,22 +72,26 @@ const mehrwertData = computed(() => {
     return props.mehrwertData;
 });
 
-const bubbleColorPalette = [
-    { color: '#001C0C', borderRadius: 40 },
-    { color: '#004F22', borderRadius: 12 },
-    { color: '#43A86B', borderRadius: 8 },
-    { color: 'rgba(0, 28, 12, 0.9)', borderRadius: 25 },
-];
+const bubbleColorPalette = computed(() => {
+    const colours = props.categoryColours?.length ? props.categoryColours : [
+        '#001C0C', '#004F22', '#43A86B', 'rgba(0, 28, 12, 0.9)'
+    ];
+    const borderRadius = [40, 12, 8, 25];
+    return colours.map((color, i) => ({
+        color,
+        borderRadius: borderRadius[i] ?? 8
+    }));
+});
 
 const categoryIndexMap = computed(() => {
     return Object.keys(props.categoryNames).reduce((map, cat, i) => {
-        map[cat] = i % bubbleColorPalette.length;
+        map[cat] = i % bubbleColorPalette.value.length;
         return map;
     }, {});
 });
 
 const getBubbleLabel = (type) => props.categoryNames[type] ?? type;
-const getBubbleColor = (type) => bubbleColorPalette[categoryIndexMap.value[type] ?? 0].color;
+const getBubbleColor = (type) => bubbleColorPalette.value[categoryIndexMap.value[type] ?? 0].color;
 const getNumberFontSize = (bubbleHeight) => {
     const minFont = 0.8;
     const maxFont = 4.5;
@@ -95,7 +102,7 @@ const getNumberFontSize = (bubbleHeight) => {
     return Math.max(minFont, Math.min(maxFont, scaled)) + 'vw';
 };
 const getBorderRadius = (color) => {
-    const config = bubbleColorPalette.find(c => c.color === color);
+    const config = bubbleColorPalette.value.find(c => c.color === color);
     return config?.borderRadius ?? 8;
 };
 
