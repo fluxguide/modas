@@ -4,8 +4,16 @@ from components import story_viewer
 from shared import setup_page
 
 STORY_COLOURS = {
-    "vrr": ["#001C0C", "#004F22", "#43A86B"],
-    "thuringia": ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
+    "vrr": {
+        1: ["#001C0C", "#004F22", "#43A86B"],
+        2: [
+            "#001C0C",
+        ],
+        3: ["#001C0C", "#004F22", "#43A86B"],
+    },
+    "thuringia": {
+        1: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
+    },
 }
 
 CHART_COLUMNS_BY_TEMPLATE = {
@@ -15,8 +23,9 @@ CHART_COLUMNS_BY_TEMPLATE = {
         2: {"townhall_name", "townhall_city", "stops_within_300m"},
     },
     "vrr": {
-        0: {"category", "2022", "2023", "2024"},
-        1: {"category", "2022", "2023", "2024"},
+        1: {"category", "chart number", "2022", "2023", "2024"},
+        2: {"category", "chart_number", "2022", "2023", "2024"},
+        3: {"category", "2022", "2023", "2024", "percentage"},
     },
 }
 
@@ -64,7 +73,7 @@ result = story_viewer(
 if result and isinstance(result, dict) and result.get("action") == "open_data_editor":
 
     @st.dialog("CSV bearbeiten")
-    def edit_csv_dialog(template, current_range=None):
+    def edit_csv_dialog(template, current_range=None, chart_number=None):
         df = pd.DataFrame(st.session_state.data)
 
         template_columns = CHART_COLUMNS_BY_TEMPLATE.get(template, {})
@@ -168,24 +177,29 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
             unsafe_allow_html=True,
         )
 
-        cols = st.columns(len(st.session_state.category_colors), gap="medium")
-
-        def color_chip(col, id):
+        def color_chip(col, chart_number, id):
             with col:
                 new = st.color_picker(
                     label="color",
-                    value=st.session_state.category_colors[id],
-                    key=f"category_color_{id}",
+                    value=st.session_state.category_colors[chart_number][id],
+                    key=f"category_color_{chart_number}_{id}",
                     label_visibility="collapsed",
                 )
-                st.session_state.category_colors[id] = new
+                st.session_state.category_colors[chart_number][id] = new
                 st.markdown(
                     f'<span class="hex-label">{new}</span>',
                     unsafe_allow_html=True,
                 )
 
+        colors_to_show = (
+            st.session_state.category_colors.get(chart_number, [])
+            if chart_number is not None
+            else []
+        )
+
+        cols = st.columns(len(colors_to_show), gap="medium")
         for i, col in enumerate(cols):
-            color_chip(col, i)
+            color_chip(col, chart_number, i)
 
         if st.button("Speichern", width="stretch", key="csv_save_btn"):
             st.session_state.data = edited_df.to_dict(orient="records")
@@ -194,4 +208,4 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
 
 
 if result and isinstance(result, dict) and result.get("action") == "open_data_editor":
-    edit_csv_dialog(selected, result.get("currentRange"))
+    edit_csv_dialog(selected, result.get("currentRange"), result.get("chartNumber"))

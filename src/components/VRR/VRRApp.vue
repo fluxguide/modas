@@ -20,7 +20,7 @@ const props = defineProps({
     data: { type: Array, default: () => [] },
     mode: { type: String, default: 'view' },
     columnLabelMap: { type: Object, default: () => ({}) },
-    categoryColours: { type: Object, default: () => [] },
+    categoryColours: { type: Object, default: () => ({}) },
 });
 
 const chartData = ref(null)
@@ -164,10 +164,10 @@ onUnmounted(() => {
             <SectionHeading v-model="headers.section1" :active-mode="activeMode" />
 
             <div class="chart-overlay">
-                <ArrowBubbleChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
-                    chart-type="stats" :active-mode="activeMode" :height="'40vh'" :bubble-position="[28, 51, 75]"
-                    :timeline-start="25" :percentage-shift="23" :bubble-gap="1"
-                    :category-names="chartData?.categoryNames" :category-colours="props.categoryColours" />
+                <ArrowBubbleChart :first-chart-data="chartData?.stats" :chart-number="1" :active-mode="activeMode"
+                    :height="'40vh'" :bubble-position="[28, 51, 75]" :timeline-start="25" :percentage-shift="23"
+                    :bubble-gap="1" :margin-top="`5%`" :category-names="chartData?.categoryNames"
+                    :category-colours="props.categoryColours?.[1]" />
             </div>
 
             <div class="bg-img">
@@ -332,9 +332,9 @@ onUnmounted(() => {
 
             <!-- Part 10 -->
             <SectionHeading v-model="headers.section9" :active-mode="activeMode" />
-            <HorizontalScrollChart :stats-data="chartData?.stats" :mehrwert-data="chartData?.mehrwertData"
+            <HorizontalScrollChart :second-chart-data="chartData?.secondChartData" :chart-number="2"
                 :active-mode="activeMode" :year-shift="1" :wrapper-height="'300vh'" :scroll-sensitivity="0.2"
-                :category-names="chartData?.categoryNames" />
+                :category-names="chartData?.categoryNames" :category-colours="props.categoryColours?.[2]" />
             <!-- ----------------------------------------------------- -->
         </main>
     </div>

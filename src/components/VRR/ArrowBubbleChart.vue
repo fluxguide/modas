@@ -5,10 +5,10 @@ import BubbleLabel from './BubbleLabel.vue';
 import { Streamlit } from 'streamlit-component-lib';
 
 const props = defineProps({
-    chartType: {
-        type: String,
-        default: 'stats',
-        validator: (value) => ['stats', 'mehrwert'].includes(value)
+    chartNumber: {
+        type: Number,
+        default: 1,
+        validator: (value) => [1, 2].includes(value)
     },
     years: {
         type: Array,
@@ -34,11 +34,15 @@ const props = defineProps({
         type: Number,
         default: 1
     },
-    statsData: {
+    marginTop: {
+        type: String,
+        default: '0'
+    },
+    firstChartData: {
         type: Object,
         default: null
     },
-    mehrwertData: {
+    secondChartData: {
         type: Array,
         default: () => []
     },
@@ -57,19 +61,19 @@ const props = defineProps({
 });
 
 const openEditor = () => {
-    Streamlit.setComponentValue({ action: "open_data_editor" });
+    Streamlit.setComponentValue({ action: "open_data_editor", chartNumber: props.chartNumber });
 };
 
 const chartData = computed(() => {
-    return generateChart(props.chartType);
+    return generateChart(props.chartNumber);
 });
 
-const statsData = computed(() => {
-    return props.statsData;
+const firstChartData = computed(() => {
+    return props.firstChartData;
 });
 
-const mehrwertData = computed(() => {
-    return props.mehrwertData;
+const secondChartData = computed(() => {
+    return props.secondChartData;
 });
 
 const bubbleColorPalette = computed(() => {
@@ -141,14 +145,14 @@ const labelPositions = computed(() => {
     }, {});
 });
 
-const generateChart = (chartType) => {
+const generateChart = (chartNumber) => {
     // Chart configuration based on type
     const chartConfigs = {
-        stats: {
-            data: statsData.value?.statsByCat,
-            dataItems: statsData.value ? Object.keys(statsData.value.statsByCat).map(cat => ({
+        1: {
+            data: firstChartData.value?.statsByCat,
+            dataItems: firstChartData.value ? Object.keys(firstChartData.value.statsByCat).map(cat => ({
                 key: cat,
-                data: statsData.value.statsByCat[cat]
+                data: firstChartData.value.statsByCat[cat]
             })) : [],
             years: props.years,
             getValue: (dataItem, year) => dataItem.data[`total${year}`],
@@ -156,12 +160,12 @@ const generateChart = (chartType) => {
             getColor: (dataItem) => getBubbleColor(dataItem.key),
             getFontSize: (dataItem) => getNumberFontSize(dataItem.key)
         },
-        mehrwert: {
-            data: mehrwertData.value,
-            dataItems: [...new Set(mehrwertData.value?.map(d => d.category) || [])],
+        2: {
+            data: secondChartData.value,
+            dataItems: [...new Set(secondChartData.value?.map(d => d.category) || [])],
             years: props.years,
             getValue: (category, year) => {
-                const dataPoint = mehrwertData.value?.find(d => d.year === year && d.category === category);
+                const dataPoint = secondChartData.value?.find(d => d.year === year && d.category === category);
                 return dataPoint ? dataPoint.value : 0;
             },
             getLabel: (category) => getBubbleLabel(category),
@@ -170,7 +174,7 @@ const generateChart = (chartType) => {
         }
     };
 
-    const config = chartConfigs[chartType];
+    const config = chartConfigs[chartNumber];
     if (!config || !config.data) return [];
 
     const bubbles = [];
@@ -212,7 +216,7 @@ const generateChart = (chartType) => {
 </script>
 
 <template>
-    <div class="arrow-bubble-chart" :style="{ height: props.height }">
+    <div class="arrow-bubble-chart" :style="{ height: props.height, marginTop: props.marginTop }">
         <div class="chart-container" :class="{ 'is-edit': activeMode === 'edit' }">
             <button v-if="activeMode === 'edit'" class="chart-edit-btn" @click.stop="openEditor"
                 title="Diagrammdaten bearbeiten" aria-label="Diagrammdaten bearbeiten">
@@ -225,7 +229,7 @@ const generateChart = (chartType) => {
             <Timeline :years="props.years" :start-point="props.timelineStart" :markers-gap="props.percentageShift" />
 
             <div class="category-labels">
-                <div v-if="props.chartType === 'mehrwert'">
+                <div v-if="props.chartNumber === 2">
                     <BubbleLabel v-for="(position, catKey) in labelPositions" :key="catKey"
                         :text="getBubbleLabel(catKey)" :color="getBubbleColor(catKey)" :fontSize="`20px`"
                         :position="position" :spacing-factor="0.8" />
@@ -260,7 +264,6 @@ const generateChart = (chartType) => {
     display: flex;
     align-items: center;
     justify-content: center;
-    margin-top: 5%;
 }
 
 .chart-container {
@@ -327,7 +330,7 @@ const generateChart = (chartType) => {
     place-items: center;
     cursor: pointer;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.40);
-    z-index: 3;
+    z-index: 5;
     pointer-events: auto !important;
 }
 

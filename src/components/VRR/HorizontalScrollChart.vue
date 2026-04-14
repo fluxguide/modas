@@ -28,16 +28,17 @@ const props = defineProps({
         type: Number,
         default: 0.3
     },
-    statsData: {
+    firstChartData: {
         type: Object,
         default: null
     },
-    mehrwertData: {
+    secondChartData: {
         type: Array,
         default: () => []
     },
     categoryNames: { type: Object, default: () => ({}) },
-    activeMode: { type: String, default: 'view' }
+    activeMode: { type: String, default: 'view' },
+    categoryColours: { type: Array, default: () => [] }
 })
 
 // Get all other props to pass to ArrowBubbleChart
@@ -75,6 +76,10 @@ watch(scrollProgress, (progress) => {
     scrollX.value = progress * maxScroll
 }, { immediate: true })
 
+watch(() => props.secondChartData, (val) => {
+    console.log('secondChartData in HorizontalScrollChart:', val)
+}, { immediate: true })
+
 const handleResize = () => {
     const maxScroll = window.innerWidth * (props.additionalPanels)
     scrollX.value = scrollProgress.value * maxScroll
@@ -101,9 +106,11 @@ defineExpose({
                 <div v-for="panelIndex in panelCount" :key="`panel-${panelIndex}`" class="chart-panel">
                     <div class="timeline-wrapper" :style="{ width: '100%' }">
                         <div v-if="panelIndex === 1">
-                            <ArrowBubbleChart v-if="panelIndex === 1" v-bind="chartProps" :chartType="'mehrwert'"
+                            <ArrowBubbleChart v-if="panelIndex === 1" v-bind="chartProps" :chart-number="2"
+                                :second-chart-data="secondChartData" :categoryNames="categoryNames"
+                                :category-colours="props.categoryColours" :activeMode="activeMode"
                                 :years="[2022, 2023, 2024, 2025]" :height="'45vh'" :bubble-position="[28, 53, 78]"
-                                :timeline-start="25" :percentage-shift="25" :bubble-gap="2" />
+                                :timeline-start="25" :percentage-shift="25" :bubble-gap="2" :margin-top="0" />
                             <div class="mehrwert-bg-img">
                                 <img id="theo" src="@img/VRR/Characters/Theo.svg" alt="Theo" />
                                 <img id="orange-tram" src="@img/VRR/Transport/TramOrange.svg" alt="Orange Tram" />
