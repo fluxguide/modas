@@ -9,7 +9,10 @@ STORY_COLOURS = {
         2: [
             "#001C0C",
         ],
-        3: ["#001C0C", "#004F22", "#43A86B"],
+        3: [
+            "#52AE32",
+            "#63BEDD",
+        ],
     },
     "thuringia": {
         1: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
@@ -25,7 +28,7 @@ CHART_COLUMNS_BY_TEMPLATE = {
     "vrr": {
         1: {"category", "chart number", "2022", "2023", "2024"},
         2: {"category", "chart_number", "2022", "2023", "2024"},
-        3: {"category", "2022", "2023", "2024", "percentage"},
+        3: {"category", "percentage"},
     },
 }
 
@@ -110,6 +113,11 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
                 div[data-testid="stLayoutWrapper"]>.stHorizontalBlock {
                     gap: 1rem !important;
                     margin-bottom: 3rem !important;
+                }
+                
+                div[data-testid="stLayoutWrapper"]>.stHorizontalBlock>* {
+                    width: 100% !important;
+                    flex: 0;
                 }
                 
                 div[data-testid="stDialog"] div.stButton {

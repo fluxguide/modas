@@ -288,7 +288,8 @@ onUnmounted(() => {
             <div class="character-chart">
                 <img id="character-change" :src="characterImage" alt="Character">
                 <PieChart :data="chartData?.pieData" :active-mode="activeMode"
-                    @pie-slice-selected="handlePieSliceSelected" />
+                    @pie-slice-selected="handlePieSliceSelected" :category-colours="props.categoryColours?.[3]"
+                    :category-names="chartData?.categoryNames" />
                 <div class="message-character">
                     <EditableTextField :model-value="characterMessage" :active-mode="activeMode" :rows="2"
                         :width="'100%'" :font-size="'16px'" :line-height="1.4" :text-align="'center'"
@@ -653,6 +654,8 @@ main {
     position: absolute;
     right: 10%;
     bottom: 0;
+    height: 100%;
+    width: 40%;
 }
 
 .message-character::before {
