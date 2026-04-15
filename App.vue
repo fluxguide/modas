@@ -2,7 +2,7 @@
   <div class="story-container" ref="container">
     <ThuringiaStory v-if="template === 'thuringia'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap" :categoryColours="categoryColours" />
     <VRRStory v-else-if="template === 'vrr'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap" :categoryColours="categoryColours" />
-    <DresddenStory v-else-if="template === 'dresden'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap" :categoryColours="categoryColours" />
+    <DresdenStory v-else-if="template === 'dresden'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap" :categoryColours="categoryColours" />
     <div v-else class="loading">Loading story...</div>
   </div>
 </template>
@@ -12,7 +12,7 @@ import { ref, onMounted } from "vue";
 import { Streamlit } from "streamlit-component-lib";
 import ThuringiaStory from "@src/components/Thuringia/ThuringiaApp.vue";
 import VRRStory from "@src/components/VRR/VRRApp.vue";
-import DresddenStory from "@src/components/Dresden/DresdenApp.vue";
+import DresdenStory from "@src/components/Dresden/DresdenApp.vue";
 
 const storyData = ref(null);
 const columnLabelMap = ref({});
