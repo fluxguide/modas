@@ -138,7 +138,7 @@ modas/
 ├── components/             # Reusable UI components
 ├── src/                    # Core logic and data processing
 ├── static/                 # Images, GIFs, and other static assets
-├── assets/                 # Additional assets
+├── styles/                 # Additional styles
 └── .streamlit/             # Streamlit configuration
 ```
 

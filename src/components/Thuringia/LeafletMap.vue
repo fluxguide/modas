@@ -2,7 +2,7 @@
 import 'leaflet/dist/leaflet.css';
 import L from 'leaflet';
 import { ref, onMounted, onUnmounted, watch } from 'vue';
-import { selectedColour, isMobile, isLongScreen, isLongLongScreen } from '@src/composables/utils.js';
+import { selectedColour, isLongScreen, isLongLongScreen } from '@src/composables/utils.js';
 import { useMapUtils } from '@src/composables/Thuringia/useMapUtils.js';
 
 import FilterList from './FilterList.vue';

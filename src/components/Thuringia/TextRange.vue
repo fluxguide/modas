@@ -44,7 +44,7 @@ defineExpose({
   <div class="text-ranges">
     <div :id="`textRange${currentRange}`" class="textRange">
       <EditableTextField v-for="stopType in stopTypes" :key="stopType.id" :model-value="getTextString(stopType)"
-        :active-mode="activeMode" :rows="1" width="70vw" font-size="18px" :line-height="1.3" :top-bottom-padding="`0px`"
+        :active-mode="activeMode" :rows="1" width="70vw" font-size="18px" :line-height="1.3" :padding="`0px`"
         :text-align="`center`" />
     </div>
   </div>
@@ -57,37 +57,5 @@ defineExpose({
   display: flex;
   justify-content: center;
   align-items: center;
-}
-
-@media (max-width: 768px) {
-  .text-ranges {
-    width: 100%;
-    height: 100%;
-    display: flex;
-    justify-content: center;
-    align-items: flex-start;
-  }
-
-  .textRange {
-    padding: 0;
-  }
-
-  .textRange p {
-    font-size: 12px;
-    margin: 15% 5% 10% 8%;
-    line-height: 2;
-  }
-}
-
-@media (min-width: 2560px) {
-  .textRange p {
-    font-size: 21px;
-  }
-}
-
-@media (min-width: 3440px) {
-  .textRange p {
-    font-size: 30px;
-  }
 }
 </style>

@@ -1,6 +1,7 @@
 import streamlit as st
 from st_clickable_images import clickable_images
-from shared import setup_page
+from shared import setup_page, score_templates
+import pandas as pd
 import html
 
 # Debug
@@ -89,16 +90,41 @@ uploaded_filename = html.escape(st.session_state.get("uploaded_filename", ""))
 st.markdown(
     f"""
     <div class="template-page-instructions">
-        <p>
-            <span>{uploaded_filename}</span> wurde erfolgreich hochgeladen.
-        </p>
         <h4>
             Klicken Sie auf eine Vorlage, um Details anzuzeigen und das Layout für Ihre Story-Simulation auszuwählen.
         </h4>
+        <div class="template-info-btn">
+            <button class="info-btn">
+                Was ist eine Vorlage?
+                <span class="info-tooltip">
+                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vel felis tempor orci tempus dapibus quis in purus. Proin imperdiet nisi sapien, quis feugiat nibh ornare porttitor. Vestibulum bibendum a ex ac sagittis. Morbi posuere nulla pretium erat euismod, ut iaculis enim suscipit. Nullam sit amet ipsum volutpat, ultrices orci vitae, hendrerit elit. Vestibulum in ipsum at libero consequat congue sit amet id leo. Pellentesque pretium in nibh at congue. Duis nec erat mollis, viverra diam et, aliquet tellus. Vivamus imperdiet pulvinar nisi, a viverra ex tempor ut. Nam vel arcu lectus. Mauris eget turpis mi. Nunc at faucibus elit.
+                </span>
+            </button>
+        </div>
     </div>
     """,
     unsafe_allow_html=True,
 )
+
+if "data" in st.session_state and st.session_state.data:
+    df = pd.DataFrame(st.session_state.data)
+    rec = score_templates(df)
+
+    if rec["confidence"] >= 0.5 and rec["scores"][rec["recommended"]] >= 3:
+        label_map = {
+            "thuringia": "ÖPNV-Erreichbarkeit von Points of Interest",
+            "vrr": "Veränderungen in Projekten",
+            "dresden": "Städte in Bewegung",
+        }
+        rec_label = label_map.get(rec["recommended"], rec["recommended"])
+        st.markdown(
+            f"""
+            <div class="data-recommendation">
+                <strong>{uploaded_filename}</strong> passt am besten zur Vorlage <strong>{rec_label}</strong>
+            </div>
+            """,
+            unsafe_allow_html=True,
+        )
 
 if "last_clicked_row_1" not in st.session_state:
     st.session_state.last_clicked_row_1 = -1

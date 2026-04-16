@@ -3,19 +3,43 @@ import pandas as pd
 from components import story_viewer
 from shared import setup_page
 
-DEFAULT_COLORS = ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"]
+STORY_COLOURS = {
+    "thuringia": {
+        1: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
+    },
+    "vrr": {
+        1: ["#001C0C", "#004F22", "#43A86B"],
+        2: [
+            "#001C0C",
+        ],
+        3: [
+            "#52AE32",
+            "#63BEDD",
+        ],
+    },
+    "dresden": {
+        1: [""],
+    },
+}
 
-selected = st.session_state.get("selected_template", "thuringia")
+CHART_COLUMNS_BY_TEMPLATE = {
+    "thuringia": {
+        0: {"townhall_name", "townhall_city", "stops_within_100m"},
+        1: {"townhall_name", "townhall_city", "stops_within_200m"},
+        2: {"townhall_name", "townhall_city", "stops_within_300m"},
+    },
+    "vrr": {
+        1: {"category", "chart number", "2022", "2023", "2024"},
+        2: {"category", "chart_number", "2022", "2023", "2024"},
+        3: {"category", "percentage"},
+    },
+    "dresden": {
+        0: {""},
+    },
+}
+
+selected = st.session_state.get("selected_template", "")
 selected_template_label = st.session_state.get("selected_template_label", "")
-
-setup_page(
-    show_top_bar=True,
-    top_bar_links=[
-        {"label": f"{selected_template_label}", "href": "/simulation_mode"},
-    ],
-    active_page="/simulation_mode",
-    top_bar_right_button={"label": "Neustadt", "href": "/"},
-)
 
 data = st.session_state.get("data")
 if not data:
@@ -24,8 +48,24 @@ if not data:
         st.switch_page("app.py")
     st.stop()
 
-if "arrow_colors" not in st.session_state:
-    st.session_state.arrow_colors = DEFAULT_COLORS.copy()
+setup_page(
+    show_top_bar=True,
+    top_bar_links=[
+        {"label": f"{selected_template_label}", "href": "/simulation_mode"},
+    ],
+    active_page="/simulation_mode",
+    top_bar_right_button={"label": "Neustart", "href": "/"},
+)
+
+
+def get_story_colors(template):
+    return STORY_COLOURS.get(template)
+
+
+colours = get_story_colors(selected)
+
+if "category_colors" not in st.session_state:
+    st.session_state.category_colors = colours.copy()
 
 print("columnLabelMap in session:", bool(st.session_state.get("columnLabelMap")))
 print("keys sample:", list((st.session_state.get("columnLabelMap") or {}).items())[:5])
@@ -34,7 +74,7 @@ result = story_viewer(
     template=selected,
     data=st.session_state.data,
     columnLabelMap=st.session_state.get("columnLabelMap"),
-    categoryColours=st.session_state.arrow_colors,
+    categoryColours=st.session_state.category_colors,
     mode="simulation",
     key="story",
 )
@@ -42,26 +82,18 @@ result = story_viewer(
 if result and isinstance(result, dict) and result.get("action") == "open_data_editor":
 
     @st.dialog("CSV bearbeiten")
-    def edit_csv_dialog():
-        CHART_COLUMNS_BY_RANGE = {
-            0: {"townhall_name", "townhall_city", "stops_within_100m"},
-            1: {"townhall_name", "townhall_city", "stops_within_200m"},
-            2: {"townhall_name", "townhall_city", "stops_within_300m"},
-        }
-
-        current_range = result.get("currentRange", 0)
-        chart_columns = CHART_COLUMNS_BY_RANGE.get(
-            current_range, CHART_COLUMNS_BY_RANGE[0]
-        )
-
+    def edit_csv_dialog(template, current_range=None, chart_number=None):
         df = pd.DataFrame(st.session_state.data)
+
+        template_columns = CHART_COLUMNS_BY_TEMPLATE.get(template, {})
+        chart_columns = template_columns.get(current_range or 0, set())
 
         column_config = {
             col: st.column_config.Column(label=f"◆ {col}")
             for col in df.columns
             if col in chart_columns
         }
-        
+
         edited_df = st.data_editor(
             df,
             width="stretch",
@@ -87,6 +119,11 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
                 div[data-testid="stLayoutWrapper"]>.stHorizontalBlock {
                     gap: 1rem !important;
                     margin-bottom: 3rem !important;
+                }
+                
+                div[data-testid="stLayoutWrapper"]>.stHorizontalBlock>* {
+                    width: 100% !important;
+                    flex: 0;
                 }
                 
                 div[data-testid="stDialog"] div.stButton {
@@ -153,30 +190,36 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
                 """,
             unsafe_allow_html=True,
         )
-        c1, c2, c3, c4 = st.columns(4, gap="medium")
 
-        def color_chip(col, id):
+        def color_chip(col, chart_number, id):
             with col:
                 new = st.color_picker(
                     label="color",
-                    value=st.session_state.arrow_colors[id],
-                    key=f"arrow_color_{id}",
+                    value=st.session_state.category_colors[chart_number][id],
+                    key=f"category_color_{chart_number}_{id}",
                     label_visibility="collapsed",
                 )
-                st.session_state.arrow_colors[id] = new
+                st.session_state.category_colors[chart_number][id] = new
                 st.markdown(
                     f'<span class="hex-label">{new}</span>',
                     unsafe_allow_html=True,
                 )
 
-        color_chip(c1, 0)
-        color_chip(c2, 1)
-        color_chip(c3, 2)
-        color_chip(c4, 3)
+        colors_to_show = (
+            st.session_state.category_colors.get(chart_number, [])
+            if chart_number is not None
+            else []
+        )
+
+        cols = st.columns(len(colors_to_show), gap="medium")
+        for i, col in enumerate(cols):
+            color_chip(col, chart_number, i)
 
         if st.button("Speichern", width="stretch", key="csv_save_btn"):
             st.session_state.data = edited_df.to_dict(orient="records")
             st.session_state["story"] = None
             st.rerun()
 
-    edit_csv_dialog()
+
+if result and isinstance(result, dict) and result.get("action") == "open_data_editor":
+    edit_csv_dialog(selected, result.get("currentRange"), result.get("chartNumber"))

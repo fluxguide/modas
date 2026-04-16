@@ -1,8 +1,7 @@
 <script setup>
 import { ref, onMounted, watch, computed } from 'vue';
 import { useArrowChart } from '@src/composables/Thuringia/useArrowChart.js';
-import { isMobile, scaleRange, defaultCategoryColours } from '@src/composables/utils.js';
-// import { active } from 'd3';
+import { scaleRange, defaultCategoryColours } from '@src/composables/utils.js';
 import { Streamlit } from 'streamlit-component-lib';
 
 const props = defineProps({
@@ -25,7 +24,6 @@ const props = defineProps({
 });
 
 const svgRef = ref(null);
-// const chartContainer = ref(null);
 const resolvedColors = computed(() => {
     // if Streamlit didn’t send anything, fallback to defaults
     return (props.categoryColours && Object.keys(props.categoryColours).length === 4) ? props.categoryColours : defaultCategoryColours;
@@ -60,7 +58,7 @@ watch(resolvedColors, redraw, { deep: true });
         </svg>
     </button>
     <div ref="chartContainer" class="arrow-chart"
-        :style="`transform: ${isMobile() ? `scaleY(${scaleRange(props.currentRange)}) rotate(90deg)` : `scaleX(${scaleRange(props.currentRange)})`}; transform-origin: ${isMobile() ? 'top right' : 'right center'};`">
+        :style="`transform: ${`scaleX(${scaleRange(props.currentRange)})`}; transform-origin: 'right center';`">
         <svg ref="svgRef" class="svg" :class="{ 'is-edit': activeMode === 'edit' }"></svg>
     </div>
 </template>
@@ -92,7 +90,7 @@ watch(resolvedColors, redraw, { deep: true });
     place-items: center;
     cursor: pointer;
     box-shadow: 1px 1px 4px rgba(0, 0, 0, 0.40);
-    z-index: 3;
+    z-index: 5;
     pointer-events: auto !important;
 }
 
@@ -110,12 +108,5 @@ watch(resolvedColors, redraw, { deep: true });
     height: 15%;
     position: absolute;
     bottom: 0;
-}
-
-@media (max-width: 768px) {
-    .arrow-chart {
-        top: 70%;
-        left: 30%;
-    }
 }
 </style>

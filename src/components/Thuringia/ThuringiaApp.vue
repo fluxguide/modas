@@ -1,12 +1,10 @@
 <script setup>
 import { ref, onMounted, onUnmounted, watch, computed, toRef } from 'vue';
-import { useScroll } from '@vueuse/core';
-import { getScrollRange, selectedColour, isMobile } from '@src/composables/utils.js';
+import { getScrollRange, selectedColour } from '@src/composables/utils.js';
 import { useUIControls } from '@src/composables/Thuringia/useUIControls.js';
 import { useMapControls } from '@src/composables/Thuringia/useMapControls.js';
-import { computeStats } from '@composables/Thuringia/useDataProcessing';
-import { useColumnLabels } from '@composables/useColumnLabels';
-import { Streamlit } from "streamlit-component-lib";
+import { computeStats } from '@composables/Thuringia/useDataProcessing.js';
+import { useColumnLabels } from '@composables/useColumnLabels.js';
 
 import ArrowChart from '@src/components/Thuringia/ArrowChart.vue';
 import HeaderRange from '@src/components/Thuringia/HeaderRange.vue';
@@ -40,6 +38,8 @@ const arrowChartRef = ref(null);
 const scrollContainer = ref(null);
 const activeMode = ref('view');
 const isPresenting = ref(false);
+const scrollY = ref(0);
+let handleScroll = null;
 
 const textFields = ref({
   first: "STADT hat ANZAHL Rathäuser und ANZAHL Haltestellen innerhalb von ANZAHL Metern. \n\nUnd was bedeutet das für Inge?",
@@ -51,11 +51,6 @@ const textFields = ref({
 const { visibleLayers, handleMapReady, handleMarkerClick, handleLayerToggle } = useMapControls();
 
 const { showMainUI, hideMainUI, initializeUI, showMapImgUI, mapUI } = useUIControls();
-
-const { y: scrollY, isScrolling } = useScroll(scrollContainer, {
-  throttle: 16,
-  idle: 200,
-});
 
 const { col } = useColumnLabels(toRef(props, "columnLabelMap"));
 
@@ -99,6 +94,7 @@ watch(
 console.log("props.columnLabelMap at mount:", props.columnLabelMap);
 
 watch(scrollY, (newScrollY) => {
+  console.log("scrollY changed:", newScrollY)
   if (!initMidElement.value) return;
 
   const windowHeight = window.innerHeight;
@@ -137,29 +133,6 @@ watch(scrollY, (newScrollY) => {
       showMapButton.value = false;
       currentRange.value = newRange;
       showMainUI(newRange, headerRangeRef, textRangeRef, arrowChartRef);
-
-      // Progressive ground scaling for mobile based on arrow stages
-      if (isMobile()) {
-        const groundElement = document.querySelector('.main');
-        const headerRangeElement = document.querySelector('.headerRange');
-        if (groundElement) {
-          let groundHeight;
-          if (newRange === 0) {
-            groundHeight = 70; // Stage 0
-          } else if (newRange === 1) {
-            groundHeight = 75; // Stage 1
-          } else if (newRange === 2) {
-            groundHeight = 80; // Final stage
-          }
-          groundElement.style.height = `${groundHeight}vh`;
-
-          // Move HeaderRange up with ground expansion
-          if (headerRangeElement) {
-            const headerBottomPosition = groundHeight;
-            headerRangeElement.style.bottom = `${headerBottomPosition}vh`;
-          }
-        }
-      }
     }
   } else {
     arrowVisible.value = false;
@@ -168,19 +141,6 @@ watch(scrollY, (newScrollY) => {
     showMapButton.value = false;
     currentRange.value = 0;
     hideMainUI(headerRangeRef, textRangeRef, arrowChartRef);
-
-    // Reset ground height for mobile
-    if (isMobile()) {
-      const groundElement = document.querySelector('.main');
-      const headerRangeElement = document.querySelector('.headerRange');
-      if (groundElement) {
-        groundElement.style.height = '15vh';
-      }
-      // Reset HeaderRange position
-      if (headerRangeElement) {
-        headerRangeElement.style.bottom = '20vh';
-      }
-    }
   }
 }, {
   immediate: true // Run immediately onmount
@@ -236,29 +196,40 @@ const scrollHeight = computed(() => {
 });
 
 onMounted(async () => {
-  document.addEventListener("fullscreenchange", () => {
-    if (!document.fullscreenElement) {
-      isPresenting.value = false;
-    }
-  })
-
   initializeUI();
+
+  handleScroll = () => {
+    scrollY.value = scrollContainer.value?.scrollTop ?? window.scrollY;
+  };
+
+  if (scrollContainer.value) {
+    scrollContainer.value.addEventListener('scroll', handleScroll, { passive: true });
+  }
+  window.addEventListener('scroll', handleScroll, { passive: true });
+
+  document.addEventListener("fullscreenchange", () => {
+    if (!document.fullscreenElement) isPresenting.value = false;
+  });
 });
 
 onUnmounted(() => {
-  document.removeEventListener("fullscreenchange", () => { });
+  scrollContainer.value?.removeEventListener('scroll', handleScroll);
+  window.removeEventListener('scroll', handleScroll);
 });
 </script>
 
 <template>
   <div class="thuringia-app" ref="scrollContainer">
-    <SideMenu v-if="!isPresenting" :active-mode="activeMode" @mode-change="handleModeChange" />
+    <SideMenu v-if="!isPresenting" :active-mode="activeMode" :default-gradient="{
+      angle: 180,
+      stops: [{ color: '#c5b0ff', position: 0 }, { color: '#ffffff', position: 100 }]
+    }" @mode-change="handleModeChange" />
     <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Präsentationsansicht beenden</button>
     <div class="scroll-wrapper" :style="{ height: `${scrollHeight}px` }">
       <div class="init-mid" ref="initMidElement">
         <img src="@img/Thuringia/Emblem.png" alt="Emblem" id="emblemImage" />
         <EditableTextField v-model="textFields.first" :active-mode="activeMode" :rows="7" :width="`60%`"
-          :font-size="`36px`" :line-height="1.3" :top-bottom-padding="`3vh`" />
+          :font-size="`36px`" :line-height="1.3" :padding="`3vh`" />
       </div>
     </div>
     <div class="main" :style="{ '--selectedColour': selectedColour }">
@@ -283,7 +254,7 @@ onUnmounted(() => {
         <div v-if="showMapScrollytelling" class="map-scrollytelling">
           <div class="map-intro">
             <EditableTextField v-model="textFields.second" :active-mode="activeMode" :rows="12" :width="`100%`"
-              :font-size="`24px`" :line-height="1.8" :top-bottom-padding="`5vh`" />
+              :font-size="`24px`" :line-height="1.8" :padding="`5vh`" />
           </div>
           <div class="svg-map-container">
             <MapSVG :csv-data="stats?.stops_within_300m" />
@@ -292,7 +263,7 @@ onUnmounted(() => {
         <div v-if="showMapScrollytelling2" class="map-scrollytelling-2">
           <div class="map-intro">
             <EditableTextField v-model="textFields.third" :active-mode="activeMode" :rows="12" :width="`100%`"
-              :font-size="`24px`" :line-height="1.8" :top-bottom-padding="`5vh`" />
+              :font-size="`24px`" :line-height="1.8" :padding="`5vh`" />
           </div>
           <div class="svg-map-container">
             <MapSVG :csv-data="stats?.townhallsWithoutStopsWithin300m" :color-fill="'#E14A2C'" />
@@ -301,7 +272,7 @@ onUnmounted(() => {
         <div v-if="showMapButton" class="pre-map-view">
           <div class="map-intro">
             <EditableTextField v-model="textFields.forth" :active-mode="activeMode" :rows="7" :width="`100%`"
-              :font-size="`28px`" :line-height="1.8" :top-bottom-padding="`5vh`" />
+              :font-size="`28px`" :line-height="1.8" :padding="`5vh`" />
           </div>
           <button class="open-map-btn" @click="showMapOverlay = true">Erkunden Sie die
             Karte</button>
@@ -585,240 +556,5 @@ p {
 .thuringia-app:-moz-full-screen,
 .thuringia-app:-ms-fullscreen {
   background: transparent !important;
-}
-
-@media (max-width: 768px) {
-  .main {
-    height: 15vh;
-    padding: 10px;
-    position: fixed;
-    bottom: 0;
-  }
-
-  .above-ground {
-    position: absolute;
-    bottom: 100%;
-    left: 0;
-    width: 100%;
-    z-index: 4;
-    opacity: 1;
-  }
-
-  .cityHall {
-    position: absolute;
-    bottom: 0;
-    left: 0;
-    width: 42%;
-    height: 100%;
-    margin-left: 5px;
-    z-index: 5;
-    transition: all 0.8s ease-in-out;
-  }
-
-  #cloudsImage {
-    bottom: 20%;
-  }
-
-  .character {
-    width: 45%;
-    height: 100%;
-    z-index: 5;
-  }
-
-  .arrow,
-  .arrow.visible {
-    position: fixed;
-    width: 100%;
-    transition: scale 0.8s ease-in-out;
-    z-index: 4;
-  }
-
-  .ground-content {
-    position: absolute;
-    right: 0;
-    top: 0;
-    width: 60%;
-    height: 100%;
-    padding: 0px;
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: flex-start;
-  }
-
-  .ground-content:has(.open-map-btn) {
-    width: 100%;
-    align-items: center;
-    justify-content: center;
-    padding: 0;
-  }
-
-  #ingeImage.scrolled,
-  #busStopImage.scrolled {
-    position: fixed;
-    bottom: 10px;
-    transition: bottom 0.8s ease-in-out;
-  }
-
-  #ingeImage.scrolled {
-    width: 17%;
-    left: 15%;
-  }
-
-  #busStopImage.visible.scrolled {
-    width: 13%;
-    left: 5%;
-  }
-
-  #busStopImage.visible {
-    left: 10%;
-  }
-
-  #busImage {
-    width: 50%;
-    position: fixed;
-  }
-
-  .init-mid {
-    width: 90%;
-    margin: 5% auto;
-    text-align: center;
-  }
-
-  .init-mid h1 {
-    width: 100%;
-    font-size: 20px;
-    text-align: center;
-    line-height: 1.4;
-  }
-
-  #emblemImage {
-    width: 25%;
-    margin-bottom: 20px;
-  }
-
-  .pre-map-view,
-  .map-scrollytelling,
-  .map-scrollytelling-2 {
-    flex-direction: column;
-    margin: 0;
-    bottom: 5%;
-  }
-
-  .pre-map-view {
-    margin: 0;
-    align-items: center;
-    justify-content: start;
-    gap: 15%;
-  }
-
-  .svg-map-container {
-    position: relative;
-    width: 100%;
-    height: auto;
-    margin: 0;
-  }
-
-  .pre-map-view .map-intro {
-    width: 100%;
-  }
-
-  .map-intro {
-    width: 100%;
-    height: fit-content;
-    position: relative;
-    margin: 0;
-    display: flex;
-    flex-direction: column;
-    justify-content: start;
-  }
-
-  .map-intro h1 {
-    font-size: 24px;
-    margin: 10%;
-    margin-bottom: 0;
-  }
-
-  .map-intro h2 {
-    font-size: 18px;
-    margin: 10%;
-    margin-bottom: 0;
-  }
-
-  .map-scrollytelling .map-intro h2,
-  .map-scrollytelling-2 .map-intro h2 {
-    font-size: 18px;
-  }
-
-  .open-map-btn {
-    width: 80%;
-    padding: 10px 0px;
-    font-size: 16px;
-    margin: 0 10% 0 10%;
-    z-index: 7;
-  }
-}
-
-@media (min-width: 2560px) {
-
-  .map-scrollytelling,
-  .map-scrollytelling-2 {
-    margin: 0;
-    justify-content: space-evenly;
-  }
-
-  .map-scrollytelling .map-intro h2,
-  .map-scrollytelling-2 .map-intro h2 {
-    font-size: 34px;
-  }
-
-  .map-intro h1 {
-    font-size: 40px;
-  }
-
-  .map-intro h2 {
-    font-size: 30px;
-  }
-
-  .open-map-btn {
-    font-size: 28px;
-  }
-}
-
-@media (min-width: 3440px) {
-  .init-mid h1 {
-    font-size: 48px;
-  }
-
-  .map-scrollytelling,
-  .map-scrollytelling-2 {
-    margin: 0;
-    justify-content: space-evenly;
-  }
-
-  .map-scrollytelling .map-intro h2,
-  .map-scrollytelling-2 .map-intro h2 {
-    font-size: 42px;
-  }
-
-  .map-intro h1 {
-    font-size: 48px;
-  }
-
-  .map-intro h2 {
-    font-size: 38px;
-  }
-
-  .open-map-btn {
-    font-size: 36px;
-    padding: 18px 0;
-    border-radius: 15px;
-    border-width: 4px;
-    box-shadow: 3px 2px 12px rgba(0, 0, 0, 0.3);
-  }
-
-  .svg-map-container {
-    height: 90%;
-  }
 }
 </style>

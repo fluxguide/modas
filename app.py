@@ -73,7 +73,11 @@ with col1:
     )
 
     if uploaded_file:
-        df = pd.read_csv(uploaded_file)
+        df = pd.read_csv(
+            uploaded_file, sep=None, engine="python" # auto-detects delimiter
+        ) 
+        df.columns = df.columns.str.lower()
+        df = df.fillna("")
         st.session_state.columnLabelMap = {norm(c): c for c in df.columns}
         st.session_state.data = df.to_dict(orient="records")
 

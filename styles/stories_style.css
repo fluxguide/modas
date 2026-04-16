@@ -19,6 +19,6 @@ body {
 }
 
 .story-container:has(.dresden-app) {
-    background-image: url('@img/Dresden/BGTexture.svg');
+    background-image: url('../static/img/Dresden/BGTexture.svg');
     font-family: Bedstead;
 }

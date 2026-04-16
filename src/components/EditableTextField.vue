@@ -1,5 +1,4 @@
 <script setup>
-import { text } from 'd3';
 import { ref, watch } from 'vue';
 
 const props = defineProps({
@@ -9,8 +8,10 @@ const props = defineProps({
     width: { type: String, default: '60%' },
     fontSize: { type: String, default: '36px' },
     lineHeight: { type: Number, default: '1.3' },
-    topBottomPadding: { type: String, default: '5vh' },
+    padding: { type: String, default: '0vh' },
     textAlign: { type: String, default: 'left' },
+    fontWeight: { type: String, default: 'normal' },
+    borderRadius: { type: String, default: '12px' }
 });
 
 const emit = defineEmits(['update:textContent']);
@@ -29,7 +30,7 @@ watch(() => props.activeMode, (newMode) => {
     <v-textarea ref="textAreaRef" :text-content="textContent"
         @update:text-content="val => emit('update:textContent', val)" :readonly="activeMode !== 'edit'" variant="plain"
         hide-details no-resize :rows="rows" class="editable-text-comp"
-        :style="{ '--custom-font-size': fontSize, '--custom-width': width, '--rows': rows, '--custom-line-height': lineHeight, '--top-bottom-padding': topBottomPadding, '--custom-text-align': textAlign }"></v-textarea>
+        :style="{ '--custom-font-size': fontSize, '--custom-width': width, '--rows': rows, '--custom-line-height': lineHeight, '--padding': padding, '--custom-text-align': textAlign, '--custom-font-weight': fontWeight, '--custom-border-radius': borderRadius }"></v-textarea>
 </template>
 
 <style scoped>
@@ -40,9 +41,9 @@ watch(() => props.activeMode, (newMode) => {
 
 .editable-text-comp :deep(.v-field) {
     transition: all 0.3s ease;
-    border-radius: 12px;
+    border-radius: var(--custom-border-radius);
     border: 1px solid transparent;
-    padding: 0;
+    padding: 5px;
     display: flex;
     align-items: center;
     min-height: calc(var(--rows, 15) * 1.3 * var(--custom-font-size)) !important;
@@ -50,6 +51,7 @@ watch(() => props.activeMode, (newMode) => {
 
 .editable-text-comp :deep(textarea) {
     font-size: var(--custom-font-size) !important;
+    font-weight: var(--custom-font-weight) !important;
     line-height: var(--custom-line-height) !important;
     width: 100%;
     text-align: var(--custom-text-align);
@@ -68,6 +70,10 @@ watch(() => props.activeMode, (newMode) => {
 
 .editable-text-comp :deep(.v-input__control) {
     height: fit-content;
-    padding: var(--top-bottom-padding) 0;
+    padding: var(--padding) 0 !important;
+}
+
+.editable-text-comp :deep(.v-field--variant-plain) {
+    --v-field-padding-top: 0;
 }
 </style>
