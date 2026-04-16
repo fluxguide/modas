@@ -4,6 +4,9 @@ from components import story_viewer
 from shared import setup_page
 
 STORY_COLOURS = {
+    "thuringia": {
+        1: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
+    },
     "vrr": {
         1: ["#001C0C", "#004F22", "#43A86B"],
         2: [
@@ -14,8 +17,8 @@ STORY_COLOURS = {
             "#63BEDD",
         ],
     },
-    "thuringia": {
-        1: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
+    "dresden": {
+        1: [""],
     },
 }
 
@@ -29,6 +32,9 @@ CHART_COLUMNS_BY_TEMPLATE = {
         1: {"category", "chart number", "2022", "2023", "2024"},
         2: {"category", "chart_number", "2022", "2023", "2024"},
         3: {"category", "percentage"},
+    },
+    "dresden": {
+        0: {""},
     },
 }
 

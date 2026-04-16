@@ -10,9 +10,9 @@
 <script setup>
 import { ref, onMounted } from "vue";
 import { Streamlit } from "streamlit-component-lib";
-import ThuringiaStory from "@src/components/Thuringia/ThuringiaApp.vue";
-import VRRStory from "@src/components/VRR/VRRApp.vue";
-import DresdenStory from "@src/components/Dresden/DresdenApp.vue";
+import ThuringiaStory from "@components/Thuringia/ThuringiaApp.vue";
+import VRRStory from "@components/VRR/VRRApp.vue";
+import DresdenStory from "@components/Dresden/DresdenApp.vue";
 
 const storyData = ref(null);
 const columnLabelMap = ref({});

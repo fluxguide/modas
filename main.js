@@ -1,6 +1,7 @@
 import { createApp } from "vue";
 import App from "./App.vue";
-import "@assets/stories_style.css";
+import "@styles/stories_style.css";
+import '@styles/global_styles.css'
 import '@mdi/font/css/materialdesignicons.css'
 
 // Vuetify imports
