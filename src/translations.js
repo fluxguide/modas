@@ -4,12 +4,8 @@ export const translations = {
     en: 'Dresden in Motion',
   },
   intro_subtitle_line_1: {
-    de: 'Scrolle weiter und entdecke,',
-    en: 'Scroll on and discover,',
-  },
-  intro_subtitle_line_2: {
-    de: 'wie sich Dresden bewegt',
-    en: 'how Dresden moves',
+    de: 'Scrolle weiter und entdecke, wie sich Dresden bewegt',
+    en: 'Scroll on and discover, how Dresden moves',
   },
   intro_cta: {
     de: 'Scrollen zum Losfahren',
