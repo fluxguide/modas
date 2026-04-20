@@ -780,7 +780,8 @@ onUnmounted(() => {
                         fill="white" />
                 </svg>
                 <SpeechBubbleContent :title-key="activeStoryScene.titleKey" :title-params="activeStorySceneTitleParams"
-                    :lines="activeStoryScene.bubble" :metrics="activeStorySceneMetrics" />
+                    :lines="activeStoryScene.bubble" :metrics="activeStorySceneMetrics" :active-mode="activeMode"
+                    :edit-mode-active="editModeActive" />
             </article>
         </div>
 
@@ -840,7 +841,7 @@ onUnmounted(() => {
                 <div class="trees-info white-info-box">
                     <SpeechBubbleContent :title-key="safetyDetailsStory.titleKey"
                         :title-params="safetyDetailsTitleParams" :lines="safetyDetailsStory.bubble"
-                        :metrics="safetyDetailsMetrics" :active-mode="activeMode" :edit-mode-active="editModeActive" />
+                        :metrics="safetyDetailsMetrics" />
                 </div>
             </div>
         </section>

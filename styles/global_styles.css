@@ -542,7 +542,7 @@ body {
 }
 
 .character-wrapper--safety .speech-bubble {
-    max-width: 15vw;
+    max-width: 32vw;
 }
 
 .character-wrapper:not(.active-100) .speech-bubble {
