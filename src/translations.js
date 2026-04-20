@@ -528,7 +528,7 @@ export const translations = {
     en: 'Do you want to learn more about other districts?',
   },
   end_cta_button: {
-    de: 'Zurück zur Home',
-    en: 'Back to home',
+    de: 'Zurück zur Charakterauswahl',
+    en: 'Back to character selection',
   },
 }
