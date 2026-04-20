@@ -1,6 +1,7 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useTranslations } from '@composables/Dresden/useTranslations.js'
+import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
   titleKey: {
@@ -19,9 +20,17 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  activeMode: {
+    type: String,
+    default: 'view',
+  },
+  editModeActive: {
+    type: Boolean,
+    default: false,
+  },
 })
 
-const { getTranslation } = useTranslations()
+const { getTranslation, setTranslation } = useTranslations()
 
 const resolvedLines = computed(() =>
   props.lines.map((line) => ({
@@ -46,17 +55,18 @@ const resolvedLines = computed(() =>
 <template>
   <div class="speech-content">
     <p v-if="titleKey" class="speech-content__title">
-      {{ getTranslation(titleKey, titleParams) }}
+      <EditableTextField v-if="editModeActive" :model-value="getTranslation(titleKey, titleParams)"
+        @update:model-value="val => setTranslation(titleKey, val)" :active-mode="activeMode" :rows="5" :width="`100%`"
+        :font-size="'2.5vw'" :line-height="1.35" :padding="'0vh'" :font-weight="400" :text-align="'center'"
+        :text-transform="'uppercase'" :letter-spacing="'0.06em'" />
+      <span v-else>{{ getTranslation(titleKey, titleParams) }}</span>
     </p>
 
     <ul v-if="resolvedLines.length" class="speech-content__list">
       <li v-for="line in resolvedLines" :key="line.id" class="speech-content__item">
         <template v-for="(segment, index) in line.segments" :key="`${line.id}-${index}`">
-          <span
-            v-if="segment.type === 'highlight'"
-            class="speech-content__highlight"
-            :class="`speech-content__highlight--${segment.tone}`"
-          >
+          <span v-if="segment.type === 'highlight'" class="speech-content__highlight"
+            :class="`speech-content__highlight--${segment.tone}`">
             {{ segment.value }}
           </span>
           <span v-else>{{ segment.value }}</span>
