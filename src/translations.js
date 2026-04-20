@@ -1,11 +1,11 @@
 export const translations = {
   intro_title: {
-    de: 'Dresden in Bewegung',
-    en: 'Dresden in Motion',
+    de: '[Stadt] in Bewegung',
+    en: '[City] in Motion',
   },
   intro_subtitle_line_1: {
-    de: 'Scrolle weiter und entdecke, wie sich Dresden bewegt',
-    en: 'Scroll on and discover, how Dresden moves',
+    de: 'Scrolle weiter und entdecke, wie sich [Stadt] bewegt',
+    en: 'Scroll on and discover, how [City] moves',
   },
   intro_cta: {
     de: 'Scrollen zum Losfahren',
@@ -408,8 +408,8 @@ export const translations = {
     en: '',
   },
   others_ebike_intro_text_1: {
-    de: ' der Haushalte in Dresden ',
-    en: ' of households in Dresden ',
+    de: ' der Haushalte in [Stadt] ',
+    en: ' of households in [City] ',
   },
   others_ebike_intro_highlight_1: {
     de: 'besitzen mindestens ein E-Bike',
@@ -484,8 +484,8 @@ export const translations = {
     en: 'Walking',
   },
   conclusion_summary_paragraph_1_text_1: {
-    de: ' ist die häufigste Art, sich in Dresden fortzubewegen - fast ',
-    en: ' is the most common way to get around Dresden - almost ',
+    de: ' ist die häufigste Art, sich in [Stadt] fortzubewegen - fast ',
+    en: ' is the most common way to get around [City] - almost ',
   },
   conclusion_summary_paragraph_1_highlight_2: {
     de: 'die Hälfte der Bevölkerung',
@@ -520,8 +520,8 @@ export const translations = {
     en: ' follow closely behind. Roughly every fifth person uses them daily.',
   },
   end_closing_message: {
-    de: 'Das war wirklich interessant. Jetzt weiß ich viel mehr über die Fahrradinfrastruktur in Dresden!',
-    en: 'That was really interesting. Now I know much more about cycling infrastructure in Dresden!',
+    de: 'Das war wirklich interessant. Jetzt weiß ich viel mehr über die Fahrradinfrastruktur in [Stadt]!',
+    en: 'That was really interesting. Now I know much more about cycling infrastructure in [City]!',
   },
   end_cta_question: {
     de: 'Willst du mehr über andere Stadtteile erfahren?',
