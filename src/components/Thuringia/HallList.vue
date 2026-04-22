@@ -277,12 +277,19 @@ watch(() => props.selectedMarkerId, (newSelectedId) => {
     text-wrap: balance;
     overflow: hidden;
     text-overflow: ellipsis;
+    font-family: 'General Sans';
+    line-height: normal;
+    letter-spacing: normal;
+    text-transform: none;
+    text-shadow: none;
+    -webkit-text-stroke: 0px;
 }
 
 .hall-details h2 {
     margin: 0;
     font-size: 1.1rem;
     color: #333;
+    font-weight: 700;
 }
 
 .hall-details h3 {

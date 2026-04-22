@@ -728,6 +728,14 @@ main {
 .robot-form .white-space h1 {
     width: 100%;
     line-height: 1.3;
+    font-family: 'General Sans';
+    font-size: 24px;
+    letter-spacing: normal;
+    text-transform: none;
+    -webkit-text-stroke: 0px;
+    text-shadow: none;
+    color: black;
+    font-weight: 700;
 }
 
 .intro {

@@ -1,6 +1,7 @@
 @import './reset.css';
 @import './variables.css';
 @import './typography.css';
+@import url('https://fonts.cdnfonts.com/css/general-sans');
 
 
 html,
@@ -8,6 +9,30 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    color: #000;
+    font-family: 'General Sans', 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 400;
+    line-height: 1.4;
+    background-attachment: fixed;
+}
+
+.story-container:has(.thuringia-app) {
+    background-image: linear-gradient(rgba(197, 176, 255, 1), rgba(255, 0, 0, 0));
+        font-family: 'General Sans', 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+.story-container:has(.vrr-app) {
+    background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(225, 255, 214, 1), rgba(214, 245, 255, 1));
+}
+
+.story-container:has(.dresden-app) {
+    background-image: url('../static/img/Dresden/BGTexture.svg');
+    font-family: Bedstead;
 }
 
 /******* Story Character *******/
