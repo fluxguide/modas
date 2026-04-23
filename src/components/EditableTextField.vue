@@ -11,7 +11,9 @@ const props = defineProps({
     padding: { type: String, default: '0vh' },
     textAlign: { type: String, default: 'left' },
     fontWeight: { type: String, default: 'normal' },
-    borderRadius: { type: String, default: '12px' }
+    borderRadius: { type: String, default: '12px' },
+    textTransform: { type: String, default: 'none' },
+    letterSpacing: { type: String, default: 'normal' }
 });
 
 const emit = defineEmits(['update:textContent']);
@@ -27,10 +29,20 @@ watch(() => props.activeMode, (newMode) => {
 </script>
 
 <template>
-    <v-textarea ref="textAreaRef" :text-content="textContent"
+    <v-textarea ref="textAreaRef" class="editable-text-comp" :text-content="textContent"
         @update:text-content="val => emit('update:textContent', val)" :readonly="activeMode !== 'edit'" variant="plain"
-        hide-details no-resize :rows="rows" class="editable-text-comp"
-        :style="{ '--custom-font-size': fontSize, '--custom-width': width, '--rows': rows, '--custom-line-height': lineHeight, '--padding': padding, '--custom-text-align': textAlign, '--custom-font-weight': fontWeight, '--custom-border-radius': borderRadius }"></v-textarea>
+        hide-details no-resize :rows="rows" :style="{
+            '--custom-font-size': fontSize,
+            '--custom-width': width,
+            '--rows': rows,
+            '--custom-line-height': lineHeight,
+            '--padding': padding,
+            '--custom-text-align': textAlign,
+            '--custom-font-weight': fontWeight,
+            '--custom-border-radius': borderRadius,
+            '--custom-text-transform': textTransform,
+            '--custom-letter-spacing': letterSpacing
+        }"></v-textarea>
 </template>
 
 <style scoped>
@@ -40,22 +52,24 @@ watch(() => props.activeMode, (newMode) => {
 }
 
 .editable-text-comp :deep(.v-field) {
-    transition: all 0.3s ease;
+    min-height: calc(var(--rows, 15) * 1.3 * var(--custom-font-size)) !important;
+    display: flex;
+    padding: 5px;
+    align-items: center;
     border-radius: var(--custom-border-radius);
     border: 1px solid transparent;
-    padding: 5px;
-    display: flex;
-    align-items: center;
-    min-height: calc(var(--rows, 15) * 1.3 * var(--custom-font-size)) !important;
+    transition: all 0.3s ease;
 }
 
 .editable-text-comp :deep(textarea) {
+    width: 100%;
+    height: auto !important;
     font-size: var(--custom-font-size) !important;
     font-weight: var(--custom-font-weight) !important;
-    line-height: var(--custom-line-height) !important;
-    width: 100%;
     text-align: var(--custom-text-align);
-    height: auto !important;
+    line-height: var(--custom-line-height) !important;
+    letter-spacing: var(--custom-letter-spacing);
+    text-transform: var(--custom-text-transform);
 }
 
 .editable-text-comp:not(.v-input--readonly) :deep(.v-field) {

@@ -57,8 +57,10 @@ watch(resolvedColors, redraw, { deep: true });
                 fill="#F3F3F3" />
         </svg>
     </button>
-    <div ref="chartContainer" class="arrow-chart"
-        :style="`transform: ${`scaleX(${scaleRange(props.currentRange)})`}; transform-origin: 'right center';`">
+    <div ref="chartContainer" class="arrow-chart" :style="{
+        transform: `scaleX(${scaleRange(props.currentRange)})`,
+        transformOrigin: 'right center'
+    }">
         <svg ref="svgRef" class="svg" :class="{ 'is-edit': activeMode === 'edit' }"></svg>
     </div>
 </template>

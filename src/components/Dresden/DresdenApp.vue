@@ -1,5 +1,5 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
 import { useTranslations } from '@composables/Dresden/useTranslations.js'
 import {
     accessibilityHappinessStory,
@@ -13,12 +13,15 @@ import {
     othersEbikesInfo,
     safetyDetailsStory,
     storyScenes,
-} from '/Users/sofia/fluxguide Dropbox/Fluxguide Team/Projekte/F&E - MoDaS - Mobility Data Stories - TU Ilmenau/04 - Development/suite/modas/data/storyData.js'
+} from '/Users/sofia/fluxguide Dropbox/Fluxguide Team/Projekte/F&E - MoDaS - Mobility Data Stories - TU Ilmenau/04 - Development/modas/data/storyData.js'
 import ConclusionTransportUsage from '@components/Dresden/ConclusionTransportUsage.vue'
 import DresdenMap from '@components/Dresden/DresdenMap.vue'
 import SpeechBubbleContent from '@components/Dresden/SpeechBubbleContent.vue'
 import StoryInfoBox from '@components/Dresden/StoryInfoBox.vue'
 import TransportationOptionCard from '@components/Dresden/TransportationOptionCard.vue'
+import EditableTextField from '@src/components/EditableTextField.vue';
+import SideMenu from '@src/components/SideMenu.vue';
+
 import bikeImage from '@img/Dresden/bike.png'
 import busImage from '@img/Dresden/bus.png'
 import carImage from '@img/Dresden/car.png'
@@ -49,6 +52,13 @@ import boyImage from '@img/Dresden/boy.png'
 import boyWalkImage from '@img/Dresden/boy-walk.svg'
 import arrowIcon from '@img/Dresden/arrow.svg'
 
+const props = defineProps({
+    data: { type: Array, default: () => [] },
+    mode: { type: String, default: 'view' },
+    columnLabelMap: { type: Object, default: () => ({}) },
+    categoryColours: { type: Object, default: () => ({}) },
+});
+
 const scrollingSection = ref(null)
 const activeStorySectionId = ref('')
 const storySectionVisibility = reactive({})
@@ -58,7 +68,31 @@ const fullyVisibleItems = reactive({})
 let sectionScrollLockTimeout = null
 let storySectionObserver = null
 let fullyVisibleItemObserver = null
-const { getTranslation } = useTranslations()
+const { getTranslation, setTranslation } = useTranslations()
+
+const chartData = ref(null)
+const activeMode = ref('view');
+const isPresenting = ref(false);
+const editModeActive = ref(true);
+const bgTintColor = ref('rgba(255, 255, 255, 0)')
+const bgTintOpacity = ref(0.3)
+
+const dresdenBackground = computed(() => ({
+    type: 'texture',
+    tint: bgTintColor.value,
+    opacity: bgTintOpacity.value,
+}))
+
+const headers = ref({
+    section1: getTranslation('intro_title'),
+    section2: getTranslation('choose_character_title'),
+    section3: getTranslation('choose_city_title'),
+    section4: getTranslation('choose_transportation_title'),
+})
+
+const texts = ref({
+    section1: getTranslation('intro_subtitle_line_1'),
+})
 
 const treeImages = {
     tree1: tree1Image,
@@ -586,7 +620,39 @@ function observeFullyVisibleItems() {
         })
 }
 
+const handleModeChange = (newMode) => {
+    if (newMode === "presenter") {
+        activeMode.value = "view";
+        const storyContainer = document.querySelector('.vrr-app');
+        if (storyContainer?.requestFullscreen) {
+            storyContainer.requestFullscreen();
+            isPresenting.value = true;
+        }
+    } else {
+        activeMode.value = newMode;
+    }
+};
+
+const exitPresenter = () => {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    }
+    isPresenting.value = false;
+    activeMode.value = "view";
+};
+
+// watch(() => props.data, (newData) => {
+//     if (!newData || newData.length === 0) return;
+//     chartData.value = loadData(newData);
+// }, { immediate: true });
+
 onMounted(() => {
+    document.addEventListener("fullscreenchange", () => {
+        if (!document.fullscreenElement) {
+            isPresenting.value = false;
+        }
+    })
+
     scrollingSection.value?.addEventListener('wheel', handleSectionWheel, {
         passive: false,
     })
@@ -607,21 +673,35 @@ onBeforeUnmount(() => {
     fullyVisibleItemObserver?.disconnect()
     fullyVisibleItemObserver = null
 })
+
+onUnmounted(() => {
+    document.removeEventListener("fullscreenchange", () => { });
+});
 </script>
 
 <template>
+    <SideMenu v-if="!isPresenting" :active-mode="activeMode" :background="dresdenBackground"
+        @mode-change="handleModeChange"
+        @update:background="val => { bgTintColor = val.tint; bgTintOpacity = val.opacity }" />
+    <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Präsentationsansicht beenden</button>
     <section ref="scrollingSection" class="scrollying-section" :class="getScrollingSectionStateClasses()"
-        :data-active-story-section="hasActiveStorySection ? activeStorySectionId : undefined
+        :style="{ '--bg-tint': bgTintColor, '--bg-tint-opacity': bgTintOpacity }" :data-active-story-section="hasActiveStorySection ? activeStorySectionId : undefined
             " :data-active-story-visibility="hasActiveStorySection ? activeStoryVisibilityBucket : undefined
                 " :data-active-story-side="hasActiveStorySection ? activeStorySectionSide : undefined
                     ">
         <section class="intro-section">
             <div class="intro-section__content">
-                <h1>{{ getTranslation('intro_title') }}</h1>
+                <h1>
+                    <EditableTextField :model-value="headers.section1"
+                        @update:model-value="val => headers.section1 = val" :active-mode="activeMode" :rows="1"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="400"
+                        :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
+                </h1>
                 <h2>
-                    {{ getTranslation('intro_subtitle_line_1') }}
-                    <br>
-                    {{ getTranslation('intro_subtitle_line_2') }}
+                    <EditableTextField :model-value="texts.section1" @update:model-value="val => texts.section1 = val"
+                        :active-mode="activeMode" :rows="5" :width="`80rem`" :font-size="'2.5vw'" :line-height="1.35"
+                        :padding="'0vh'" :font-weight="400" :text-align="'center'" :text-transform="'uppercase'"
+                        :letter-spacing="'0.06em'" />
                 </h2>
                 <div class="intro-section__cta">
                     <label>{{ getTranslation('intro_cta') }}</label>
@@ -632,7 +712,12 @@ onBeforeUnmount(() => {
 
         <section class="choose-character-section">
             <div class="selection-section__content">
-                <h1>{{ getTranslation('choose_character_title') }}</h1>
+                <h1>
+                    <EditableTextField :model-value="headers.section2"
+                        @update:model-value="val => headers.section2 = val" :active-mode="activeMode" :rows="1"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="400"
+                        :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
+                </h1>
                 <div class="character-grid" role="list" :aria-label="getTranslation('choose_character_aria_label')">
                     <button v-for="character in scrollingSetupOptions.characters" :key="character.id" type="button"
                         class="character-card" :class="{
@@ -647,7 +732,12 @@ onBeforeUnmount(() => {
         </section>
         <section class="choose-city-section">
             <div class="selection-section__content">
-                <h1>{{ getTranslation('choose_city_title') }}</h1>
+                <h1>
+                    <EditableTextField :model-value="headers.section3"
+                        @update:model-value="val => headers.section3 = val" :active-mode="activeMode" :rows="1"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="400"
+                        :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
+                </h1>
                 <DresdenMap v-model="selectedScrollingSetup.cityPartId" class="city-map" />
 
                 <div class="city-selection-character">
@@ -666,7 +756,12 @@ onBeforeUnmount(() => {
         </section>
         <section class="choose-transportation-section">
             <div class="selection-section__content">
-                <h1>{{ getTranslation('choose_transportation_title') }}</h1>
+                <h1>
+                    <EditableTextField :model-value="headers.section4"
+                        @update:model-value="val => headers.section4 = val" :active-mode="activeMode" :rows="1"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="400"
+                        :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
+                </h1>
                 <div class="transportation-grid" role="list"
                     :aria-label="getTranslation('choose_transportation_aria_label')">
                     <TransportationOptionCard v-for="(transportation, index) in scrollingSetupOptions.transportation"
@@ -692,7 +787,8 @@ onBeforeUnmount(() => {
                         fill="white" />
                 </svg>
                 <SpeechBubbleContent :title-key="activeStoryScene.titleKey" :title-params="activeStorySceneTitleParams"
-                    :lines="activeStoryScene.bubble" :metrics="activeStorySceneMetrics" />
+                    :lines="activeStoryScene.bubble" :metrics="activeStorySceneMetrics" :active-mode="activeMode"
+                    :edit-mode-active="editModeActive" />
             </article>
         </div>
 
@@ -710,7 +806,7 @@ onBeforeUnmount(() => {
                     <li v-for="metric in accessibilityHappinessTowerSegments" :key="metric.key"
                         class="building-metrics-list__item" :style="{
                             height: metric.height,
-                            backgroundColor: `color-mix(in srgb, ${metric.color} 72%, transparent)`,
+                            backgroundColor: `color-mix(in srgb, ${metric.color} 80%, transparent)`,
                         }">
                         {{ metric.value }}%
                     </li>
@@ -729,7 +825,7 @@ onBeforeUnmount(() => {
                     <li v-for="metric in accessibilityRoadTowerSegments" :key="metric.key"
                         class="building-metrics-list__item" :style="{
                             height: metric.height,
-                            backgroundColor: `color-mix(in srgb, ${metric.color} 72%, transparent)`,
+                            backgroundColor: `color-mix(in srgb, ${metric.color} 80%, transparent)`,
                         }">
                         {{ metric.value }}%
                     </li>
@@ -816,6 +912,7 @@ onBeforeUnmount(() => {
 
 <style>
 .scrollying-section {
+    position: relative;
     display: flex;
     flex-wrap: nowrap;
     width: 100vw;
@@ -831,6 +928,11 @@ onBeforeUnmount(() => {
     background-size: cover;
 }
 
+.scrollying-section>* {
+    position: relative;
+    z-index: 1;
+}
+
 
 .scrollying-section>section {
     flex: 0 0 100vw;
@@ -844,7 +946,16 @@ onBeforeUnmount(() => {
     padding: 5vh 34px;
 }
 
-
+.scrollying-section::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg-tint, transparent);
+    opacity: var(--bg-tint-opacity, 0);
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: multiply;
+}
 
 
 .intro-section__content {
@@ -859,9 +970,9 @@ onBeforeUnmount(() => {
     padding-top: 10vh;
 }
 
-.intro-section h2 {
-    max-width: 58rem;
-}
+/* .intro-section h2 {
+    max-width: 64rem;
+} */
 
 .intro-section__cta {
     display: inline-flex;
@@ -994,7 +1105,7 @@ onBeforeUnmount(() => {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 2rem 3rem;
     width: 100%;
-    max-width: 58rem;
+    max-width: 64rem;
     padding-bottom: 5vh;
 }
 </style>

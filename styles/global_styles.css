@@ -1,6 +1,7 @@
 @import './reset.css';
 @import './variables.css';
 @import './typography.css';
+@import url('https://fonts.cdnfonts.com/css/general-sans');
 
 
 html,
@@ -8,6 +9,30 @@ body {
     width: 100%;
     height: 100%;
     overflow: hidden;
+}
+
+body {
+    margin: 0;
+    padding: 0;
+    color: #000;
+    font-family: 'General Sans', 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif;
+    font-weight: 400;
+    line-height: 1.4;
+    background-attachment: fixed;
+}
+
+.story-container:has(.thuringia-app) {
+    background-image: linear-gradient(rgba(197, 176, 255, 1), rgba(255, 0, 0, 0));
+        font-family: 'General Sans', 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+}
+
+.story-container:has(.vrr-app) {
+    background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(225, 255, 214, 1), rgba(214, 245, 255, 1));
+}
+
+.story-container:has(.dresden-app) {
+    background-image: url('../static/img/Dresden/BGTexture.svg');
+    font-family: Bedstead;
 }
 
 /******* Story Character *******/
@@ -197,8 +222,8 @@ body {
     position: absolute;
     bottom: 30px;
     right: 15vw;
-    width: 200px;
-    height: auto;
+    width: 14vw;
+    height: 100%;
     max-height: 85vh;
 }
 
@@ -209,10 +234,10 @@ body {
 
 .building-image-wrapper ul {
     position: absolute;
-    top: 10%;
-    bottom: 10%;
+    top: 16%;
+    bottom: 12%;
     z-index: 20;
-    width: 100%;
+    width: 80%;
     max-width: 100%;
     padding: 0;
     margin: 0;
@@ -223,7 +248,7 @@ body {
     width: 100%;
     padding: 0;
     margin: 0;
-    background: rgba(255, 255, 255, 0.7);
+    /* background: rgba(255, 255, 255, 0.9); */
     display: grid;
     place-content: center;
 }
@@ -288,6 +313,7 @@ body {
     display: block;
     width: 100%;
     height: auto;
+    opacity: 0.8;
 }
 
 .tree-value {
@@ -297,7 +323,12 @@ body {
     transform: translate3d(-50%, -50%, 0);
     margin: 0;
     white-space: nowrap;
-    -webkit-text-stroke: 2px var(--black);
+    font-style: normal;
+    font-weight: 700;
+    line-height: normal;
+    letter-spacing: 0.1em;
+    text-shadow: 0 4px 4px rgba(0, 0, 0, 0.25);
+    -webkit-text-stroke: 2.5px var(--black);
 }
 
 .tree-value--taupe-light {
@@ -427,7 +458,7 @@ body {
 }
 
 .others-answers-section .info-box-top {
-    left: 10vw;
+    right: 16vw;
 }
 
 .others-answers-section .info-box-bottom {
@@ -449,6 +480,10 @@ body {
     right: 5vw;
     width: min(48rem, 52vw);
     transform: none;
+}
+
+.conclusion-summary-box.white-info-box {
+    opacity: 1;
 }
 
 .conclusion-transport-list {
@@ -532,7 +567,7 @@ body {
 }
 
 .character-wrapper--safety .speech-bubble {
-    max-width: 15vw;
+    max-width: 32vw;
 }
 
 .character-wrapper:not(.active-100) .speech-bubble {
