@@ -74,6 +74,14 @@ const chartData = ref(null)
 const activeMode = ref('view');
 const isPresenting = ref(false);
 const editModeActive = ref(true);
+const bgTintColor = ref('rgba(255, 255, 255, 0)')
+const bgTintOpacity = ref(0.3)
+
+const dresdenBackground = computed(() => ({
+    type: 'texture',
+    tint: bgTintColor.value,
+    opacity: bgTintOpacity.value,
+}))
 
 const headers = ref({
     section1: getTranslation('intro_title'),
@@ -672,13 +680,12 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <SideMenu v-if="!isPresenting" :active-mode="activeMode" :default-gradient="{
-        angle: 180,
-        stops: [{ color: '#ffffff', position: 0 }, { color: '#e1ffd6', position: 50 }, { color: '#d6f5ff', position: 100 }]
-    }" @mode-change="handleModeChange" />
+    <SideMenu v-if="!isPresenting" :active-mode="activeMode" :background="dresdenBackground"
+        @mode-change="handleModeChange"
+        @update:background="val => { bgTintColor = val.tint; bgTintOpacity = val.opacity }" />
     <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Präsentationsansicht beenden</button>
     <section ref="scrollingSection" class="scrollying-section" :class="getScrollingSectionStateClasses()"
-        :data-active-story-section="hasActiveStorySection ? activeStorySectionId : undefined
+        :style="{ '--bg-tint': bgTintColor, '--bg-tint-opacity': bgTintOpacity }" :data-active-story-section="hasActiveStorySection ? activeStorySectionId : undefined
             " :data-active-story-visibility="hasActiveStorySection ? activeStoryVisibilityBucket : undefined
                 " :data-active-story-side="hasActiveStorySection ? activeStorySectionSide : undefined
                     ">
@@ -905,6 +912,7 @@ onUnmounted(() => {
 
 <style>
 .scrollying-section {
+    position: relative;
     display: flex;
     flex-wrap: nowrap;
     width: 100vw;
@@ -920,6 +928,11 @@ onUnmounted(() => {
     background-size: cover;
 }
 
+.scrollying-section>* {
+    position: relative;
+    z-index: 1;
+}
+
 
 .scrollying-section>section {
     flex: 0 0 100vw;
@@ -933,7 +946,16 @@ onUnmounted(() => {
     padding: 5vh 34px;
 }
 
-
+.scrollying-section::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg-tint, transparent);
+    opacity: var(--bg-tint-opacity, 0);
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: multiply;
+}
 
 
 .intro-section__content {
