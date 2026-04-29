@@ -73,9 +73,26 @@ with col1:
     )
 
     if uploaded_file:
-        df = pd.read_csv(
-            uploaded_file, sep=None, engine="python" # auto-detects delimiter
-        ) 
+        first_line = uploaded_file.readline().decode("utf-8", errors="replace")
+        uploaded_file.seek(0)
+
+        if "\t" in first_line:
+            sep = "\t"
+        elif ";" in first_line and first_line.count(";") > first_line.count(","):
+            sep = ";"
+        else:
+            sep = ","
+
+        try:
+            df = pd.read_csv(uploaded_file, sep=sep)
+        except pd.errors.ParserError as e:
+            st.error(
+                f"Die Datei konnte nicht eingelesen werden. "
+                f"Bitte prüfen Sie das Format (erwartetes Trennzeichen: '{sep}'). "
+                f"Details: {e}"
+            )
+            st.stop()
+
         df.columns = df.columns.str.lower()
         df = df.fillna("")
         st.session_state.columnLabelMap = {norm(c): c for c in df.columns}
