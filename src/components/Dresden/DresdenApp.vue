@@ -13,7 +13,7 @@ import {
     othersEbikesInfo,
     safetyDetailsStory,
     storyScenes,
-} from '/Users/sofia/fluxguide Dropbox/Fluxguide Team/Projekte/F&E - MoDaS - Mobility Data Stories - TU Ilmenau/04 - Development/modas/data/storyData.js'
+} from '../../../data/storyData.js'
 import ConclusionTransportUsage from '@components/Dresden/ConclusionTransportUsage.vue'
 import DresdenMap from '@components/Dresden/DresdenMap.vue'
 import SpeechBubbleContent from '@components/Dresden/SpeechBubbleContent.vue'
