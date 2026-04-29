@@ -227,7 +227,6 @@ onUnmounted(() => {
     <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Präsentationsansicht beenden</button>
     <div class="scroll-wrapper" :style="{ height: `${scrollHeight}px` }">
       <div class="init-mid" ref="initMidElement">
-        <img src="@img/Thuringia/Emblem.png" alt="Emblem" id="emblemImage" />
         <EditableTextField v-model="textFields.first" :active-mode="activeMode" :rows="7" :width="`60%`"
           :font-size="`36px`" :line-height="1.3" :padding="`3vh`" />
       </div>
@@ -382,10 +381,6 @@ p {
   flex-direction: column;
   justify-content: center;
   align-items: center;
-}
-
-#emblemImage {
-  width: calc(50% / 4);
 }
 
 .init-mid {
