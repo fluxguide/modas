@@ -43,8 +43,10 @@ selected_template_label = st.session_state.get("selected_template_label", "")
 
 data = st.session_state.get("data")
 if not data:
-    st.warning("No uploaded data found in this session. Please reupload your file.")
-    if st.button("Go to upload", width="stretch"):
+    st.warning(
+        "In dieser Sitzung wurden keine hochgeladenen Daten gefunden. Bitte laden Sie Ihre Datei erneut hoch."
+    )
+    if st.button("Zum Upload", width="stretch"):
         st.switch_page("app.py")
     st.stop()
 
