@@ -97,7 +97,7 @@ st.markdown(
             <button class="info-btn">
                 Was ist eine Vorlage?
                 <span class="info-tooltip">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vel felis tempor orci tempus dapibus quis in purus. Proin imperdiet nisi sapien, quis feugiat nibh ornare porttitor. Vestibulum bibendum a ex ac sagittis. Morbi posuere nulla pretium erat euismod, ut iaculis enim suscipit. Nullam sit amet ipsum volutpat, ultrices orci vitae, hendrerit elit. Vestibulum in ipsum at libero consequat congue sit amet id leo. Pellentesque pretium in nibh at congue. Duis nec erat mollis, viverra diam et, aliquet tellus. Vivamus imperdiet pulvinar nisi, a viverra ex tempor ut. Nam vel arcu lectus. Mauris eget turpis mi. Nunc at faucibus elit.
+                    In unseren Vorlagen präsentieren wir Ihnen je eine Scrollytelling Data Story. Ihre hochgeladenen Daten werden automatisch übernommen und in die Visualisierungskomponenten gefüllt. Eine Visualisierungskomponente ist zum Beispiel eine Karte mit Pins (Story 1) oder ein Torten-Diagramm (Story 2). Wenn Ihre CSV-Datei keine entsprechenden Daten hatte, erscheinen die Visualisierungskomponenten nicht. \nDie Daten können Sie nachträglich noch anpassen: Klicken Sie dafür auf das Stiftsymbol in der Leiste am rechten Bildschirmrand und anschließend auf das Stiftsymbol direkt an der Visualisierungskomponente. Zusätzlich können Sie Texte anpassen: klicken Sie dafür auf das Stiftsymbol in der Leiste am rechten Bildschirmrand, es erscheinen gestrichelte Linien rund um Textfelder, die Sie editieren können.
                 </span>
             </button>
         </div>
