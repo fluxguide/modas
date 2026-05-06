@@ -63,7 +63,7 @@ templates_first_row = [
 templates_second_row = [
     {
         "key": "story4",
-        "label": "Story 4",
+        "label": "Demnächst",
         "img_url": f"{IMG_URL_BASE}/Dortmund-Preview.png",
         "img_file": f"{IMG_FILE_BASE}/Dortmund-Preview.png",
         "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
@@ -74,7 +74,7 @@ templates_second_row = [
     },
     {
         "key": "story5",
-        "label": "Story 5",
+        "label": "Demnächst",
         "img_url": f"{IMG_URL_BASE}/Ilmenau-Preview.png",
         "img_file": f"{IMG_FILE_BASE}/Ilmenau-Preview.png",
         "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
@@ -187,6 +187,7 @@ clicked2 = clickable_images(
         "borderRadius": "12px",
         "boxShadow": "0 2px 6px rgba(0,0,0,0.14)",
         "cursor": "pointer",
+        "filter": "grayscale(1)",
     },
     key="templates_row_2",
 )
@@ -220,6 +221,17 @@ if preview_key and preview_key in template_by_key_all:
 
     @st.dialog(f"Data Story: {tpl['label']}")
     def template_dialog():
+        if tpl["label"] == "Demnächst":
+            st.markdown(
+                f"""
+                <div class="coming-soon">
+                    Diese Vorlage ist derzeit in Entwicklung. Schauen Sie bald wieder vorbei!
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            return
+
         left, right = st.columns([1.15, 1], gap="large")
 
         with left:
