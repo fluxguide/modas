@@ -54,8 +54,8 @@ with col1:
         """
         <div class="left-container">
             <h1>Mobility Data Story-Suite (MoDaS)</h1>
-            <h4>Von Mobilitätsdaten zum Storytelling</h4>
-            <p>Als Technologiepartner im mfund-Projekt MoDaS haben wir eine Plattform entwickelt, die abstrakte Mobilitätsdaten in leicht verständliche Storytelling-Formate überträgt. In enger Zusammenarbeit mit unserem Forschungspartner TU Ilmenau entstand die „Mobility Data Story Suite“, ein innovatives Tool, das Verkehrsdaten durch digitales Storytelling visualisiert. Zielgruppe sind Mobilitätsplanende, politische Entscheidungstragende und Bürger*innen gleichermaßen.</p>
+            <h4>Wie können abstrakte Mobilitätsdaten in leicht verständliche Storytelling-Formate übertragen werden?</h4>
+            <p>Die "Mobility Data Story Suite", eine gemeinsame Entwicklung von TU Ilmenau und fluxguide, Wien, ist ein innovatives Tool, das Verkehrsdaten durch digitales Storytelling visualisiert. Zielgruppe sind Mobilitätsplanende, politische Entscheidungstragende und Bürger*innen gleichermaßen.</p>
             <p>Die Mobility Data Story Suite macht komplexe Daten interaktiv erfahrbar und nutzt moderne Storytelling-Methoden, um Entscheidungsprozesse zu unterstützen. So trägt sie dazu bei, Mobilitätsplanung effizienter, nachvollziehbarer und transparenter zu gestalten.</p>
             <h3>Sind Sie bereit, Ihre eigene Geschichte zu erstellen?</h3>
             <ol>

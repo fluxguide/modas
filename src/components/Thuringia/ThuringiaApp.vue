@@ -42,10 +42,10 @@ const scrollY = ref(0);
 let handleScroll = null;
 
 const textFields = ref({
-  first: "STADT hat ANZAHL Rathäuser und ANZAHL Haltestellen innerhalb von ANZAHL Metern. \n\nUnd was bedeutet das für Inge?",
+  first: "Unser Rathaus hat nur wenige Haltestellen innerhalb von 300m. \n\nUnd was bedeutet das für Inge?",
   second: "Ein genauerer Blick auf die Karte zeigt, in welchen Teilen des Landes Rathäuser gut erreichbar sind und wo der öffentliche Nahverkehr eher Lücken aufweist.",
   third: "Wirklich abgehängt ist kaum ein Rathaus. Nur 7 Prozent liegen weiter als 300 Meter von der nächsten Haltestelle entfernt. Das heißt aber auch: Für einige bleibt der Weg zur Bushaltestelle ein kleiner Spaziergang.",
-  forth: "Erkunden Sie selbst, wie gut Thüringens Rathäuser erreichbar sind. \n\nNutzen Sie die Filter und klicken Sie auf die Marker für Details.",
+  forth: "Erkunden Sie selbst, wie gut Thüringens Rathäuser erreichbar sind. \nNutzen Sie die Filter und klicken Sie auf die Marker für Details.",
 })
 
 const { visibleLayers, handleMapReady, handleMarkerClick, handleLayerToggle } = useMapControls();
@@ -84,9 +84,6 @@ watch(
     const cityCol = col("townhall_city", "Stadt");
     const townhallCol = col("townhall_name", "Rathäuser");
     const stops300Col = col("stops_within_300m", "Haltestellen (300m)");
-
-    textFields.value.first =
-      `[${cityCol}] hat [anzahl] [${townhallCol}] und [anzahl] Haltestellen innerhalb von 300 Metern.\n\nUnd was bedeutet das für Inge?`;
   },
   { immediate: true }
 );
@@ -270,7 +267,7 @@ onUnmounted(() => {
         </div>
         <div v-if="showMapButton" class="pre-map-view">
           <div class="map-intro">
-            <EditableTextField v-model="textFields.forth" :active-mode="activeMode" :rows="7" :width="`100%`"
+            <EditableTextField v-model="textFields.forth" :active-mode="activeMode" :rows="5" :width="`100%`"
               :font-size="`28px`" :line-height="1.8" :padding="`5vh`" />
           </div>
           <button class="open-map-btn" @click="showMapOverlay = true">Erkunden Sie die
