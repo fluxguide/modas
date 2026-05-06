@@ -109,7 +109,7 @@ defineExpose({
                             <ArrowBubbleChart v-if="panelIndex === 1" v-bind="chartProps" :chart-number="2"
                                 :second-chart-data="secondChartData" :categoryNames="categoryNames"
                                 :category-colours="props.categoryColours" :activeMode="activeMode"
-                                :years="[2022, 2023, 2024, 2025]" :height="'45vh'" :bubble-position="[28, 53, 78]"
+                                :years="['year1', 'year2', 'year3', 'year4']" :height="'45vh'" :bubble-position="[28, 53, 78]"
                                 :timeline-start="25" :percentage-shift="25" :bubble-gap="2" :margin-top="0" />
                             <div class="mehrwert-bg-img">
                                 <img id="theo" src="@img/VRR/Characters/Theo.svg" alt="Theo" />
@@ -131,7 +131,7 @@ defineExpose({
                                 </div>
                             </div>
                             <div class="timeline-at-bottom">
-                                <Timeline :years="[2026, 2027, 2028]" :start-point="25" :markers-gap="25" />
+                                <Timeline :years="['year5', 'year6', 'year7']" :start-point="25" :markers-gap="25" />
                             </div>
                             <div class="bg-theresa">
                                 <img id="theresa" src="@img/VRR/Characters/Theresa.svg" alt="Theresa" />

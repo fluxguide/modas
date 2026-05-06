@@ -12,7 +12,7 @@ const props = defineProps({
     },
     years: {
         type: Array,
-        default: () => [2022, 2023, 2024, 2025]
+        default: () => ['Year1', 'Year2', 'Year3', 'Year4'] // needs the exact name of the columns
     },
     height: {
         type: String,

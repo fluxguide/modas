@@ -2,7 +2,7 @@
 const props = defineProps({
     years: {
         type: Array,
-        default: () => ['2022', '2023', '2024', '2025']
+        default: () => ['year1', 'year2', 'year3', 'year4']
     },
     showMarkers: {
         type: Boolean,

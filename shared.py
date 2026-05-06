@@ -46,9 +46,9 @@ TEMPLATE_COLUMN_REQUIREMENTS = {
             "required": True,
         },
         "label": {"label": "Beschriftung", "example": "Januar", "required": True},
-        "2022": {"label": "Wert 2022", "example": "13227", "required": False},
-        "2023": {"label": "Wert 2023", "example": "21509", "required": False},
-        "2024": {"label": "Wert 2024", "example": "25882", "required": False},
+        "year1": {"label": "Wert Year1", "example": "13227", "required": False},
+        "year2": {"label": "Wert Year2", "example": "21509", "required": False},
+        "year3": {"label": "Wert Year3", "example": "25882", "required": False},
         "Percentage": {"label": "Prozentwert", "example": "70", "required": False},
     },
 }
@@ -134,9 +134,9 @@ def score_templates(df):
 
     # VRR signals
     has_category = "category" in cols
-    has_years = any(c in cols for c in ["2022", "2023", "2024", "2025"])
+    has_years = any(c in cols for c in ["year1", "year2", "year3", "year4"])
     has_label = "label" in cols
-    has_percentage = "percentage" in cols
+    has_percentage = "Percentage" in cols
 
     if has_category:
         scores["vrr"] += 3

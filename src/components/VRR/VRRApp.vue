@@ -66,23 +66,24 @@ const phases = ref({
     }
 });
 
-const selectedPieSlice = ref(null);
+const selectedPieSlice = ref(
+    {
+        index: 0,
+        percentage: 0
+    }
+);
 
 const handlePieSliceSelected = (sliceData) => {
     selectedPieSlice.value = sliceData;
 };
 
 const characterImage = computed(() => {
-    if (!selectedPieSlice.value) return robotHandsUp; // image before pressing on category
-    if (selectedPieSlice.value.index === 0) return robotHandsUp;
+    if (!selectedPieSlice.value || selectedPieSlice.value.index === 0) return robotHandsUp;
     if (selectedPieSlice.value.index === 1) return paul;
 });
 
 const characterMessage = computed(() => {
-    if (!selectedPieSlice.value) return 'Ich konnte rund 70% aller Anfragen selbst lösen!';
-
-    // Change message based on selected slice
-    if (selectedPieSlice.value.index === 0) {
+    if (!selectedPieSlice.value || selectedPieSlice.value.index === 0) {
         return `Ich konnte rund ${selectedPieSlice.value.percentage}% aller Anfragen selbst lösen!`;
     }
     if (selectedPieSlice.value.index === 1) {
@@ -114,6 +115,14 @@ const exitPresenter = () => {
 watch(() => props.data, (newData) => {
     if (!newData || newData.length === 0) return;
     chartData.value = loadData(newData);
+
+    const firstSlice = chartData.value?.pieData?.[0];
+    if (firstSlice) {
+        selectedPieSlice.value = {
+            index: 0,
+            percentage: firstSlice.Percentage,
+        };
+    }
 }, { immediate: true });
 
 onMounted(async () => {

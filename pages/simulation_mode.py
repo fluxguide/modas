@@ -29,9 +29,9 @@ CHART_COLUMNS_BY_TEMPLATE = {
         2: {"townhall_name", "townhall_city", "stops_within_300m"},
     },
     "vrr": {
-        1: {"category", "chart number", "2022", "2023", "2024"},
-        2: {"category", "chart_number", "2022", "2023", "2024"},
-        3: {"category", "percentage"},
+        1: {"category", "chart number", "year1", "year2", "year3"},
+        2: {"category", "chart_number", "year1", "year2", "year3"},
+        3: {"category", "Percentage"},
     },
     "dresden": {
         0: {""},
