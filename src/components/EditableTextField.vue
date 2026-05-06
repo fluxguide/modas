@@ -64,6 +64,7 @@ watch(() => props.activeMode, (newMode) => {
 .editable-text-comp :deep(textarea) {
     width: 100%;
     height: auto !important;
+    max-height: 60vh;
     font-size: var(--custom-font-size) !important;
     font-weight: var(--custom-font-weight) !important;
     text-align: var(--custom-text-align);
