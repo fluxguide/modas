@@ -109,8 +109,9 @@ defineExpose({
                             <ArrowBubbleChart v-if="panelIndex === 1" v-bind="chartProps" :chart-number="2"
                                 :second-chart-data="secondChartData" :categoryNames="categoryNames"
                                 :category-colours="props.categoryColours" :activeMode="activeMode"
-                                :years="['year1', 'year2', 'year3', 'year4']" :height="'45vh'" :bubble-position="[28, 53, 78]"
-                                :timeline-start="25" :percentage-shift="25" :bubble-gap="2" :margin-top="0" />
+                                :years="['year1', 'year2', 'year3', 'year4']" :height="'45vh'"
+                                :bubble-position="[28, 53, 78]" :timeline-start="25" :percentage-shift="25"
+                                :bubble-gap="2" :margin-top="'0'" />
                             <div class="mehrwert-bg-img">
                                 <img id="theo" src="@img/VRR/Characters/Theo.svg" alt="Theo" />
                                 <img id="orange-tram" src="@img/VRR/Transport/TramOrange.svg" alt="Orange Tram" />
