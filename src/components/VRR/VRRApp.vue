@@ -26,6 +26,7 @@ const props = defineProps({
 const chartData = ref(null)
 const activeMode = ref('view');
 const isPresenting = ref(false);
+const yearLabels = ref(['Year 1', 'Year 2', 'Year 3', 'Year 4']);
 
 const headers = ref({
     section1: 'Anfragen über die verschiedenen Kanäle',
@@ -173,8 +174,8 @@ onUnmounted(() => {
             <SectionHeading v-model="headers.section1" :active-mode="activeMode" />
 
             <div class="chart-overlay">
-                <ArrowBubbleChart :first-chart-data="chartData?.stats" :chart-number="1" :active-mode="activeMode"
-                    :height="'40vh'" :bubble-position="[28, 51, 75]" :timeline-start="25" :percentage-shift="23"
+                <ArrowBubbleChart v-model:year-labels="yearLabels" :first-chart-data="chartData?.stats" :chart-number="1" :active-mode="activeMode"
+                    :height="'40vh'" :bubble-position="[28, 51, 75]" :timeline-start="20" :percentage-shift="23"
                     :bubble-gap="1" :margin-top="`5%`" :category-names="chartData?.categoryNames"
                     :category-colours="props.categoryColours?.[1]" />
             </div>
