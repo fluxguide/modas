@@ -30,8 +30,8 @@ CHART_COLUMNS_BY_TEMPLATE = {
     },
     "vrr": {
         1: {"category", "chart number", "year1", "year2", "year3"},
-        2: {"category", "chart_number", "year1", "year2", "year3"},
-        3: {"category", "Percentage"},
+        2: {"category", "chart number", "year1", "year2", "year3"},
+        3: {"category", "percentage"},
     },
     "dresden": {
         0: {""},
@@ -88,13 +88,18 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
         df = pd.DataFrame(st.session_state.data)
 
         template_columns = CHART_COLUMNS_BY_TEMPLATE.get(template, {})
-        chart_columns = template_columns.get(current_range or 0, set())
+        print(f"\nTemplate: {template}, current_range: {current_range}, chart_number: {chart_number}, template_columns: {template_columns}")
+        chart_columns = template_columns.get(current_range or chart_number, set())
 
         column_config = {
             col: st.column_config.Column(label=f"◆ {col}")
             for col in df.columns
             if col in chart_columns
         }
+        print(
+            column_config,
+            f"\nColumns in editor: {list(column_config.keys())}, expected: {chart_columns}",
+        )
 
         edited_df = st.data_editor(
             df,

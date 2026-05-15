@@ -40,12 +40,12 @@ TEMPLATE_COLUMN_REQUIREMENTS = {
         },
     },
     "vrr": {
-        "Category": {
+        "category": {
             "label": "Kategorie-Tag",
             "example": "telefon / bke / sm / mehrwert / pie",
             "required": True,
         },
-        "label": {"label": "Beschriftung", "example": "Januar", "required": True},
+        "details": {"label": "Beschriftung", "example": "Januar", "required": True},
         "year1": {"label": "Wert Year1", "example": "13227", "required": False},
         "year2": {"label": "Wert Year2", "example": "21509", "required": False},
         "year3": {"label": "Wert Year3", "example": "25882", "required": False},
