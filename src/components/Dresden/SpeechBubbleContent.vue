@@ -57,7 +57,7 @@ const resolvedLines = computed(() =>
     <p v-if="titleKey" class="speech-content__title">
       <EditableTextField v-if="editModeActive" :model-value="getTranslation(titleKey, titleParams)"
         @update:model-value="val => setTranslation(titleKey, val)" :active-mode="activeMode" :rows="3" :width="`100%`"
-        :font-size="'1.2rem'" :line-height="1.35" :padding="'0vh'" :font-weight="400" :text-align="'left'"
+        :font-size="'1.2rem'" :line-height="1.35" :padding="'0vh'" :font-weight="'400'" :text-align="'left'"
         :text-transform="'none'" :letter-spacing="'0.1em'" />
       <span v-else>{{ getTranslation(titleKey, titleParams) }}</span>
     </p>

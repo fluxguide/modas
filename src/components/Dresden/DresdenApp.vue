@@ -1,5 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { loadData, getCategoryMetrics } from '@composables/Dresden/useDataProcessing.js'
 import { useTranslations } from '@composables/Dresden/useTranslations.js'
 import {
     accessibilityHappinessStory,
@@ -208,41 +209,73 @@ const activeStoryCharacterTransportationImage = computed(() => {
     return characterImages?.[selectedScrollingSetup.transportationId] ?? null
 })
 
+const parsedData = computed(() =>
+    props.data?.length ? loadData(props.data) : null
+)
+
+const activeDistrictNum = computed(() => {
+    const match = selectedScrollingSetup.cityPartId.match(/\d+/)
+    return match ? Number(match[0]) : null
+})
+
 function resolveStorySceneMetrics(scene) {
-    const transportMetrics =
-        scene.metricsByTransportation[selectedScrollingSetup.transportationId] ??
-        scene.metricsByTransportation.bike
+    if (!parsedData.value || scene.categoryIndex == null) return {}
 
-    const districtMetrics =
-        transportMetrics[selectedScrollingSetup.cityPartId] ?? transportMetrics.default
+    const transport = selectedScrollingSetup.transportationId
+    const district = activeDistrictNum.value
+    const category = parsedData.value.categoryOrder[scene.categoryIndex]
+    const labels = parsedData.value.measurementOrderByCategory[category] ?? []
+    const raw = parsedData.value.lookup[category]?.[transport]?.[district] ?? {}
 
-    return {
-        ...districtMetrics,
-        dissatisfied_total:
-            (districtMetrics.dissatisfied ?? 0) +
-            (districtMetrics.very_dissatisfied ?? 0),
-        unsafe_total:
-            (districtMetrics.rather_unsafe ?? 0) +
-            (districtMetrics.very_unsafe ?? 0),
+    const slots = getCategoryMetrics(parsedData.value, scene.categoryIndex, transport, district)
+
+    // Detailed inspection — group together so each scene's log is collapsible
+    console.groupCollapsed(
+        `📊 ${scene.sectionId ?? 'scene'} | cat#${scene.categoryIndex} | ${transport} | district ${district}`
+    )
+    console.log('Category name:', category)
+    console.log('Transport:', transport, '| District:', district)
+    console.log('Slot → label → value:')
+    labels.forEach((label, i) => {
+        console.log(`  slot_${i} = ${slots[`slot_${i}`]}   ← "${label}"`)
+    })
+    console.log('Raw lookup result:', raw)
+    console.groupEnd()
+
+    const result = {
+        ...slots,
+        total: Object.values(slots).reduce((sum, v) => sum + v, 0),
     }
+
+    if (scene.aggregates) {
+        for (const [name, slotKeys] of Object.entries(scene.aggregates)) {
+            result[name] = slotKeys.reduce((sum, k) => sum + (slots[k] ?? 0), 0)
+        }
+    }
+
+    return result
 }
 
-function buildTowerSegments(scene, metrics) {
-    const colorByMetric = {
-        very_satisfied: 'var(--blue)',
-        satisfied: 'var(--mint)',
-        neutral: 'var(--yellow)',
-        dissatisfied: 'var(--orange-soft)',
-        very_dissatisfied: 'var(--orange-light)',
-        no_answer: 'var(--taupe-light)',
+function buildTowerSegments(metrics) {
+    const colorBySlot = {
+        slot_0: 'var(--blue)',
+        slot_1: 'var(--mint)',
+        slot_2: 'var(--yellow)',
+        slot_3: 'var(--orange-soft)',
+        slot_4: 'var(--orange-light)',
+        slot_5: 'var(--taupe-light)',
     }
 
-    return scene.metricOrder.map((key) => ({
-        key,
-        value: metrics[key],
-        height: `${metrics[key]}%`,
-        color: colorByMetric[key],
-    }))
+    return Object.keys(metrics)
+        .filter(k => /^slot_\d+$/.test(k))          // only slot_N keys
+        .sort((a, b) => Number(a.split('_')[1]) - Number(b.split('_')[1]))
+        .slice(0, 6)                                // cap at 6 (we only have 6 colors)
+        .map(key => ({
+            key,
+            value: metrics[key] ?? 0,
+            height: `${metrics[key] ?? 0}%`,
+            color: colorBySlot[key],
+        }))
 }
 
 const accessibilityHappinessMetrics = computed(() =>
@@ -255,13 +288,12 @@ const accessibilityRoadMetrics = computed(() =>
 
 const accessibilityHappinessTowerSegments = computed(() =>
     buildTowerSegments(
-        accessibilityHappinessStory,
         accessibilityHappinessMetrics.value,
     ),
 )
 
 const accessibilityRoadTowerSegments = computed(() =>
-    buildTowerSegments(accessibilityRoadStory, accessibilityRoadMetrics.value),
+    buildTowerSegments(accessibilityRoadMetrics.value),
 )
 
 const safetyDetailsMetrics = computed(() =>
@@ -641,10 +673,24 @@ const exitPresenter = () => {
     activeMode.value = "view";
 };
 
-// watch(() => props.data, (newData) => {
-//     if (!newData || newData.length === 0) return;
-//     chartData.value = loadData(newData);
-// }, { immediate: true });
+console.log(parsedData.value?.categoryOrder)
+console.log(parsedData.value?.lookup)
+
+watch(() => props.data, (d) => {
+    if (d?.length) {
+        console.log('First row keys:', Object.keys(d[0]))
+        console.log('First row:', d[0])
+        console.log('columnLabelMap:', props.columnLabelMap)
+        console.log('Unique transports:', [...new Set(d.map(r => r['transport type']))]) // ← add this
+    }
+}, { immediate: true })
+
+watch(parsedData, (p) => {
+    if (p) {
+        console.log('categoryOrder:', p.categoryOrder)
+        console.log('first category lookup:', p.lookup[p.categoryOrder[1]])
+    }
+}, { immediate: true })
 
 onMounted(() => {
     document.addEventListener("fullscreenchange", () => {
@@ -694,13 +740,13 @@ onUnmounted(() => {
                 <h1>
                     <EditableTextField :model-value="headers.section1"
                         @update:model-value="val => headers.section1 = val" :active-mode="activeMode" :rows="1"
-                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="400"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="'400'"
                         :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
                 </h1>
                 <h2>
                     <EditableTextField :model-value="texts.section1" @update:model-value="val => texts.section1 = val"
                         :active-mode="activeMode" :rows="5" :width="`80rem`" :font-size="'2.5vw'" :line-height="1.35"
-                        :padding="'0vh'" :font-weight="400" :text-align="'center'" :text-transform="'uppercase'"
+                        :padding="'0vh'" :font-weight="'400'" :text-align="'center'" :text-transform="'uppercase'"
                         :letter-spacing="'0.06em'" />
                 </h2>
                 <div class="intro-section__cta">
@@ -715,7 +761,7 @@ onUnmounted(() => {
                 <h1>
                     <EditableTextField :model-value="headers.section2"
                         @update:model-value="val => headers.section2 = val" :active-mode="activeMode" :rows="1"
-                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="400"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="'400'"
                         :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
                 </h1>
                 <div class="character-grid" role="list" :aria-label="getTranslation('choose_character_aria_label')">
@@ -735,7 +781,7 @@ onUnmounted(() => {
                 <h1>
                     <EditableTextField :model-value="headers.section3"
                         @update:model-value="val => headers.section3 = val" :active-mode="activeMode" :rows="1"
-                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="400"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="'400'"
                         :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
                 </h1>
                 <DresdenMap v-model="selectedScrollingSetup.cityPartId" class="city-map" />
@@ -759,7 +805,7 @@ onUnmounted(() => {
                 <h1>
                     <EditableTextField :model-value="headers.section4"
                         @update:model-value="val => headers.section4 = val" :active-mode="activeMode" :rows="1"
-                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="400"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="'400'"
                         :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
                 </h1>
                 <div class="transportation-grid" role="list"
