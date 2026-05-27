@@ -49,6 +49,7 @@ watch(() => props.activeMode, (newMode) => {
 .editable-text-comp {
     width: var(--custom-width);
     pointer-events: auto;
+    justify-self: center;
 }
 
 .editable-text-comp :deep(.v-field) {
