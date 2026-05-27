@@ -25,8 +25,10 @@ const props = defineProps({
 
 const svgRef = ref(null);
 const resolvedColors = computed(() => {
-    // if Streamlit didn’t send anything, fallback to defaults
-    return (props.categoryColours && Object.keys(props.categoryColours).length === 4) ? props.categoryColours : defaultCategoryColours;
+    const colors = props.categoryColours?.[props.currentRange];
+    return Array.isArray(colors) && colors.length > 0
+        ? colors
+        : defaultCategoryColours;
 });
 
 const { drawArrow } = useArrowChart();

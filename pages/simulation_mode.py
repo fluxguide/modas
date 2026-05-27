@@ -5,7 +5,9 @@ from shared import setup_page
 
 STORY_COLOURS = {
     "thuringia": {
+        0: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
         1: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
+        2: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
     },
     "vrr": {
         1: ["#001C0C", "#004F22", "#43A86B"],
@@ -69,9 +71,6 @@ colours = get_story_colors(selected)
 if "category_colors" not in st.session_state:
     st.session_state.category_colors = colours.copy()
 
-print("columnLabelMap in session:", bool(st.session_state.get("columnLabelMap")))
-print("keys sample:", list((st.session_state.get("columnLabelMap") or {}).items())[:5])
-
 result = story_viewer(
     template=selected,
     data=st.session_state.data,
@@ -88,8 +87,8 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
         df = pd.DataFrame(st.session_state.data)
 
         template_columns = CHART_COLUMNS_BY_TEMPLATE.get(template, {})
-        print(f"\nTemplate: {template}, current_range: {current_range}, chart_number: {chart_number}, template_columns: {template_columns}")
-        chart_columns = template_columns.get(current_range or chart_number, set())
+        chart_key = current_range if current_range is not None else chart_number
+        chart_columns = template_columns.get(chart_key, set())
 
         column_config = {
             col: st.column_config.Column(label=f"◆ {col}")
@@ -212,15 +211,16 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
                     unsafe_allow_html=True,
                 )
 
-        colors_to_show = (
-            st.session_state.category_colors.get(chart_number, [])
-            if chart_number is not None
-            else []
-        )
+        colors_to_show = []
+        if chart_key is not None:
+            colors_to_show = st.session_state.category_colors.get(chart_key, []) or []
 
-        cols = st.columns(len(colors_to_show), gap="medium")
-        for i, col in enumerate(cols):
-            color_chip(col, chart_number, i)
+        if colors_to_show:
+            cols = st.columns(len(colors_to_show), gap="medium")
+            for i, col in enumerate(cols):
+                color_chip(col, chart_key, i)
+        else:
+            st.caption("Keine Kategoriefarben für dieses Diagramm definiert.")
 
         if st.button("Speichern", width="stretch", key="csv_save_btn"):
             st.session_state.data = edited_df.to_dict(orient="records")
