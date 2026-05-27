@@ -3,21 +3,22 @@ const TRANSPORT_ALIASES = {
     Kfz: 'car',
     Auto: 'car',
     ÖPNV: 'bus',
+    OEPNV: 'bus',
+    Bahn: 'bus',
     Bus: 'bus',
     'zu Fuß': 'walk',
     Fuß: 'walk',
 }
 
 export function loadData(rawData) {
-    const categoryOrder = []
+    const categoryOrderByTransport = {}
     const measurementOrderByCategory = {}
     const lookup = {}
 
     for (const row of rawData) {
         const district = Number(row['district number'])
-        const districtName = (row['district name'] ?? '').trim()
         const rawTransport = (row['transport type'] ?? '').trim()
-        const transport = TRANSPORT_ALIASES[rawTransport] ?? rawTransport.toLowerCase()
+        const transport = TRANSPORT_ALIASES[rawTransport] ?? rawTransport
         const category = (row['category name'] ?? '').trim()
         const measurement = (row['category measurement'] ?? '').trim()
         const value = Number(row['measurement value']) || 0
@@ -25,9 +26,13 @@ export function loadData(rawData) {
         if (!category || !measurement || Number.isNaN(district)) continue
 
         if (!(category in lookup)) {
-            categoryOrder.push(category)
             measurementOrderByCategory[category] = []
             lookup[category] = {}
+        }
+
+        categoryOrderByTransport[transport] ??= []
+        if (!categoryOrderByTransport[transport].includes(category)) {
+            categoryOrderByTransport[transport].push(category)
         }
 
         lookup[category][transport] ??= {}
@@ -38,17 +43,18 @@ export function loadData(rawData) {
         if (!order.includes(measurement)) order.push(measurement)
     }
 
-    return { categoryOrder, measurementOrderByCategory, lookup }
+    return { categoryOrderByTransport, measurementOrderByCategory, lookup }
 }
 
 export function getCategoryMetrics(parsed, categoryIndex, transport, districtNum) {
-    const category = parsed.categoryOrder[categoryIndex]
-    if (!category) return {}
+    const transportCategories = parsed.categoryOrderByTransport[transport] ?? []
+    const category = transportCategories[categoryIndex]
+    if (!category) return { slot_0: 0, slot_1: 0, slot_2: 0, slot_3: 0, slot_4: 0, slot_5: 0 }
 
     const labels = parsed.measurementOrderByCategory[category] ?? []
     const raw = parsed.lookup[category]?.[transport]?.[districtNum] ?? {}
 
-    const slots = {}
+    const slots = { slot_0: 0, slot_1: 0, slot_2: 0, slot_3: 0, slot_4: 0, slot_5: 0 }
     labels.forEach((label, i) => {
         slots[`slot_${i}`] = raw[label] ?? 0
     })

@@ -1,19 +1,16 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch, nextTick } from 'vue'
 import { loadData, getCategoryMetrics } from '@composables/Dresden/useDataProcessing.js'
 import { useTranslations } from '@composables/Dresden/useTranslations.js'
 import {
     accessibilityHappinessStory,
     accessibilityRoadStory,
-    conclusionStory,
     othersAcceptanceInfo,
     conclusionSummaryInfo,
     conclusionTransportUsage,
-    othersAnswersStory,
-    othersBikeSharingInfo,
-    othersEbikesInfo,
     safetyDetailsStory,
     storyScenes,
+    orderedStoryScenes,
 } from '../../../data/storyData.js'
 import ConclusionTransportUsage from '@components/Dresden/ConclusionTransportUsage.vue'
 import DresdenMap from '@components/Dresden/DresdenMap.vue'
@@ -219,42 +216,32 @@ const activeDistrictNum = computed(() => {
 })
 
 function resolveStorySceneMetrics(scene) {
-    if (!parsedData.value || scene.categoryIndex == null) return {}
+    if (!parsedData.value) return {};
 
-    const transport = selectedScrollingSetup.transportationId
-    const district = activeDistrictNum.value
-    const category = parsedData.value.categoryOrder[scene.categoryIndex]
-    const labels = parsedData.value.measurementOrderByCategory[category] ?? []
-    const raw = parsedData.value.lookup[category]?.[transport]?.[district] ?? {}
+    const scenePosition = orderedStoryScenes.indexOf(scene);
+    if (scenePosition === -1) return {};
 
-    const slots = getCategoryMetrics(parsedData.value, scene.categoryIndex, transport, district)
+    const categoryIndex = scenePosition + 1;
+    const slots = getCategoryMetrics(
+        parsedData.value,
+        categoryIndex,
+        selectedScrollingSetup.transportationId,
+        activeDistrictNum.value,
+    );
 
-    // Detailed inspection — group together so each scene's log is collapsible
-    console.groupCollapsed(
-        `📊 ${scene.sectionId ?? 'scene'} | cat#${scene.categoryIndex} | ${transport} | district ${district}`
-    )
-    console.log('Category name:', category)
-    console.log('Transport:', transport, '| District:', district)
-    console.log('Slot → label → value:')
-    labels.forEach((label, i) => {
-        console.log(`  slot_${i} = ${slots[`slot_${i}`]}   ← "${label}"`)
-    })
-    console.log('Raw lookup result:', raw)
-    console.groupEnd()
-
-    const result = {
+    return {
         ...slots,
         total: Object.values(slots).reduce((sum, v) => sum + v, 0),
-    }
-
-    if (scene.aggregates) {
-        for (const [name, slotKeys] of Object.entries(scene.aggregates)) {
-            result[name] = slotKeys.reduce((sum, k) => sum + (slots[k] ?? 0), 0)
-        }
-    }
-
-    return result
+        negative_pair: (slots.slot_3 ?? 0) + (slots.slot_4 ?? 0),
+    };
 }
+
+const categoryCount = computed(() => {
+    if (!parsedData.value) return 0;
+    const transport = selectedScrollingSetup.transportationId;
+    const cats = parsedData.value.categoryOrderByTransport[transport] ?? [];
+    return Math.max(0, cats.length - 1);
+});
 
 function buildTowerSegments(metrics) {
     const colorBySlot = {
@@ -315,14 +302,6 @@ const safetyTreeItems = computed(() =>
         image: treeImages[item.imageKey],
         value: safetyDetailsMetrics.value[item.metricKey],
     })),
-)
-
-const othersEbikesMetrics = computed(() =>
-    resolveStorySceneMetrics(othersEbikesInfo),
-)
-
-const othersBikeSharingMetrics = computed(() =>
-    resolveStorySceneMetrics(othersBikeSharingInfo),
 )
 
 const othersAcceptanceMetrics = computed(() =>
@@ -673,24 +652,12 @@ const exitPresenter = () => {
     activeMode.value = "view";
 };
 
-console.log(parsedData.value?.categoryOrder)
-console.log(parsedData.value?.lookup)
-
-watch(() => props.data, (d) => {
-    if (d?.length) {
-        console.log('First row keys:', Object.keys(d[0]))
-        console.log('First row:', d[0])
-        console.log('columnLabelMap:', props.columnLabelMap)
-        console.log('Unique transports:', [...new Set(d.map(r => r['transport type']))]) // ← add this
-    }
-}, { immediate: true })
-
-watch(parsedData, (p) => {
-    if (p) {
-        console.log('categoryOrder:', p.categoryOrder)
-        console.log('first category lookup:', p.lookup[p.categoryOrder[1]])
-    }
-}, { immediate: true })
+watch(categoryCount, async () => {
+    await nextTick();
+    storySectionObserver?.disconnect();
+    storySectionObserver = null;
+    observeStorySections();
+});
 
 onMounted(() => {
     document.addEventListener("fullscreenchange", () => {
@@ -841,8 +808,8 @@ onUnmounted(() => {
 
 
         <!-- Story -->
-        <section class="accessibility-happiness-section" :class="getStorySectionClasses('accessibility-happiness')"
-            :data-story-active="activeStorySectionId === 'accessibility-happiness' &&
+        <section v-if="categoryCount > 0" class="accessibility-happiness-section"
+            :class="getStorySectionClasses('accessibility-happiness')" :data-story-active="activeStorySectionId === 'accessibility-happiness' &&
                 activeStoryVisibilityBucket >= 50
                 " data-story-section="accessibility-happiness">
             <div class="building-image-wrapper">
@@ -860,8 +827,8 @@ onUnmounted(() => {
             </div>
         </section>
 
-        <section class="accessibility-road-section" :class="getStorySectionClasses('accessibility-road')"
-            :data-story-active="activeStorySectionId === 'accessibility-road' &&
+        <section v-if="categoryCount > 1" class="accessibility-road-section"
+            :class="getStorySectionClasses('accessibility-road')" :data-story-active="activeStorySectionId === 'accessibility-road' &&
                 activeStoryVisibilityBucket >= 50
                 " data-story-section="accessibility-road">
             <div class="building-image-wrapper">
@@ -879,9 +846,10 @@ onUnmounted(() => {
             </div>
         </section>
 
-        <section class="safety-section" :class="getStorySectionClasses('safety')" :data-story-active="activeStorySectionId === 'safety' &&
-            activeStoryVisibilityBucket >= 50
-            " data-story-section="safety">
+        <section v-if="categoryCount > 2" class="safety-section" :class="getStorySectionClasses('safety')"
+            :data-story-active="activeStorySectionId === 'safety' &&
+                activeStoryVisibilityBucket >= 50
+                " data-story-section="safety">
             <div class="trees-wrapper">
                 <div v-for="treeItem in safetyTreeItems" :key="treeItem.id" class="tree-wrapper"
                     :class="`tree-wrapper--${treeItem.id}`">
@@ -899,9 +867,10 @@ onUnmounted(() => {
             </div>
         </section>
 
-        <section class="others-question-section" :class="getStorySectionClasses('others-question')" :data-story-active="activeStorySectionId === 'others-question' &&
-            activeStoryVisibilityBucket >= 50
-            " data-story-section="others-question">
+        <section v-if="categoryCount > 3" class="others-question-section"
+            :class="getStorySectionClasses('others-question')" :data-story-active="activeStorySectionId === 'others-question' &&
+                activeStoryVisibilityBucket >= 50
+                " data-story-section="others-question">
             <img src="@img/Dresden/cloud.png" alt="" class="cloud-image cloud-1" />
             <img src="@img/Dresden/cloud.png" alt="" class="cloud-image cloud-2" />
             <div class="traffic-light-wrapper">
@@ -910,17 +879,6 @@ onUnmounted(() => {
             <div class="white-info-box cloud-info-box">
                 <SpeechBubbleContent :title-key="othersAcceptanceInfo.titleKey" :lines="othersAcceptanceInfo.bubble"
                     :metrics="othersAcceptanceMetrics" />
-            </div>
-        </section>
-
-        <section class="others-answers-section" :class="getStorySectionClasses('others-answers')" :data-story-active="activeStorySectionId === 'others-answers' &&
-            activeStoryVisibilityBucket >= 50
-            " data-story-section="others-answers">
-            <div class="white-info-box info-box-top">
-                <StoryInfoBox :blocks="othersEbikesInfo.blocks" :metrics="othersEbikesMetrics" />
-            </div>
-            <div class="white-info-box info-box-bottom">
-                <StoryInfoBox :blocks="othersBikeSharingInfo.blocks" :metrics="othersBikeSharingMetrics" />
             </div>
         </section>
 

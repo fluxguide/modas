@@ -1,10 +1,6 @@
 export const accessibilityHappinessStory = {
   sectionId: 'accessibility-happiness',
-  categoryIndex: 1,
   titleKey: 'accessibility_happiness_question',
-  aggregates: {
-    negative_pair: ['slot_3', 'slot_4'],
-  },
   bubble: [
     {
       id: 'positive',
@@ -52,11 +48,7 @@ export const accessibilityHappinessStory = {
 
 export const accessibilityRoadStory = {
   sectionId: 'accessibility-road',
-  categoryIndex: 2,
   titleKey: 'accessibility_road_question',
-  aggregates: {
-    negative_pair: ['slot_3', 'slot_4'],
-  },
   bubble: [
     {
       id: 'positive',
@@ -109,11 +101,7 @@ export const safetyStory = {
 }
 
 export const safetyDetailsStory = {
-  categoryIndex: 3,
   titleKey: 'safety_detail_question',
-  aggregates: {
-    negative_pair: ['slot_3', 'slot_4'],
-  },
   bubble: [
     {
       id: 'positive',
@@ -177,18 +165,8 @@ export const othersQuestionStory = {
   bubble: [],
 }
 
-export const othersAnswersStory = {
-  sectionId: 'others-answers',
-  titleKey: 'others_answers_reflection',
-  bubble: [],
-}
-
 export const othersAcceptanceInfo = {
-  categoryIndex: 4,
   titleKey: null,
-  aggregates: {
-    negative_pair: ['slot_3'],
-  },
   bubble: [
     {
       id: 'positive',
@@ -219,25 +197,13 @@ export const othersAcceptanceInfo = {
     {
       id: 'no-answer',
       segments: [
-        { type: 'metric', key: 'slot_4' },
+        { type: 'metric', key: 'slot_5' },
         { type: 'text', key: 'others_acceptance_bullet_3_text_1' },
         { type: 'highlight', key: 'others_acceptance_bullet_3_highlight_1', tone: 'taupe-light' },
         { type: 'text', key: 'others_acceptance_bullet_3_text_2' },
       ],
     },
   ],
-}
-
-export const conclusionStory = {
-  sectionId: 'conclusion',
-  titleKey: 'conclusion_intro_question',
-  bubble: [],
-}
-
-export const endStory = {
-  sectionId: 'end',
-  titleKey: 'end_closing_message',
-  bubble: [],
 }
 
 export const conclusionSummaryInfo = {
@@ -280,89 +246,16 @@ export const conclusionTransportUsage = [
   { id: 'walkers', imageKey: 'people-walking', labelKey: 'transportation_walk', value: 48 },
 ]
 
-export const othersEbikesInfo = {
-  categoryIndex: 5,
-  blocks: [
-    {
-      id: 'intro',
-      type: 'paragraph',
-      segments: [
-        { type: 'metric', key: 'total' },
-        { type: 'text', key: 'others_ebike_intro_text_1' },
-        { type: 'highlight', key: 'others_ebike_intro_highlight_1' },
-        { type: 'text', key: 'others_ebike_intro_text_2' },
-      ],
-    },
-    {
-      id: 'one-ebike',
-      type: 'bullet',
-      segments: [
-        { type: 'metric', key: 'slot_0' },
-        { type: 'text', key: 'others_ebike_bullet_1_text_1' },
-      ],
-    },
-    {
-      id: 'more-ebikes',
-      type: 'bullet',
-      segments: [
-        { type: 'metric', key: 'slot_1' },
-        { type: 'text', key: 'others_ebike_bullet_2_text_1' },
-      ],
-    },
-  ],
-}
-
-export const othersBikeSharingInfo = {
-  categoryIndex: 6,
-  aggregates: {
-    negative_pair: ['slot_2', 'slot_3'],
-  },
-  blocks: [
-    {
-      id: 'intro',
-      type: 'paragraph',
-      segments: [
-        { type: 'text', key: 'others_bikesharing_intro_text_1' },
-        { type: 'highlight', key: 'others_bikesharing_intro_highlight_1' },
-        { type: 'text', key: 'others_bikesharing_intro_text_2' },
-      ],
-    },
-    {
-      id: 'positive',
-      type: 'bullet',
-      segments: [
-        { type: 'metric', key: 'slot_0' },
-        { type: 'text', key: 'others_bikesharing_bullet_1_text_1' },
-        { type: 'metric', key: 'slot_1' },
-        { type: 'text', key: 'others_bikesharing_bullet_1_text_2' },
-      ],
-    },
-    {
-      id: 'negative',
-      type: 'bullet',
-      segments: [
-        { type: 'text', key: 'others_bikesharing_bullet_2_text_1' },
-        { type: 'metric', key: 'negative_pair' },
-        { type: 'text', key: 'others_bikesharing_bullet_2_text_2' },
-      ],
-    },
-    {
-      id: 'no-opinion',
-      type: 'bullet',
-      segments: [
-        { type: 'metric', key: 'slot_4' },
-        { type: 'text', key: 'others_bikesharing_bullet_3_text_1' },
-      ],
-    },
-  ],
-}
-
 export const storyScenes = {
   [accessibilityHappinessStory.sectionId]: accessibilityHappinessStory,
   [accessibilityRoadStory.sectionId]: accessibilityRoadStory,
   [safetyStory.sectionId]: safetyStory,
   [othersQuestionStory.sectionId]: othersQuestionStory,
-  [othersAnswersStory.sectionId]: othersAnswersStory,
-  [conclusionStory.sectionId]: conclusionStory,
-  [endStory.sectionId]: endStory,
 }
+
+export const orderedStoryScenes = [
+  accessibilityHappinessStory,   
+  accessibilityRoadStory,        
+  safetyDetailsStory,            
+  othersAcceptanceInfo,          
+];
