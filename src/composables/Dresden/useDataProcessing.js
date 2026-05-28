@@ -60,3 +60,8 @@ export function getCategoryMetrics(parsed, categoryIndex, transport, districtNum
     })
     return slots
 }
+
+export function getCategoryName(parsed, categoryIndex, transport) {
+    const cats = parsed?.categoryOrderByTransport[transport] ?? [];
+    return cats[categoryIndex] ?? '';
+}

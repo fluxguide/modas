@@ -239,6 +239,18 @@ export const conclusionSummaryInfo = {
   ],
 }
 
+export const conclusionStory = {
+  sectionId: 'conclusion',
+  titleKey: 'conclusion_intro_question',
+  bubble: [],
+}
+
+export const endStory = {
+  sectionId: 'end',
+  titleKey: 'end_closing_message',
+  bubble: [],
+}
+
 export const conclusionTransportUsage = [
   { id: 'tram', imageKey: 'tram', labelKey: 'transportation_bus', value: 26 },
   { id: 'car', assetKey: 'end-car', labelKey: 'transportation_car', value: 21 },
@@ -251,11 +263,15 @@ export const storyScenes = {
   [accessibilityRoadStory.sectionId]: accessibilityRoadStory,
   [safetyStory.sectionId]: safetyStory,
   [othersQuestionStory.sectionId]: othersQuestionStory,
+  [conclusionStory.sectionId]: conclusionStory,
+  [endStory.sectionId]: endStory,
 }
 
 export const orderedStoryScenes = [
-  accessibilityHappinessStory,   
-  accessibilityRoadStory,        
-  safetyDetailsStory,            
-  othersAcceptanceInfo,          
+  accessibilityHappinessStory,
+  accessibilityRoadStory,
+  safetyDetailsStory,
+  othersAcceptanceInfo,
+  conclusionStory,
+  endStory,
 ];

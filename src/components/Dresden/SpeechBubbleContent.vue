@@ -4,13 +4,9 @@ import { useTranslations } from '@composables/Dresden/useTranslations.js'
 import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
-  titleKey: {
+  title: {
     type: String,
     default: '',
-  },
-  titleParams: {
-    type: Object,
-    default: () => ({}),
   },
   lines: {
     type: Array,
@@ -30,7 +26,9 @@ const props = defineProps({
   },
 })
 
-const { getTranslation, setTranslation } = useTranslations()
+const emit = defineEmits(['update:title'])
+
+const { getTranslation } = useTranslations()
 
 const resolvedLines = computed(() =>
   props.lines.map((line) => ({
@@ -39,7 +37,7 @@ const resolvedLines = computed(() =>
       if (segment.type === 'metric') {
         return {
           ...segment,
-          value: `${props.metrics[segment.key]}%`,
+          value: `${props.metrics[segment.key]}%` ?? 0,
         }
       }
 
@@ -50,16 +48,18 @@ const resolvedLines = computed(() =>
     }),
   })),
 )
+
+const resolvedTitle = computed(() => props.title || '');
 </script>
 
 <template>
   <div class="speech-content">
-    <p v-if="titleKey" class="speech-content__title">
-      <EditableTextField v-if="editModeActive" :model-value="getTranslation(titleKey, titleParams)"
-        @update:model-value="val => setTranslation(titleKey, val)" :active-mode="activeMode" :rows="3" :width="`100%`"
+    <p v-if="resolvedTitle" class="speech-content__title">
+      <EditableTextField v-if="editModeActive" :model-value="resolvedTitle"
+        @update:model-value="val => emit('update:title', val)" :active-mode="activeMode" :rows="3" :width="`100%`"
         :font-size="'1.2rem'" :line-height="1.35" :padding="'0vh'" :font-weight="'400'" :text-align="'left'"
         :text-transform="'none'" :letter-spacing="'0.1em'" />
-      <span v-else>{{ getTranslation(titleKey, titleParams) }}</span>
+      <span v-else>{{ resolvedTitle }}</span>
     </p>
 
     <ul v-if="resolvedLines.length" class="speech-content__list">

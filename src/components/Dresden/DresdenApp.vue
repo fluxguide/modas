@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch, nextTick } from 'vue'
-import { loadData, getCategoryMetrics } from '@composables/Dresden/useDataProcessing.js'
+import { loadData, getCategoryMetrics, getCategoryName } from '@composables/Dresden/useDataProcessing.js'
 import { useTranslations } from '@composables/Dresden/useTranslations.js'
 import {
     accessibilityHappinessStory,
@@ -11,6 +11,8 @@ import {
     safetyDetailsStory,
     storyScenes,
     orderedStoryScenes,
+    conclusionStory,
+    endStory
 } from '../../../data/storyData.js'
 import ConclusionTransportUsage from '@components/Dresden/ConclusionTransportUsage.vue'
 import DresdenMap from '@components/Dresden/DresdenMap.vue'
@@ -66,9 +68,8 @@ const fullyVisibleItems = reactive({})
 let sectionScrollLockTimeout = null
 let storySectionObserver = null
 let fullyVisibleItemObserver = null
-const { getTranslation, setTranslation } = useTranslations()
+const { getTranslation } = useTranslations()
 
-const chartData = ref(null)
 const activeMode = ref('view');
 const isPresenting = ref(false);
 const editModeActive = ref(true);
@@ -243,6 +244,36 @@ const categoryCount = computed(() => {
     return Math.max(0, cats.length - 1);
 });
 
+// store user-edited titles, keyed by transport + scene position so each
+// transport/section combo keeps its own edited name
+const titleOverrides = ref({})
+
+function titleOverrideKey(scene) {
+    const pos = orderedStoryScenes.indexOf(scene);
+    return `${selectedScrollingSetup.transportationId}:${pos}`;
+}
+
+function resolveSceneCategoryName(scene) {
+    const key = titleOverrideKey(scene);
+    if (titleOverrides.value[key] != null) return titleOverrides.value[key];   // edited wins
+
+    if (!parsedData.value) return '';
+    const scenePosition = orderedStoryScenes.indexOf(scene);
+    if (scenePosition === -1) return '';
+    return getCategoryName(
+        parsedData.value,
+        scenePosition + 1,
+        selectedScrollingSetup.transportationId,
+    );
+}
+
+function setSceneTitle(scene, val) {
+    titleOverrides.value = {
+        ...titleOverrides.value,
+        [titleOverrideKey(scene)]: val,
+    };
+}
+
 function buildTowerSegments(metrics) {
     const colorBySlot = {
         slot_0: 'var(--blue)',
@@ -288,15 +319,6 @@ const safetyDetailsMetrics = computed(() =>
     resolveStorySceneMetrics(safetyDetailsStory),
 )
 
-const safetyDetailsTitleParams = computed(() => ({
-    transportGroup: getTranslation(
-        `transport_group_${selectedScrollingSetup.transportationId}`,
-    ),
-    transportContext: getTranslation(
-        `transport_context_${selectedScrollingSetup.transportationId}`,
-    ),
-}))
-
 const safetyTreeItems = computed(() =>
     safetyDetailsStory.treeItems
         .map((item) => ({
@@ -304,7 +326,7 @@ const safetyTreeItems = computed(() =>
             image: treeImages[item.imageKey],
             value: safetyDetailsMetrics.value[item.metricKey],
         }))
-        // .filter((item) => item.value > 0)
+    // .filter((item) => item.value > 0)
 )
 
 const othersAcceptanceMetrics = computed(() =>
@@ -324,7 +346,7 @@ const conclusionTransportItems = computed(() =>
 )
 
 const activeStoryScene = computed(
-    () => storyScenes[activeStorySectionId.value] ?? accessibilityHappinessStory,
+    () => storyScenes[activeStorySectionId.value] ?? null,
 )
 
 const activeStorySceneMetrics = computed(() =>
@@ -793,7 +815,8 @@ onUnmounted(() => {
 
 
         <!-- Character in Story -->
-        <div v-if="hasActiveStorySection" class="character-wrapper" :class="getCharacterStateClasses()">
+        <div v-if="hasActiveStorySection && activeStoryScene" class="character-wrapper"
+            :class="getCharacterStateClasses()">
             <img v-if="activeStoryCharacterTransportationImage" :src="activeStoryCharacterTransportationImage"
                 :alt="activeStoryCharacterTransportationAlt" class="story-character-transportation">
             <article class="speech-bubble">
@@ -802,9 +825,10 @@ onUnmounted(() => {
                         d="M24.3809 108.27C-53.8085 145.629 85.6407 -11.3606 34.3418 -26.0945C-16.957 -40.8284 240.039 -50.5256 210.651 -26.0945C181.262 -1.66349 102.57 70.9105 24.3809 108.27Z"
                         fill="white" />
                 </svg>
-                <SpeechBubbleContent :title-key="activeStoryScene.titleKey" :title-params="activeStorySceneTitleParams"
-                    :lines="activeStoryScene.bubble" :metrics="activeStorySceneMetrics" :active-mode="activeMode"
-                    :edit-mode-active="editModeActive" />
+                <SpeechBubbleContent
+                    :title="resolveSceneCategoryName(activeStoryScene) || getTranslation(activeStoryScene.titleKey, activeStorySceneTitleParams)"
+                    @update:title="val => setSceneTitle(activeStoryScene, val)" :lines="activeStoryScene.bubble"
+                    :metrics="activeStorySceneMetrics" :active-mode="activeMode" :edit-mode-active="editModeActive" />
             </article>
         </div>
 
@@ -863,8 +887,8 @@ onUnmounted(() => {
                 </div>
 
                 <div class="trees-info white-info-box">
-                    <SpeechBubbleContent :title-key="safetyDetailsStory.titleKey"
-                        :title-params="safetyDetailsTitleParams" :lines="safetyDetailsStory.bubble"
+                    <SpeechBubbleContent :title="resolveSceneCategoryName(safetyDetailsStory)"
+                        @update:title="val => setSceneTitle(safetyDetailsStory, val)" :lines="safetyDetailsStory.bubble"
                         :metrics="safetyDetailsMetrics" />
                 </div>
             </div>
@@ -880,7 +904,8 @@ onUnmounted(() => {
                 <img src="@img/Dresden/traffic-light.png" alt="" class="traffic-light" />
             </div>
             <div class="white-info-box cloud-info-box">
-                <SpeechBubbleContent :title-key="othersAcceptanceInfo.titleKey" :lines="othersAcceptanceInfo.bubble"
+                <SpeechBubbleContent :title="resolveSceneCategoryName(othersAcceptanceInfo)"
+                    @update:title="val => setSceneTitle(othersAcceptanceInfo, val)" :lines="othersAcceptanceInfo.bubble"
                     :metrics="othersAcceptanceMetrics" />
             </div>
         </section>
