@@ -254,15 +254,16 @@ function buildTowerSegments(metrics) {
     }
 
     return Object.keys(metrics)
-        .filter(k => /^slot_\d+$/.test(k))          // only slot_N keys
+        .filter(k => /^slot_\d+$/.test(k))
         .sort((a, b) => Number(a.split('_')[1]) - Number(b.split('_')[1]))
-        .slice(0, 6)                                // cap at 6 (we only have 6 colors)
+        .slice(0, 6)
         .map(key => ({
             key,
             value: metrics[key] ?? 0,
             height: `${metrics[key] ?? 0}%`,
             color: colorBySlot[key],
         }))
+        .filter(seg => seg.value > 0);
 }
 
 const accessibilityHappinessMetrics = computed(() =>
@@ -297,11 +298,13 @@ const safetyDetailsTitleParams = computed(() => ({
 }))
 
 const safetyTreeItems = computed(() =>
-    safetyDetailsStory.treeItems.map((item) => ({
-        ...item,
-        image: treeImages[item.imageKey],
-        value: safetyDetailsMetrics.value[item.metricKey],
-    })),
+    safetyDetailsStory.treeItems
+        .map((item) => ({
+            ...item,
+            image: treeImages[item.imageKey],
+            value: safetyDetailsMetrics.value[item.metricKey],
+        }))
+        // .filter((item) => item.value > 0)
 )
 
 const othersAcceptanceMetrics = computed(() =>
