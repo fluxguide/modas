@@ -14,9 +14,11 @@ export function loadData(rawData) {
     const categoryOrderByTransport = {}
     const measurementOrderByCategory = {}
     const lookup = {}
+    const districtNames = {}
 
     for (const row of rawData) {
         const district = Number(row['district number'])
+        const districtName = (row['district name'] ?? '').trim()
         const rawTransport = (row['transport type'] ?? '').trim()
         const transport = TRANSPORT_ALIASES[rawTransport] ?? rawTransport
         const category = (row['category name'] ?? '').trim()
@@ -24,6 +26,10 @@ export function loadData(rawData) {
         const value = Number(row['measurement value']) || 0
 
         if (!category || !measurement || Number.isNaN(district)) continue
+
+        if (districtName && !districtNames[district]) {
+            districtNames[district] = districtName
+        }
 
         if (!(category in lookup)) {
             measurementOrderByCategory[category] = []
@@ -43,7 +49,7 @@ export function loadData(rawData) {
         if (!order.includes(measurement)) order.push(measurement)
     }
 
-    return { categoryOrderByTransport, measurementOrderByCategory, lookup }
+    return { categoryOrderByTransport, measurementOrderByCategory, lookup, districtNames }
 }
 
 export function getCategoryMetrics(parsed, categoryIndex, transport, districtNum) {
@@ -64,4 +70,8 @@ export function getCategoryMetrics(parsed, categoryIndex, transport, districtNum
 export function getCategoryName(parsed, categoryIndex, transport) {
     const cats = parsed?.categoryOrderByTransport[transport] ?? [];
     return cats[categoryIndex] ?? '';
+}
+
+export function getDistrictName(parsed, districtNum) {
+    return parsed?.districtNames?.[districtNum] ?? '';
 }

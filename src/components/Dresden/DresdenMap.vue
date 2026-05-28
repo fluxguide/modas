@@ -8,6 +8,10 @@ const props = defineProps({
         type: String,
         required: true,
     },
+    text: {
+        type: String,
+        default: '',
+    },
 })
 
 const emit = defineEmits(['update:modelValue'])
@@ -101,7 +105,6 @@ watch(() => props.modelValue, syncRegionState)
 </template>
 
 <style scoped>
-
 .dresden-map-host :deep(.dresden-map) {
     display: block;
     width: 100%;

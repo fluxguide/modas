@@ -1,6 +1,6 @@
 <script setup>
 import { computed, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch, nextTick } from 'vue'
-import { loadData, getCategoryMetrics, getCategoryName } from '@composables/Dresden/useDataProcessing.js'
+import { loadData, getCategoryMetrics, getCategoryName, getDistrictName } from '@composables/Dresden/useDataProcessing.js'
 import { useTranslations } from '@composables/Dresden/useTranslations.js'
 import {
     accessibilityHappinessStory,
@@ -70,6 +70,7 @@ let storySectionObserver = null
 let fullyVisibleItemObserver = null
 const { getTranslation } = useTranslations()
 
+const hasSelectedDistrict = ref(false)
 const activeMode = ref('view');
 const isPresenting = ref(false);
 const editModeActive = ref(true);
@@ -215,6 +216,12 @@ const activeDistrictNum = computed(() => {
     const match = selectedScrollingSetup.cityPartId.match(/\d+/)
     return match ? Number(match[0]) : null
 })
+
+const activeDistrictName = computed(() => {
+    if (!hasSelectedDistrict.value) return '';
+    if (!parsedData.value || activeDistrictNum.value == null) return '';
+    return getDistrictName(parsedData.value, activeDistrictNum.value);
+});
 
 function resolveStorySceneMetrics(scene) {
     if (!parsedData.value) return {};
@@ -684,6 +691,10 @@ watch(categoryCount, async () => {
     observeStorySections();
 });
 
+watch(() => selectedScrollingSetup.cityPartId, () => {
+    hasSelectedDistrict.value = true;
+})
+
 onMounted(() => {
     document.addEventListener("fullscreenchange", () => {
         if (!document.fullscreenElement) {
@@ -776,16 +787,18 @@ onUnmounted(() => {
                         :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="'400'"
                         :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
                 </h1>
-                <DresdenMap v-model="selectedScrollingSetup.cityPartId" class="city-map" />
+                <DresdenMap v-model="selectedScrollingSetup.cityPartId" @update:model-value="hasSelectedDistrict = true"
+                    class="city-map" />
 
                 <div class="city-selection-character">
                     <div class="city-selection--speech-bubble">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 228 106" fill="none">
+                        <svg class="bubble-bg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 228 106"
+                            preserveAspectRatio="none" fill="none">
                             <path
                                 d="M20 2.5H193.217C202.882 2.50003 210.717 10.335 210.717 20V63.7695C210.717 67.2709 211.529 70.6944 213.046 73.8252C215.48 78.85 219.522 87.4086 222.363 94.5273C223.708 97.8965 224.73 100.816 225.212 102.852C216.262 100.072 198.578 93.3114 190.977 90.3701C188.362 89.3585 185.593 88.8369 182.785 88.8369H20C10.335 88.8369 2.5 81.0019 2.5 71.3369V20C2.5 10.335 10.335 2.5 20 2.5Z"
                                 fill="white" stroke="#456990" stroke-width="5" />
                         </svg>
-                        <label>{{ getTranslation('choose_city_prompt') }}</label>
+                        <label>{{ activeDistrictName || getTranslation('choose_city_prompt') }}</label>
                     </div>
                     <img :src="activeScrollingSetup.character?.image"
                         :alt="getTranslation(activeScrollingSetup.character?.labelKey)">
@@ -1106,19 +1119,25 @@ onUnmounted(() => {
     top: 0;
     left: 0;
     transform: translate3d(-100%, -20%, 0);
+
+    display: inline-block;
+    padding: 1.2rem 1.6rem 2rem;
 }
 
-.choose-city-section .selection-section__content .city-selection--speech-bubble svg {
-    width: 15ch;
+.choose-city-section .selection-section__content .city-selection--speech-bubble .bubble-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
 }
 
 .choose-city-section .selection-section__content .city-selection--speech-bubble label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    position: relative;
+    z-index: 1;
+    display: block;
     font-size: 1.2rem;
-
-    transform: translate3d(-50%, -60%, 0);
+    text-align: left;
 }
 
 
