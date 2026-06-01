@@ -183,6 +183,18 @@ const scrollingSetupOptions = {
     ],
 }
 
+const transportationCards = computed(() => {
+    const characterId = selectedScrollingSetup.characterId
+    const perCharacter = storyCharacterTransportationImages[characterId] ?? {}
+
+    return [
+        { id: 'bike', labelKey: 'transportation_bike', image: perCharacter.bike ?? bikeImage },
+        { id: 'car', labelKey: 'transportation_car', image: perCharacter.car ?? carImage },
+        { id: 'bus', labelKey: 'transportation_bus', image: perCharacter.bus ?? busImage },
+        { id: 'walk', labelKey: 'transportation_walk', image: perCharacter.walk ?? walkImage },
+    ]
+})
+
 const selectedScrollingSetup = reactive({
     characterId: scrollingSetupOptions.characters[0].id,
     cityPartId: scrollingSetupOptions.cityParts[0].id,
@@ -815,7 +827,7 @@ onUnmounted(() => {
                 </h1>
                 <div class="transportation-grid" role="list"
                     :aria-label="getTranslation('choose_transportation_aria_label')">
-                    <TransportationOptionCard v-for="(transportation, index) in scrollingSetupOptions.transportation"
+                    <TransportationOptionCard v-for="(transportation, index) in transportationCards"
                         :key="transportation.id" :option="transportation" :class="index % 2 == 0 ? 'even' : 'odd'"
                         :selected="selectedScrollingSetup.transportationId === transportation.id
                             " @select="
