@@ -1,15 +1,12 @@
 <script setup>
-import { computed } from 'vue'
+import { computed, ref } from 'vue'
 import { useTranslations } from '@composables/Dresden/useTranslations.js'
+import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
-  titleKey: {
+  title: {
     type: String,
     default: '',
-  },
-  titleParams: {
-    type: Object,
-    default: () => ({}),
   },
   lines: {
     type: Array,
@@ -19,7 +16,17 @@ const props = defineProps({
     type: Object,
     required: true,
   },
+  activeMode: {
+    type: String,
+    default: 'view',
+  },
+  editModeActive: {
+    type: Boolean,
+    default: false,
+  },
 })
+
+const emit = defineEmits(['update:title'])
 
 const { getTranslation } = useTranslations()
 
@@ -30,7 +37,7 @@ const resolvedLines = computed(() =>
       if (segment.type === 'metric') {
         return {
           ...segment,
-          value: `${props.metrics[segment.key]}%`,
+          value: `${props.metrics[segment.key]}%` ?? 0,
         }
       }
 
@@ -41,22 +48,25 @@ const resolvedLines = computed(() =>
     }),
   })),
 )
+
+const resolvedTitle = computed(() => props.title || '');
 </script>
 
 <template>
   <div class="speech-content">
-    <p v-if="titleKey" class="speech-content__title">
-      {{ getTranslation(titleKey, titleParams) }}
+    <p v-if="resolvedTitle" class="speech-content__title">
+      <EditableTextField v-if="editModeActive" :model-value="resolvedTitle"
+        @update:model-value="val => emit('update:title', val)" :active-mode="activeMode" :rows="3" :width="`100%`"
+        :font-size="'1.2rem'" :line-height="1.35" :padding="'0vh'" :font-weight="'400'" :text-align="'left'"
+        :text-transform="'none'" :letter-spacing="'0.1em'" />
+      <span v-else>{{ resolvedTitle }}</span>
     </p>
 
     <ul v-if="resolvedLines.length" class="speech-content__list">
       <li v-for="line in resolvedLines" :key="line.id" class="speech-content__item">
         <template v-for="(segment, index) in line.segments" :key="`${line.id}-${index}`">
-          <span
-            v-if="segment.type === 'highlight'"
-            class="speech-content__highlight"
-            :class="`speech-content__highlight--${segment.tone}`"
-          >
+          <span v-if="segment.type === 'highlight'" class="speech-content__highlight"
+            :class="`speech-content__highlight--${segment.tone}`">
             {{ segment.value }}
           </span>
           <span v-else>{{ segment.value }}</span>

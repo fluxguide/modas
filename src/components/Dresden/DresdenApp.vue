@@ -1,24 +1,27 @@
 <script setup>
-import { computed, onBeforeUnmount, onMounted, reactive, ref } from 'vue'
+import { computed, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch, nextTick } from 'vue'
+import { loadData, getCategoryMetrics, getCategoryName, getDistrictName } from '@composables/Dresden/useDataProcessing.js'
 import { useTranslations } from '@composables/Dresden/useTranslations.js'
 import {
     accessibilityHappinessStory,
     accessibilityRoadStory,
-    conclusionStory,
     othersAcceptanceInfo,
     conclusionSummaryInfo,
     conclusionTransportUsage,
-    othersAnswersStory,
-    othersBikeSharingInfo,
-    othersEbikesInfo,
     safetyDetailsStory,
     storyScenes,
-} from '/Users/sofia/fluxguide Dropbox/Fluxguide Team/Projekte/F&E - MoDaS - Mobility Data Stories - TU Ilmenau/04 - Development/suite/modas/data/storyData.js'
+    orderedStoryScenes,
+    conclusionStory,
+    endStory
+} from '../../../data/storyData.js'
 import ConclusionTransportUsage from '@components/Dresden/ConclusionTransportUsage.vue'
 import DresdenMap from '@components/Dresden/DresdenMap.vue'
 import SpeechBubbleContent from '@components/Dresden/SpeechBubbleContent.vue'
 import StoryInfoBox from '@components/Dresden/StoryInfoBox.vue'
 import TransportationOptionCard from '@components/Dresden/TransportationOptionCard.vue'
+import EditableTextField from '@src/components/EditableTextField.vue';
+import SideMenu from '@src/components/SideMenu.vue';
+
 import bikeImage from '@img/Dresden/bike.png'
 import busImage from '@img/Dresden/bus.png'
 import carImage from '@img/Dresden/car.png'
@@ -49,6 +52,13 @@ import boyImage from '@img/Dresden/boy.png'
 import boyWalkImage from '@img/Dresden/boy-walk.svg'
 import arrowIcon from '@img/Dresden/arrow.svg'
 
+const props = defineProps({
+    data: { type: Array, default: () => [] },
+    mode: { type: String, default: 'view' },
+    columnLabelMap: { type: Object, default: () => ({}) },
+    categoryColours: { type: Object, default: () => ({}) },
+});
+
 const scrollingSection = ref(null)
 const activeStorySectionId = ref('')
 const storySectionVisibility = reactive({})
@@ -59,6 +69,30 @@ let sectionScrollLockTimeout = null
 let storySectionObserver = null
 let fullyVisibleItemObserver = null
 const { getTranslation } = useTranslations()
+
+const hasSelectedDistrict = ref(false)
+const activeMode = ref('view');
+const isPresenting = ref(false);
+const editModeActive = ref(true);
+const bgTintColor = ref('rgba(255, 255, 255, 0)')
+const bgTintOpacity = ref(0.3)
+
+const dresdenBackground = computed(() => ({
+    type: 'texture',
+    tint: bgTintColor.value,
+    opacity: bgTintOpacity.value,
+}))
+
+const headers = ref({
+    section1: getTranslation('intro_title'),
+    section2: getTranslation('choose_character_title'),
+    section3: getTranslation('choose_city_title'),
+    section4: getTranslation('choose_transportation_title'),
+})
+
+const texts = ref({
+    section1: getTranslation('intro_subtitle_line_1'),
+})
 
 const treeImages = {
     tree1: tree1Image,
@@ -149,6 +183,18 @@ const scrollingSetupOptions = {
     ],
 }
 
+const transportationCards = computed(() => {
+    const characterId = selectedScrollingSetup.characterId
+    const perCharacter = storyCharacterTransportationImages[characterId] ?? {}
+
+    return [
+        { id: 'bike', labelKey: 'transportation_bike', image: perCharacter.bike ?? bikeImage },
+        { id: 'car', labelKey: 'transportation_car', image: perCharacter.car ?? carImage },
+        { id: 'bus', labelKey: 'transportation_bus', image: perCharacter.bus ?? busImage },
+        { id: 'walk', labelKey: 'transportation_walk', image: perCharacter.walk ?? walkImage },
+    ]
+})
+
 const selectedScrollingSetup = reactive({
     characterId: scrollingSetupOptions.characters[0].id,
     cityPartId: scrollingSetupOptions.cityParts[0].id,
@@ -174,41 +220,100 @@ const activeStoryCharacterTransportationImage = computed(() => {
     return characterImages?.[selectedScrollingSetup.transportationId] ?? null
 })
 
-function resolveStorySceneMetrics(scene) {
-    const transportMetrics =
-        scene.metricsByTransportation[selectedScrollingSetup.transportationId] ??
-        scene.metricsByTransportation.bike
+const parsedData = computed(() =>
+    props.data?.length ? loadData(props.data) : null
+)
 
-    const districtMetrics =
-        transportMetrics[selectedScrollingSetup.cityPartId] ?? transportMetrics.default
+const activeDistrictNum = computed(() => {
+    const match = selectedScrollingSetup.cityPartId.match(/\d+/)
+    return match ? Number(match[0]) : null
+})
+
+const activeDistrictName = computed(() => {
+    if (!hasSelectedDistrict.value) return '';
+    if (!parsedData.value || activeDistrictNum.value == null) return '';
+    return getDistrictName(parsedData.value, activeDistrictNum.value);
+});
+
+function resolveStorySceneMetrics(scene) {
+    if (!parsedData.value) return {};
+
+    const scenePosition = orderedStoryScenes.indexOf(scene);
+    if (scenePosition === -1) return {};
+
+    const categoryIndex = scenePosition + 1;
+    const slots = getCategoryMetrics(
+        parsedData.value,
+        categoryIndex,
+        selectedScrollingSetup.transportationId,
+        activeDistrictNum.value,
+    );
 
     return {
-        ...districtMetrics,
-        dissatisfied_total:
-            (districtMetrics.dissatisfied ?? 0) +
-            (districtMetrics.very_dissatisfied ?? 0),
-        unsafe_total:
-            (districtMetrics.rather_unsafe ?? 0) +
-            (districtMetrics.very_unsafe ?? 0),
-    }
+        ...slots,
+        total: Object.values(slots).reduce((sum, v) => sum + v, 0),
+        negative_pair: (slots.slot_3 ?? 0) + (slots.slot_4 ?? 0),
+    };
 }
 
-function buildTowerSegments(scene, metrics) {
-    const colorByMetric = {
-        very_satisfied: 'var(--blue)',
-        satisfied: 'var(--mint)',
-        neutral: 'var(--yellow)',
-        dissatisfied: 'var(--orange-soft)',
-        very_dissatisfied: 'var(--orange-light)',
-        no_answer: 'var(--taupe-light)',
+const categoryCount = computed(() => {
+    if (!parsedData.value) return 0;
+    const transport = selectedScrollingSetup.transportationId;
+    const cats = parsedData.value.categoryOrderByTransport[transport] ?? [];
+    return Math.max(0, cats.length - 1);
+});
+
+// store user-edited titles, keyed by transport + scene position so each
+// transport/section combo keeps its own edited name
+const titleOverrides = ref({})
+
+function titleOverrideKey(scene) {
+    const pos = orderedStoryScenes.indexOf(scene);
+    return `${selectedScrollingSetup.transportationId}:${pos}`;
+}
+
+function resolveSceneCategoryName(scene) {
+    const key = titleOverrideKey(scene);
+    if (titleOverrides.value[key] != null) return titleOverrides.value[key];   // edited wins
+
+    if (!parsedData.value) return '';
+    const scenePosition = orderedStoryScenes.indexOf(scene);
+    if (scenePosition === -1) return '';
+    return getCategoryName(
+        parsedData.value,
+        scenePosition + 1,
+        selectedScrollingSetup.transportationId,
+    );
+}
+
+function setSceneTitle(scene, val) {
+    titleOverrides.value = {
+        ...titleOverrides.value,
+        [titleOverrideKey(scene)]: val,
+    };
+}
+
+function buildTowerSegments(metrics) {
+    const colorBySlot = {
+        slot_0: 'var(--blue)',
+        slot_1: 'var(--mint)',
+        slot_2: 'var(--yellow)',
+        slot_3: 'var(--orange-soft)',
+        slot_4: 'var(--orange-light)',
+        slot_5: 'var(--taupe-light)',
     }
 
-    return scene.metricOrder.map((key) => ({
-        key,
-        value: metrics[key],
-        height: `${metrics[key]}%`,
-        color: colorByMetric[key],
-    }))
+    return Object.keys(metrics)
+        .filter(k => /^slot_\d+$/.test(k))
+        .sort((a, b) => Number(a.split('_')[1]) - Number(b.split('_')[1]))
+        .slice(0, 6)
+        .map(key => ({
+            key,
+            value: metrics[key] ?? 0,
+            height: `${metrics[key] ?? 0}%`,
+            color: colorBySlot[key],
+        }))
+        .filter(seg => seg.value > 0);
 }
 
 const accessibilityHappinessMetrics = computed(() =>
@@ -221,42 +326,26 @@ const accessibilityRoadMetrics = computed(() =>
 
 const accessibilityHappinessTowerSegments = computed(() =>
     buildTowerSegments(
-        accessibilityHappinessStory,
         accessibilityHappinessMetrics.value,
     ),
 )
 
 const accessibilityRoadTowerSegments = computed(() =>
-    buildTowerSegments(accessibilityRoadStory, accessibilityRoadMetrics.value),
+    buildTowerSegments(accessibilityRoadMetrics.value),
 )
 
 const safetyDetailsMetrics = computed(() =>
     resolveStorySceneMetrics(safetyDetailsStory),
 )
 
-const safetyDetailsTitleParams = computed(() => ({
-    transportGroup: getTranslation(
-        `transport_group_${selectedScrollingSetup.transportationId}`,
-    ),
-    transportContext: getTranslation(
-        `transport_context_${selectedScrollingSetup.transportationId}`,
-    ),
-}))
-
 const safetyTreeItems = computed(() =>
-    safetyDetailsStory.treeItems.map((item) => ({
-        ...item,
-        image: treeImages[item.imageKey],
-        value: safetyDetailsMetrics.value[item.metricKey],
-    })),
-)
-
-const othersEbikesMetrics = computed(() =>
-    resolveStorySceneMetrics(othersEbikesInfo),
-)
-
-const othersBikeSharingMetrics = computed(() =>
-    resolveStorySceneMetrics(othersBikeSharingInfo),
+    safetyDetailsStory.treeItems
+        .map((item) => ({
+            ...item,
+            image: treeImages[item.imageKey],
+            value: safetyDetailsMetrics.value[item.metricKey],
+        }))
+    // .filter((item) => item.value > 0)
 )
 
 const othersAcceptanceMetrics = computed(() =>
@@ -276,7 +365,7 @@ const conclusionTransportItems = computed(() =>
 )
 
 const activeStoryScene = computed(
-    () => storyScenes[activeStorySectionId.value] ?? accessibilityHappinessStory,
+    () => storyScenes[activeStorySectionId.value] ?? null,
 )
 
 const activeStorySceneMetrics = computed(() =>
@@ -586,7 +675,45 @@ function observeFullyVisibleItems() {
         })
 }
 
+const handleModeChange = (newMode) => {
+    if (newMode === "presenter") {
+        activeMode.value = "view";
+        const storyContainer = document.querySelector('.vrr-app');
+        if (storyContainer?.requestFullscreen) {
+            storyContainer.requestFullscreen();
+            isPresenting.value = true;
+        }
+    } else {
+        activeMode.value = newMode;
+    }
+};
+
+const exitPresenter = () => {
+    if (document.exitFullscreen) {
+        document.exitFullscreen();
+    }
+    isPresenting.value = false;
+    activeMode.value = "view";
+};
+
+watch(categoryCount, async () => {
+    await nextTick();
+    storySectionObserver?.disconnect();
+    storySectionObserver = null;
+    observeStorySections();
+});
+
+watch(() => selectedScrollingSetup.cityPartId, () => {
+    hasSelectedDistrict.value = true;
+})
+
 onMounted(() => {
+    document.addEventListener("fullscreenchange", () => {
+        if (!document.fullscreenElement) {
+            isPresenting.value = false;
+        }
+    })
+
     scrollingSection.value?.addEventListener('wheel', handleSectionWheel, {
         passive: false,
     })
@@ -607,21 +734,35 @@ onBeforeUnmount(() => {
     fullyVisibleItemObserver?.disconnect()
     fullyVisibleItemObserver = null
 })
+
+onUnmounted(() => {
+    document.removeEventListener("fullscreenchange", () => { });
+});
 </script>
 
 <template>
+    <SideMenu v-if="!isPresenting" :active-mode="activeMode" :background="dresdenBackground"
+        @mode-change="handleModeChange"
+        @update:background="val => { bgTintColor = val.tint; bgTintOpacity = val.opacity }" />
+    <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Präsentationsansicht beenden</button>
     <section ref="scrollingSection" class="scrollying-section" :class="getScrollingSectionStateClasses()"
-        :data-active-story-section="hasActiveStorySection ? activeStorySectionId : undefined
+        :style="{ '--bg-tint': bgTintColor, '--bg-tint-opacity': bgTintOpacity }" :data-active-story-section="hasActiveStorySection ? activeStorySectionId : undefined
             " :data-active-story-visibility="hasActiveStorySection ? activeStoryVisibilityBucket : undefined
                 " :data-active-story-side="hasActiveStorySection ? activeStorySectionSide : undefined
                     ">
         <section class="intro-section">
             <div class="intro-section__content">
-                <h1>{{ getTranslation('intro_title') }}</h1>
+                <h1>
+                    <EditableTextField :model-value="headers.section1"
+                        @update:model-value="val => headers.section1 = val" :active-mode="activeMode" :rows="1"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="'400'"
+                        :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
+                </h1>
                 <h2>
-                    {{ getTranslation('intro_subtitle_line_1') }}
-                    <br>
-                    {{ getTranslation('intro_subtitle_line_2') }}
+                    <EditableTextField :model-value="texts.section1" @update:model-value="val => texts.section1 = val"
+                        :active-mode="activeMode" :rows="5" :width="`80rem`" :font-size="'2.5vw'" :line-height="1.35"
+                        :padding="'0vh'" :font-weight="'400'" :text-align="'center'" :text-transform="'uppercase'"
+                        :letter-spacing="'0.06em'" />
                 </h2>
                 <div class="intro-section__cta">
                     <label>{{ getTranslation('intro_cta') }}</label>
@@ -632,7 +773,12 @@ onBeforeUnmount(() => {
 
         <section class="choose-character-section">
             <div class="selection-section__content">
-                <h1>{{ getTranslation('choose_character_title') }}</h1>
+                <h1>
+                    <EditableTextField :model-value="headers.section2"
+                        @update:model-value="val => headers.section2 = val" :active-mode="activeMode" :rows="1"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="'400'"
+                        :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
+                </h1>
                 <div class="character-grid" role="list" :aria-label="getTranslation('choose_character_aria_label')">
                     <button v-for="character in scrollingSetupOptions.characters" :key="character.id" type="button"
                         class="character-card" :class="{
@@ -647,17 +793,24 @@ onBeforeUnmount(() => {
         </section>
         <section class="choose-city-section">
             <div class="selection-section__content">
-                <h1>{{ getTranslation('choose_city_title') }}</h1>
-                <DresdenMap v-model="selectedScrollingSetup.cityPartId" class="city-map" />
+                <h1>
+                    <EditableTextField :model-value="headers.section3"
+                        @update:model-value="val => headers.section3 = val" :active-mode="activeMode" :rows="1"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="'400'"
+                        :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
+                </h1>
+                <DresdenMap v-model="selectedScrollingSetup.cityPartId" @update:model-value="hasSelectedDistrict = true"
+                    class="city-map" />
 
                 <div class="city-selection-character">
                     <div class="city-selection--speech-bubble">
-                        <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 228 106" fill="none">
+                        <svg class="bubble-bg" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 228 106"
+                            preserveAspectRatio="none" fill="none">
                             <path
                                 d="M20 2.5H193.217C202.882 2.50003 210.717 10.335 210.717 20V63.7695C210.717 67.2709 211.529 70.6944 213.046 73.8252C215.48 78.85 219.522 87.4086 222.363 94.5273C223.708 97.8965 224.73 100.816 225.212 102.852C216.262 100.072 198.578 93.3114 190.977 90.3701C188.362 89.3585 185.593 88.8369 182.785 88.8369H20C10.335 88.8369 2.5 81.0019 2.5 71.3369V20C2.5 10.335 10.335 2.5 20 2.5Z"
                                 fill="white" stroke="#456990" stroke-width="5" />
                         </svg>
-                        <label>{{ getTranslation('choose_city_prompt') }}</label>
+                        <label>{{ activeDistrictName || getTranslation('choose_city_prompt') }}</label>
                     </div>
                     <img :src="activeScrollingSetup.character?.image"
                         :alt="getTranslation(activeScrollingSetup.character?.labelKey)">
@@ -666,10 +819,15 @@ onBeforeUnmount(() => {
         </section>
         <section class="choose-transportation-section">
             <div class="selection-section__content">
-                <h1>{{ getTranslation('choose_transportation_title') }}</h1>
+                <h1>
+                    <EditableTextField :model-value="headers.section4"
+                        @update:model-value="val => headers.section4 = val" :active-mode="activeMode" :rows="1"
+                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="'400'"
+                        :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
+                </h1>
                 <div class="transportation-grid" role="list"
                     :aria-label="getTranslation('choose_transportation_aria_label')">
-                    <TransportationOptionCard v-for="(transportation, index) in scrollingSetupOptions.transportation"
+                    <TransportationOptionCard v-for="(transportation, index) in transportationCards"
                         :key="transportation.id" :option="transportation" :class="index % 2 == 0 ? 'even' : 'odd'"
                         :selected="selectedScrollingSetup.transportationId === transportation.id
                             " @select="
@@ -682,7 +840,8 @@ onBeforeUnmount(() => {
 
 
         <!-- Character in Story -->
-        <div v-if="hasActiveStorySection" class="character-wrapper" :class="getCharacterStateClasses()">
+        <div v-if="hasActiveStorySection && activeStoryScene" class="character-wrapper"
+            :class="getCharacterStateClasses()">
             <img v-if="activeStoryCharacterTransportationImage" :src="activeStoryCharacterTransportationImage"
                 :alt="activeStoryCharacterTransportationAlt" class="story-character-transportation">
             <article class="speech-bubble">
@@ -691,16 +850,18 @@ onBeforeUnmount(() => {
                         d="M24.3809 108.27C-53.8085 145.629 85.6407 -11.3606 34.3418 -26.0945C-16.957 -40.8284 240.039 -50.5256 210.651 -26.0945C181.262 -1.66349 102.57 70.9105 24.3809 108.27Z"
                         fill="white" />
                 </svg>
-                <SpeechBubbleContent :title-key="activeStoryScene.titleKey" :title-params="activeStorySceneTitleParams"
-                    :lines="activeStoryScene.bubble" :metrics="activeStorySceneMetrics" />
+                <SpeechBubbleContent
+                    :title="resolveSceneCategoryName(activeStoryScene) || getTranslation(activeStoryScene.titleKey, activeStorySceneTitleParams)"
+                    @update:title="val => setSceneTitle(activeStoryScene, val)" :lines="activeStoryScene.bubble"
+                    :metrics="activeStorySceneMetrics" :active-mode="activeMode" :edit-mode-active="editModeActive" />
             </article>
         </div>
 
 
 
         <!-- Story -->
-        <section class="accessibility-happiness-section" :class="getStorySectionClasses('accessibility-happiness')"
-            :data-story-active="activeStorySectionId === 'accessibility-happiness' &&
+        <section v-if="categoryCount > 0" class="accessibility-happiness-section"
+            :class="getStorySectionClasses('accessibility-happiness')" :data-story-active="activeStorySectionId === 'accessibility-happiness' &&
                 activeStoryVisibilityBucket >= 50
                 " data-story-section="accessibility-happiness">
             <div class="building-image-wrapper">
@@ -710,7 +871,7 @@ onBeforeUnmount(() => {
                     <li v-for="metric in accessibilityHappinessTowerSegments" :key="metric.key"
                         class="building-metrics-list__item" :style="{
                             height: metric.height,
-                            backgroundColor: `color-mix(in srgb, ${metric.color} 72%, transparent)`,
+                            backgroundColor: `color-mix(in srgb, ${metric.color} 80%, transparent)`,
                         }">
                         {{ metric.value }}%
                     </li>
@@ -718,8 +879,8 @@ onBeforeUnmount(() => {
             </div>
         </section>
 
-        <section class="accessibility-road-section" :class="getStorySectionClasses('accessibility-road')"
-            :data-story-active="activeStorySectionId === 'accessibility-road' &&
+        <section v-if="categoryCount > 1" class="accessibility-road-section"
+            :class="getStorySectionClasses('accessibility-road')" :data-story-active="activeStorySectionId === 'accessibility-road' &&
                 activeStoryVisibilityBucket >= 50
                 " data-story-section="accessibility-road">
             <div class="building-image-wrapper">
@@ -729,7 +890,7 @@ onBeforeUnmount(() => {
                     <li v-for="metric in accessibilityRoadTowerSegments" :key="metric.key"
                         class="building-metrics-list__item" :style="{
                             height: metric.height,
-                            backgroundColor: `color-mix(in srgb, ${metric.color} 72%, transparent)`,
+                            backgroundColor: `color-mix(in srgb, ${metric.color} 80%, transparent)`,
                         }">
                         {{ metric.value }}%
                     </li>
@@ -737,9 +898,10 @@ onBeforeUnmount(() => {
             </div>
         </section>
 
-        <section class="safety-section" :class="getStorySectionClasses('safety')" :data-story-active="activeStorySectionId === 'safety' &&
-            activeStoryVisibilityBucket >= 50
-            " data-story-section="safety">
+        <section v-if="categoryCount > 2" class="safety-section" :class="getStorySectionClasses('safety')"
+            :data-story-active="activeStorySectionId === 'safety' &&
+                activeStoryVisibilityBucket >= 50
+                " data-story-section="safety">
             <div class="trees-wrapper">
                 <div v-for="treeItem in safetyTreeItems" :key="treeItem.id" class="tree-wrapper"
                     :class="`tree-wrapper--${treeItem.id}`">
@@ -750,35 +912,26 @@ onBeforeUnmount(() => {
                 </div>
 
                 <div class="trees-info white-info-box">
-                    <SpeechBubbleContent :title-key="safetyDetailsStory.titleKey"
-                        :title-params="safetyDetailsTitleParams" :lines="safetyDetailsStory.bubble"
+                    <SpeechBubbleContent :title="resolveSceneCategoryName(safetyDetailsStory)"
+                        @update:title="val => setSceneTitle(safetyDetailsStory, val)" :lines="safetyDetailsStory.bubble"
                         :metrics="safetyDetailsMetrics" />
                 </div>
             </div>
         </section>
 
-        <section class="others-question-section" :class="getStorySectionClasses('others-question')" :data-story-active="activeStorySectionId === 'others-question' &&
-            activeStoryVisibilityBucket >= 50
-            " data-story-section="others-question">
+        <section v-if="categoryCount > 3" class="others-question-section"
+            :class="getStorySectionClasses('others-question')" :data-story-active="activeStorySectionId === 'others-question' &&
+                activeStoryVisibilityBucket >= 50
+                " data-story-section="others-question">
             <img src="@img/Dresden/cloud.png" alt="" class="cloud-image cloud-1" />
             <img src="@img/Dresden/cloud.png" alt="" class="cloud-image cloud-2" />
             <div class="traffic-light-wrapper">
                 <img src="@img/Dresden/traffic-light.png" alt="" class="traffic-light" />
             </div>
             <div class="white-info-box cloud-info-box">
-                <SpeechBubbleContent :title-key="othersAcceptanceInfo.titleKey" :lines="othersAcceptanceInfo.bubble"
+                <SpeechBubbleContent :title="resolveSceneCategoryName(othersAcceptanceInfo)"
+                    @update:title="val => setSceneTitle(othersAcceptanceInfo, val)" :lines="othersAcceptanceInfo.bubble"
                     :metrics="othersAcceptanceMetrics" />
-            </div>
-        </section>
-
-        <section class="others-answers-section" :class="getStorySectionClasses('others-answers')" :data-story-active="activeStorySectionId === 'others-answers' &&
-            activeStoryVisibilityBucket >= 50
-            " data-story-section="others-answers">
-            <div class="white-info-box info-box-top">
-                <StoryInfoBox :blocks="othersEbikesInfo.blocks" :metrics="othersEbikesMetrics" />
-            </div>
-            <div class="white-info-box info-box-bottom">
-                <StoryInfoBox :blocks="othersBikeSharingInfo.blocks" :metrics="othersBikeSharingMetrics" />
             </div>
         </section>
 
@@ -816,6 +969,7 @@ onBeforeUnmount(() => {
 
 <style>
 .scrollying-section {
+    position: relative;
     display: flex;
     flex-wrap: nowrap;
     width: 100vw;
@@ -831,6 +985,11 @@ onBeforeUnmount(() => {
     background-size: cover;
 }
 
+.scrollying-section>* {
+    position: relative;
+    z-index: 1;
+}
+
 
 .scrollying-section>section {
     flex: 0 0 100vw;
@@ -844,7 +1003,16 @@ onBeforeUnmount(() => {
     padding: 5vh 34px;
 }
 
-
+.scrollying-section::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-color: var(--bg-tint, transparent);
+    opacity: var(--bg-tint-opacity, 0);
+    pointer-events: none;
+    z-index: 0;
+    mix-blend-mode: multiply;
+}
 
 
 .intro-section__content {
@@ -859,9 +1027,9 @@ onBeforeUnmount(() => {
     padding-top: 10vh;
 }
 
-.intro-section h2 {
-    max-width: 58rem;
-}
+/* .intro-section h2 {
+    max-width: 64rem;
+} */
 
 .intro-section__cta {
     display: inline-flex;
@@ -963,19 +1131,25 @@ onBeforeUnmount(() => {
     top: 0;
     left: 0;
     transform: translate3d(-100%, -20%, 0);
+
+    display: inline-block;
+    padding: 1.2rem 1.6rem 2rem;
 }
 
-.choose-city-section .selection-section__content .city-selection--speech-bubble svg {
-    width: 15ch;
+.choose-city-section .selection-section__content .city-selection--speech-bubble .bubble-bg {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 0;
 }
 
 .choose-city-section .selection-section__content .city-selection--speech-bubble label {
-    position: absolute;
-    top: 50%;
-    left: 50%;
+    position: relative;
+    z-index: 1;
+    display: block;
     font-size: 1.2rem;
-
-    transform: translate3d(-50%, -60%, 0);
+    text-align: left;
 }
 
 
@@ -994,7 +1168,7 @@ onBeforeUnmount(() => {
     grid-template-columns: repeat(2, minmax(0, 1fr));
     gap: 2rem 3rem;
     width: 100%;
-    max-width: 58rem;
+    max-width: 64rem;
     padding-bottom: 5vh;
 }
 </style>

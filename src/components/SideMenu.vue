@@ -12,10 +12,11 @@ const props = defineProps({
                 { color: '#ffffff', position: 100 },
             ]
         })
-    }
+    },
+    background: Object,
 });
 
-const emit = defineEmits(['mode-change']);
+const emit = defineEmits(['mode-change', 'update:background'])
 
 const setActive = (tileName) => {
     emit('mode-change', tileName);
@@ -54,6 +55,12 @@ const resetGradient = () => {
 };
 
 watch(gradientConfig, () => applyGradient(), { deep: true });
+
+watch(() => props.background, (bg) => {
+    if (bg?.type !== 'texture') return
+    const container = document.querySelector('.scrollying-section')
+    if (container) container.style.setProperty('--bg-tint', bg.tint)
+}, { deep: true })
 
 watch(() => props.activeMode, (mode) => {
     if (mode !== 'edit') showGradientPicker.value = false;
@@ -116,49 +123,70 @@ watch(() => props.activeMode, (mode) => {
             </svg>
         </span>
 
-        <!-- Gradient picker panel — floats to the left of the menu -->
         <Transition name="panel-slide">
             <div v-if="showGradientPicker" class="gradient-picker-panel">
                 <div class="gradient-picker-header">
-                    <span>Hintergrundverlauf</span>
+                    <span>{{ background?.type === 'texture' ? 'Hintergrundfarbe' : 'Hintergrundverlauf' }}</span>
                     <button class="gradient-close" @click="showGradientPicker = false">✕</button>
                 </div>
 
-                <div class="gradient-preview" :style="{ background: buildGradient(gradientConfig) }" />
-
-                <!-- Angle -->
-                <div class="gradient-row">
-                    <label class="gradient-label">Winkel</label>
-                    <div class="gradient-angle-row">
-                        <input type="range" min="0" max="360" v-model.number="gradientConfig.angle"
-                            class="gradient-range" />
-                        <span class="gradient-angle-val">{{ gradientConfig.angle }}°</span>
-                    </div>
-                </div>
-
-                <!-- Color stops -->
-                <div class="gradient-stops">
-                    <div v-for="(stop, i) in gradientConfig.stops" :key="i" class="gradient-stop-row">
+                <!-- Texture tint mode (Dresden) -->
+                <template v-if="background?.type === 'texture'">
+                    <div class="gradient-preview" :style="{ background: background.tint }" />
+                    <div class="gradient-stop-row">
                         <div class="stop-left">
-                            <label class="stop-swatch-label" :title="`Stop ${i + 1} colour`">
-                                <span class="stop-swatch" :style="{ background: stop.color }" />
-                                <input type="color" :value="stop.color" @input="stop.color = $event.target.value"
+                            <label class="stop-swatch-label">
+                                <span class="stop-swatch" :style="{ background: background.tint }" />
+                                <input type="color" :value="background.tint"
+                                    @input="e => emit('update:background', { ...background, tint: e.target.value })"
                                     class="stop-color-input" />
                             </label>
-                            <span class="stop-hex">{{ stop.color }}</span>
-                        </div>
-                        <div class="stop-right">
-                            <input type="range" min="0" max="100" v-model.number="stop.position"
-                                class="gradient-range stop-pos-range" />
-                            <span class="stop-pos-val">{{ stop.position }}%</span>
+                            <span class="stop-hex">{{ background.tint }}</span>
                         </div>
                     </div>
-                </div>
+                    <div class="gradient-row">
+                        <label class="gradient-label">Deckkraft</label>
+                        <div class="gradient-angle-row">
+                            <input type="range" min="0" max="1" step="0.01" :value="background.opacity"
+                                @input="e => emit('update:background', { ...background, opacity: parseFloat(e.target.value) })"
+                                class="gradient-range" />
+                            <span class="gradient-angle-val">{{ Math.round(background.opacity * 100) }}%</span>
+                        </div>
+                    </div>
+                </template>
 
-                <button class="gradient-reset" @click="resetGradient">Auf Standardwerte zurücksetzen</button>
+                <!-- Normal gradient mode -->
+                <template v-else>
+                    <div class="gradient-preview" :style="{ background: buildGradient(gradientConfig) }" />
+                    <div class="gradient-row">
+                        <label class="gradient-label">Winkel</label>
+                        <div class="gradient-angle-row">
+                            <input type="range" min="0" max="360" v-model.number="gradientConfig.angle"
+                                class="gradient-range" />
+                            <span class="gradient-angle-val">{{ gradientConfig.angle }}°</span>
+                        </div>
+                    </div>
+                    <div class="gradient-stops">
+                        <div v-for="(stop, i) in gradientConfig.stops" :key="i" class="gradient-stop-row">
+                            <div class="stop-left">
+                                <label class="stop-swatch-label" :title="`Stop ${i + 1} colour`">
+                                    <span class="stop-swatch" :style="{ background: stop.color }" />
+                                    <input type="color" :value="stop.color" @input="stop.color = $event.target.value"
+                                        class="stop-color-input" />
+                                </label>
+                                <span class="stop-hex">{{ stop.color }}</span>
+                            </div>
+                            <div class="stop-right">
+                                <input type="range" min="0" max="100" v-model.number="stop.position"
+                                    class="gradient-range stop-pos-range" />
+                                <span class="stop-pos-val">{{ stop.position }}%</span>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="gradient-reset" @click="resetGradient">Auf Standardwerte zurücksetzen</button>
+                </template>
             </div>
         </Transition>
-
     </div>
 </template>
 

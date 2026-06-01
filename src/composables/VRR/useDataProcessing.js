@@ -16,16 +16,16 @@ function loadData(rawData) {
     firstChartCategories.forEach(cat => {
         const rows = allData.filter(d => getCategory(d) === cat);
         statsByCat[cat] = {
-            total2022: d3.sum(rows, d => +d['2022'] || 0),
-            total2023: d3.sum(rows, d => +d['2023'] || 0),
-            total2024: d3.sum(rows, d => +d['2024'] || 0),
+            totalYear1: d3.sum(rows, d => +d['year1'] || 0),
+            totalYear2: d3.sum(rows, d => +d['year2'] || 0),
+            totalYear3: d3.sum(rows, d => +d['year3'] || 0),
         };
     });
 
     const secondChartData = allData.filter(d => getChartNumber(d) === 2).flatMap(d => [
-        { year: 2022, category: getCategory(d), value: +d['2022'] || 0 },
-        { year: 2023, category: getCategory(d), value: +d['2023'] || 0 },
-        { year: 2024, category: getCategory(d), value: +d['2024'] || 0 },
+        { year: 'year1', category: getCategory(d), value: +d['year1'] || 0 },
+        { year: 'year2', category: getCategory(d), value: +d['year2'] || 0 },
+        { year: 'year3', category: getCategory(d), value: +d['year3'] || 0 },
     ]);
 
     const pieData = allData.filter(d => getChartNumber(d) === 3).map(d => ({
@@ -36,9 +36,9 @@ function loadData(rawData) {
     const stats = {
         statsByCat,
         totalRecords: {
-            total2022: d3.sum(Object.values(statsByCat), d => d.total2022),
-            total2023: d3.sum(Object.values(statsByCat), d => d.total2023),
-            total2024: d3.sum(Object.values(statsByCat), d => d.total2024),
+            totalYear1: d3.sum(Object.values(statsByCat), d => d.totalYear1),
+            totalYear2: d3.sum(Object.values(statsByCat), d => d.totalYear2),
+            totalYear3: d3.sum(Object.values(statsByCat), d => d.totalYear3),
         }
     };
 

@@ -5,7 +5,9 @@ from shared import setup_page
 
 STORY_COLOURS = {
     "thuringia": {
+        0: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
         1: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
+        2: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
     },
     "vrr": {
         1: ["#001C0C", "#004F22", "#43A86B"],
@@ -29,8 +31,8 @@ CHART_COLUMNS_BY_TEMPLATE = {
         2: {"townhall_name", "townhall_city", "stops_within_300m"},
     },
     "vrr": {
-        1: {"category", "chart number", "2022", "2023", "2024"},
-        2: {"category", "chart_number", "2022", "2023", "2024"},
+        1: {"category", "chart number", "year1", "year2", "year3"},
+        2: {"category", "chart number", "year1", "year2", "year3"},
         3: {"category", "percentage"},
     },
     "dresden": {
@@ -43,8 +45,10 @@ selected_template_label = st.session_state.get("selected_template_label", "")
 
 data = st.session_state.get("data")
 if not data:
-    st.warning("No uploaded data found in this session. Please reupload your file.")
-    if st.button("Go to upload", width="stretch"):
+    st.warning(
+        "In dieser Sitzung wurden keine hochgeladenen Daten gefunden. Bitte laden Sie Ihre Datei erneut hoch."
+    )
+    if st.button("Zum Upload", width="stretch"):
         st.switch_page("app.py")
     st.stop()
 
@@ -67,9 +71,6 @@ colours = get_story_colors(selected)
 if "category_colors" not in st.session_state:
     st.session_state.category_colors = colours.copy()
 
-print("columnLabelMap in session:", bool(st.session_state.get("columnLabelMap")))
-print("keys sample:", list((st.session_state.get("columnLabelMap") or {}).items())[:5])
-
 result = story_viewer(
     template=selected,
     data=st.session_state.data,
@@ -86,13 +87,18 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
         df = pd.DataFrame(st.session_state.data)
 
         template_columns = CHART_COLUMNS_BY_TEMPLATE.get(template, {})
-        chart_columns = template_columns.get(current_range or 0, set())
+        chart_key = current_range if current_range is not None else chart_number
+        chart_columns = template_columns.get(chart_key, set())
 
         column_config = {
             col: st.column_config.Column(label=f"◆ {col}")
             for col in df.columns
             if col in chart_columns
         }
+        print(
+            column_config,
+            f"\nColumns in editor: {list(column_config.keys())}, expected: {chart_columns}",
+        )
 
         edited_df = st.data_editor(
             df,
@@ -205,15 +211,16 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
                     unsafe_allow_html=True,
                 )
 
-        colors_to_show = (
-            st.session_state.category_colors.get(chart_number, [])
-            if chart_number is not None
-            else []
-        )
+        colors_to_show = []
+        if chart_key is not None:
+            colors_to_show = st.session_state.category_colors.get(chart_key, []) or []
 
-        cols = st.columns(len(colors_to_show), gap="medium")
-        for i, col in enumerate(cols):
-            color_chip(col, chart_number, i)
+        if colors_to_show:
+            cols = st.columns(len(colors_to_show), gap="medium")
+            for i, col in enumerate(cols):
+                color_chip(col, chart_key, i)
+        else:
+            st.caption("Keine Kategoriefarben für dieses Diagramm definiert.")
 
         if st.button("Speichern", width="stretch", key="csv_save_btn"):
             st.session_state.data = edited_df.to_dict(orient="records")

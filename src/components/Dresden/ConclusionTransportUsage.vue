@@ -70,15 +70,16 @@ defineProps({
 }
 
 .conclusion-transport-usage__badge-content h4 {
-  font-size: 1.8rem;
-  margin-top: 12px;
+  font-size: 32px;
+  margin-top: 8px;
   color: #000;
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.25);
+  font-weight: 400;
 }
 
 .conclusion-transport-usage__progress {
   width: 80%;
-  height: 0.5rem;
+  height: 0.6rem;
   border: 2px solid var(--black);
   border-radius: 999px;
   background: white;

@@ -12,7 +12,11 @@ const props = defineProps({
     },
     years: {
         type: Array,
-        default: () => [2022, 2023, 2024, 2025]
+        default: () => ['Year1', 'Year2', 'Year3', 'Year4'] // needs the exact name of the columns
+    },
+    yearLabels: {
+        type: Array,
+        default: () => ['Year 1', 'Year 2', 'Year 3', 'Year 4'] // labels to display on the timeline
     },
     height: {
         type: String,
@@ -59,6 +63,8 @@ const props = defineProps({
         default: () => []
     }
 });
+
+const emit = defineEmits(['update:yearLabels']);
 
 const openEditor = () => {
     Streamlit.setComponentValue({ action: "open_data_editor", chartNumber: props.chartNumber });
@@ -226,7 +232,9 @@ const generateChart = (chartNumber) => {
                         fill="#F3F3F3" />
                 </svg>
             </button>
-            <Timeline :years="props.years" :start-point="props.timelineStart" :markers-gap="props.percentageShift" />
+            <Timeline :year-labels="props.yearLabels" :years="props.years" :active-mode="activeMode"
+                @update:year-labels="val => emit('update:yearLabels', val)" :start-point="props.timelineStart"
+                :markers-gap="props.percentageShift" />
 
             <div class="category-labels">
                 <div v-if="props.chartNumber === 2">

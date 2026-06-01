@@ -68,6 +68,10 @@ const toggleLayer = (layerKey, isVisible) => {
     font-size: 20px;
     font-weight: 600;
     margin-right: 20px;
+    font-family: 'General Sans';
+    text-transform: none;
+    letter-spacing: normal;
+    line-height: normal;
 }
 
 .legend-items {
@@ -84,6 +88,10 @@ const toggleLayer = (layerKey, isVisible) => {
     font-weight: 500;
     gap: 0.5rem;
     cursor: pointer;
+    font-family: 'General Sans';
+    line-height: normal;
+    letter-spacing: normal;
+    text-transform: none;
 }
 
 .legend-checkbox-label input[type="checkbox"] {

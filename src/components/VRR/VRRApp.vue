@@ -26,6 +26,7 @@ const props = defineProps({
 const chartData = ref(null)
 const activeMode = ref('view');
 const isPresenting = ref(false);
+const yearLabels = ref(['Year 1', 'Year 2', 'Year 3', 'Year 4']);
 
 const headers = ref({
     section1: 'Anfragen über die verschiedenen Kanäle',
@@ -66,23 +67,24 @@ const phases = ref({
     }
 });
 
-const selectedPieSlice = ref(null);
+const selectedPieSlice = ref(
+    {
+        index: 0,
+        percentage: 0
+    }
+);
 
 const handlePieSliceSelected = (sliceData) => {
     selectedPieSlice.value = sliceData;
 };
 
 const characterImage = computed(() => {
-    if (!selectedPieSlice.value) return robotHandsUp; // image before pressing on category
-    if (selectedPieSlice.value.index === 0) return robotHandsUp;
+    if (!selectedPieSlice.value || selectedPieSlice.value.index === 0) return robotHandsUp;
     if (selectedPieSlice.value.index === 1) return paul;
 });
 
 const characterMessage = computed(() => {
-    if (!selectedPieSlice.value) return 'Ich konnte rund 70% aller Anfragen selbst lösen!';
-
-    // Change message based on selected slice
-    if (selectedPieSlice.value.index === 0) {
+    if (!selectedPieSlice.value || selectedPieSlice.value.index === 0) {
         return `Ich konnte rund ${selectedPieSlice.value.percentage}% aller Anfragen selbst lösen!`;
     }
     if (selectedPieSlice.value.index === 1) {
@@ -114,6 +116,14 @@ const exitPresenter = () => {
 watch(() => props.data, (newData) => {
     if (!newData || newData.length === 0) return;
     chartData.value = loadData(newData);
+
+    const firstSlice = chartData.value?.pieData?.[0];
+    if (firstSlice) {
+        selectedPieSlice.value = {
+            index: 0,
+            percentage: firstSlice.Percentage,
+        };
+    }
 }, { immediate: true });
 
 onMounted(async () => {
@@ -164,8 +174,8 @@ onUnmounted(() => {
             <SectionHeading v-model="headers.section1" :active-mode="activeMode" />
 
             <div class="chart-overlay">
-                <ArrowBubbleChart :first-chart-data="chartData?.stats" :chart-number="1" :active-mode="activeMode"
-                    :height="'40vh'" :bubble-position="[28, 51, 75]" :timeline-start="25" :percentage-shift="23"
+                <ArrowBubbleChart v-model:year-labels="yearLabels" :first-chart-data="chartData?.stats" :chart-number="1" :active-mode="activeMode"
+                    :height="'40vh'" :bubble-position="[28, 51, 75]" :timeline-start="20" :percentage-shift="23"
                     :bubble-gap="1" :margin-top="`5%`" :category-names="chartData?.categoryNames"
                     :category-colours="props.categoryColours?.[1]" />
             </div>
@@ -728,6 +738,14 @@ main {
 .robot-form .white-space h1 {
     width: 100%;
     line-height: 1.3;
+    font-family: 'General Sans';
+    font-size: 24px;
+    letter-spacing: normal;
+    text-transform: none;
+    -webkit-text-stroke: 0px;
+    text-shadow: none;
+    color: black;
+    font-weight: 700;
 }
 
 .intro {

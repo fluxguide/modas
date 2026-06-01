@@ -23,9 +23,9 @@ const {
 
 const getHeaderString = (header) => {
   const rangeKey = rangeKeyByRangeIndex[props.currentRange] || "stops_within_300m";
-  const colName = col(rangeKey, `${header.distance}m`);
+  const colName = col(rangeKey, `${header.distance}`);
 
-  return `Im Umkreis von [${colName}] haben ${header.stops}% der Rathäuser mindestens eine Haltestelle, ${header.noStops}% haben keine Haltestelle.`
+  return `Im Umkreis von ${colName} haben ${header.stops}% der Rathäuser mindestens eine Haltestelle, ${header.noStops}% haben keine Haltestelle.`
 }
 
 defineExpose({

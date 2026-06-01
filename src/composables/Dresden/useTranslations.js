@@ -1,6 +1,7 @@
-import { ref } from 'vue'
-import { translations } from '@src/translations.js'
+import { ref, reactive } from 'vue'
+import { translations as _translations } from '@src/translations.js'
 
+const translations = reactive(_translations)
 const currentLocale = ref('de')
 
 function interpolate(template, params = {}) {
@@ -20,6 +21,11 @@ export function useTranslations() {
     return interpolate(template, params)
   }
 
+  function setTranslation(key, value) {
+    if (!translations[key]) translations[key] = {}
+    translations[key][currentLocale.value] = value
+  }
+
   function setLocale(locale) {
     currentLocale.value = locale
   }
@@ -27,6 +33,7 @@ export function useTranslations() {
   return {
     currentLocale,
     getTranslation,
+    setTranslation,
     setLocale,
   }
 }

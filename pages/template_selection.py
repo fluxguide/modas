@@ -63,7 +63,7 @@ templates_first_row = [
 templates_second_row = [
     {
         "key": "story4",
-        "label": "Story 4",
+        "label": "Demnächst",
         "img_url": f"{IMG_URL_BASE}/Dortmund-Preview.png",
         "img_file": f"{IMG_FILE_BASE}/Dortmund-Preview.png",
         "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
@@ -74,7 +74,7 @@ templates_second_row = [
     },
     {
         "key": "story5",
-        "label": "Story 5",
+        "label": "Demnächst",
         "img_url": f"{IMG_URL_BASE}/Ilmenau-Preview.png",
         "img_file": f"{IMG_FILE_BASE}/Ilmenau-Preview.png",
         "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
@@ -97,7 +97,7 @@ st.markdown(
             <button class="info-btn">
                 Was ist eine Vorlage?
                 <span class="info-tooltip">
-                    Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nullam vel felis tempor orci tempus dapibus quis in purus. Proin imperdiet nisi sapien, quis feugiat nibh ornare porttitor. Vestibulum bibendum a ex ac sagittis. Morbi posuere nulla pretium erat euismod, ut iaculis enim suscipit. Nullam sit amet ipsum volutpat, ultrices orci vitae, hendrerit elit. Vestibulum in ipsum at libero consequat congue sit amet id leo. Pellentesque pretium in nibh at congue. Duis nec erat mollis, viverra diam et, aliquet tellus. Vivamus imperdiet pulvinar nisi, a viverra ex tempor ut. Nam vel arcu lectus. Mauris eget turpis mi. Nunc at faucibus elit.
+                    In unseren Vorlagen präsentieren wir Ihnen je eine Scrollytelling Data Story. Ihre hochgeladenen Daten werden automatisch übernommen und in die Visualisierungskomponenten gefüllt. Eine Visualisierungskomponente ist zum Beispiel eine Karte mit Pins (Story 1) oder ein Torten-Diagramm (Story 2). Wenn Ihre CSV-Datei keine entsprechenden Daten hatte, erscheinen die Visualisierungskomponenten nicht. \nDie Daten können Sie nachträglich noch anpassen: Klicken Sie dafür auf das Stiftsymbol in der Leiste am rechten Bildschirmrand und anschließend auf das Stiftsymbol direkt an der Visualisierungskomponente. Zusätzlich können Sie Texte anpassen: klicken Sie dafür auf das Stiftsymbol in der Leiste am rechten Bildschirmrand, es erscheinen gestrichelte Linien rund um Textfelder, die Sie editieren können.
                 </span>
             </button>
         </div>
@@ -187,6 +187,7 @@ clicked2 = clickable_images(
         "borderRadius": "12px",
         "boxShadow": "0 2px 6px rgba(0,0,0,0.14)",
         "cursor": "pointer",
+        "filter": "grayscale(1)",
     },
     key="templates_row_2",
 )
@@ -220,6 +221,17 @@ if preview_key and preview_key in template_by_key_all:
 
     @st.dialog(f"Data Story: {tpl['label']}")
     def template_dialog():
+        if tpl["label"] == "Demnächst":
+            st.markdown(
+                f"""
+                <div class="coming-soon">
+                    Diese Vorlage ist derzeit in Entwicklung. Schauen Sie bald wieder vorbei!
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+            return
+
         left, right = st.columns([1.15, 1], gap="large")
 
         with left:
