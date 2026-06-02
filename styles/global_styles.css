@@ -162,7 +162,7 @@ body {
     right: 0;
     background: #fff;
     min-width: 200px;
-    width: max-content;
+    width: 100%;
     max-width: 28vw;
     transform: translate3d(90%, -100%, 0);
 
