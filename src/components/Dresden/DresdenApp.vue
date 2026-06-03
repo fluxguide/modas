@@ -348,15 +348,26 @@ const safetyDetailsMetrics = computed(() =>
     resolveStorySceneMetrics(safetyDetailsStory),
 )
 
-const safetyTreeItems = computed(() =>
-    safetyDetailsStory.treeItems
+const safetyTreeItems = computed(() => {
+    const items = safetyDetailsStory.treeItems
         .map((item) => ({
             ...item,
             image: treeImages[item.imageKey],
-            value: safetyDetailsMetrics.value[item.metricKey],
+            value: safetyDetailsMetrics.value[item.metricKey] ?? 0,
         }))
-    // .filter((item) => item.value > 0)
-)
+        .filter((item) => item.value > 0);
+
+    if (!items.length) return [];
+
+    const maxValue = Math.max(...items.map(i => i.value));
+    const MIN_HEIGHT = 10;   // % of the trees-wrapper height — smallest tree
+    const MAX_HEIGHT = 100;   // largest tree
+
+    return items.map(item => ({
+        ...item,
+        height: MIN_HEIGHT + item.value,
+    }));
+});
 
 const othersAcceptanceMetrics = computed(() =>
     resolveStorySceneMetrics(othersAcceptanceInfo),
@@ -914,11 +925,9 @@ onUnmounted(() => {
                 " data-story-section="safety">
             <div class="trees-wrapper">
                 <div v-for="treeItem in safetyTreeItems" :key="treeItem.id" class="tree-wrapper"
-                    :class="`tree-wrapper--${treeItem.id}`">
+                    :class="`tree-wrapper--${treeItem.id}`" :style="{ '--tree-height': treeItem.height + 'vh' }">
                     <img :src="treeItem.image" alt="" class="tree" />
-                    <h3 class="tree-value" :class="`tree-value--${treeItem.tone}`">
-                        {{ treeItem.value }}%
-                    </h3>
+                    <h3 class="tree-value" :class="`tree-value--${treeItem.tone}`">{{ treeItem.value }}%</h3>
                 </div>
 
                 <div class="trees-info white-info-box">

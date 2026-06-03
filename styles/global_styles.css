@@ -308,8 +308,8 @@ body {
 
 .tree-wrapper .tree {
     display: block;
-    width: 100%;
-    height: auto;
+    height: var(--tree-height, 100vh);
+    width: auto;
     opacity: 0.8;
 }
 
@@ -650,30 +650,6 @@ body {
     transition: 400ms all cubic-bezier(.43, -0.31, .74, 1.43);
     opacity: 0;
     transform: scaleY(0);
-}
-
-.tree-wrapper:nth-child(1) {
-    width: 70%;
-}
-
-.tree-wrapper:nth-child(2) {
-    width: 25%;
-}
-
-.tree-wrapper:nth-child(3) {
-    width: 18%;
-}
-
-.tree-wrapper:nth-child(4) {
-    width: 30%;
-}
-
-.tree-wrapper:nth-child(5) {
-    width: 20%;
-}
-
-.tree-wrapper:nth-child(6) {
-    width: 35%;
 }
 
 .safety-section.story-section--active .tree-wrapper {
