@@ -31,22 +31,36 @@ const emit = defineEmits(['update:title'])
 const { getTranslation } = useTranslations()
 
 const resolvedLines = computed(() =>
-  props.lines.map((line) => ({
-    ...line,
-    segments: line.segments.map((segment) => {
-      if (segment.type === 'metric') {
+  props.lines
+    .filter((line) => {
+      const metricSegment = line.segments.find(s => s.type === 'metric');
+      if (!metricSegment) return true;
+      const value = props.metrics[metricSegment.key] ?? 0;
+      return value > 0;
+    })
+    .map((line) => ({
+      ...line,
+      segments: line.segments.map((segment) => {
+        if (segment.type === 'metric') {
+          return {
+            ...segment,
+            value: `${props.metrics[segment.key]}%` ?? 0,
+          }
+        }
+
+        if (segment.type === 'highlight' && segment.key) {
+          return {
+            ...segment,
+            value: props.metrics.labels?.[segment.key] ?? '',
+          }
+        }
+
         return {
           ...segment,
-          value: `${props.metrics[segment.key]}%` ?? 0,
+          value: getTranslation(segment.key),
         }
-      }
-
-      return {
-        ...segment,
-        value: getTranslation(segment.key),
-      }
-    }),
-  })),
+      }),
+    })),
 )
 
 const resolvedTitle = computed(() => props.title || '');
@@ -56,7 +70,7 @@ const resolvedTitle = computed(() => props.title || '');
   <div class="speech-content">
     <p v-if="resolvedTitle" class="speech-content__title">
       <EditableTextField v-if="editModeActive" :model-value="resolvedTitle"
-        @update:model-value="val => emit('update:title', val)" :active-mode="activeMode" :rows="3" :width="`100%`"
+        @update:model-value="val => emit('update:title', val)" :active-mode="activeMode" :rows="4" :width="`100%`"
         :font-size="'1.2rem'" :line-height="1.35" :padding="'0vh'" :font-weight="'400'" :text-align="'left'"
         :text-transform="'none'" :letter-spacing="'0.1em'" />
       <span v-else>{{ resolvedTitle }}</span>
@@ -65,9 +79,10 @@ const resolvedTitle = computed(() => props.title || '');
     <ul v-if="resolvedLines.length" class="speech-content__list">
       <li v-for="line in resolvedLines" :key="line.id" class="speech-content__item">
         <template v-for="(segment, index) in line.segments" :key="`${line.id}-${index}`">
-          <span v-if="segment.type === 'highlight'" class="speech-content__highlight"
-            :class="`speech-content__highlight--${segment.tone}`">
-            {{ segment.value }}
+          <span v-if="segment.type === 'highlight'">
+            -
+            <span class="speech-content__highlight" :class="`speech-content__highlight--${segment.tone}`">{{
+              segment.value }}</span>
           </span>
           <span v-else>{{ segment.value }}</span>
         </template>

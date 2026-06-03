@@ -1,94 +1,94 @@
-export const accessibilityHappinessStory = {
-  sectionId: 'accessibility-happiness',
-  titleKey: 'accessibility_happiness_question',
+export const sectionOne = {
+  sectionId: 'section-one',
   bubble: [
     {
-      id: 'positive',
+      id: 'firstMetric',
       segments: [
         { type: 'metric', key: 'slot_0' },
-        { type: 'text', key: 'accessibility_happiness_bullet_1_text_1' },
-        { type: 'highlight', key: 'accessibility_happiness_bullet_1_highlight_1', tone: 'blue' },
-        { type: 'text', key: 'accessibility_happiness_bullet_1_text_2' },
-        { type: 'metric', key: 'slot_1' },
-        { type: 'text', key: 'accessibility_happiness_bullet_1_text_3' },
-        { type: 'highlight', key: 'accessibility_happiness_bullet_1_highlight_2', tone: 'mint' },
+        { type: 'highlight', key: 'slot_0', tone: 'blue' },
       ],
     },
     {
-      id: 'neutral',
+      id: 'secondMetric',
+      segments: [
+        { type: 'metric', key: 'slot_1' },
+        { type: 'highlight', key: 'slot_1', tone: 'mint' },
+      ],
+    },
+    {
+      id: 'thirdMetric',
       segments: [
         { type: 'metric', key: 'slot_2' },
-        { type: 'text', key: 'accessibility_happiness_bullet_2_text_1' },
-        { type: 'highlight', key: 'accessibility_happiness_bullet_2_highlight_1', tone: 'yellow' },
+        { type: 'highlight', key: 'slot_2', tone: 'yellow' },
       ],
     },
     {
-      id: 'negative',
+      id: 'fourthMetric',
       segments: [
-        { type: 'text', key: 'accessibility_happiness_bullet_3_text_1' },
-        { type: 'metric', key: 'negative_pair' },
-        { type: 'text', key: 'accessibility_happiness_bullet_3_text_2' },
-        { type: 'highlight', key: 'accessibility_happiness_bullet_3_highlight_1', tone: 'orange-soft' },
-        { type: 'text', key: 'accessibility_happiness_bullet_3_text_3' },
-        { type: 'highlight', key: 'accessibility_happiness_bullet_3_highlight_2', tone: 'orange-light' },
-        { type: 'text', key: 'accessibility_happiness_bullet_3_text_4' },
+        { type: 'metric', key: 'slot_3' },
+        { type: 'highlight', key: 'slot_3', tone: 'orange-soft' },
       ],
     },
     {
-      id: 'no-answer',
+      id: 'fifthMetric',
+      segments: [
+        { type: 'metric', key: 'slot_4' },
+        { type: 'highlight', key: 'slot_4', tone: 'orange-light' },
+      ],
+    },
+    {
+      id: 'sixthMetric',
       segments: [
         { type: 'metric', key: 'slot_5' },
-        { type: 'text', key: 'accessibility_happiness_bullet_4_text_1' },
-        { type: 'highlight', key: 'accessibility_happiness_bullet_4_highlight_1', tone: 'taupe-light' },
-        { type: 'text', key: 'accessibility_happiness_bullet_4_text_2' },
+        { type: 'highlight', key: 'slot_5', tone: 'taupe-light' },
       ],
     },
   ],
 }
 
-export const accessibilityRoadStory = {
-  sectionId: 'accessibility-road',
-  titleKey: 'accessibility_road_question',
+export const sectionTwo = {
+  sectionId: 'section-two',
   bubble: [
     {
       id: 'positive',
       segments: [
         { type: 'metric', key: 'slot_0' },
-        { type: 'text', key: 'accessibility_road_bullet_1_text_1' },
-        { type: 'highlight', key: 'accessibility_road_bullet_1_highlight_1', tone: 'blue' },
-        { type: 'text', key: 'accessibility_road_bullet_1_text_2' },
+        { type: 'highlight', key: 'slot_0', tone: 'blue' },
+      ],
+    },
+    {
+      id: 'positive-less',
+      segments: [
         { type: 'metric', key: 'slot_1' },
-        { type: 'text', key: 'accessibility_road_bullet_1_text_3' },
-        { type: 'highlight', key: 'accessibility_road_bullet_1_highlight_2', tone: 'mint' },
+        { type: 'highlight', key: 'slot_1', tone: 'mint' },
       ],
     },
     {
       id: 'neutral',
       segments: [
         { type: 'metric', key: 'slot_2' },
-        { type: 'text', key: 'accessibility_road_bullet_2_text_1' },
-        { type: 'highlight', key: 'accessibility_road_bullet_2_highlight_1', tone: 'yellow' },
+        { type: 'highlight', key: 'slot_2', tone: 'yellow' },
+      ],
+    },
+    {
+      id: 'negative-less',
+      segments: [
+        { type: 'metric', key: 'slot_3' },
+        { type: 'highlight', key: 'slot_3', tone: 'orange-soft' },
       ],
     },
     {
       id: 'negative',
       segments: [
-        { type: 'text', key: 'accessibility_road_bullet_3_text_1' },
-        { type: 'metric', key: 'negative_pair' },
-        { type: 'text', key: 'accessibility_road_bullet_3_text_2' },
-        { type: 'highlight', key: 'accessibility_road_bullet_3_highlight_1', tone: 'orange-soft' },
-        { type: 'text', key: 'accessibility_road_bullet_3_text_3' },
-        { type: 'highlight', key: 'accessibility_road_bullet_3_highlight_2', tone: 'orange-light' },
-        { type: 'text', key: 'accessibility_road_bullet_3_text_4' },
+        { type: 'metric', key: 'slot_4' },
+        { type: 'highlight', key: 'slot_4', tone: 'orange-light' },
       ],
     },
     {
       id: 'no-answer',
       segments: [
         { type: 'metric', key: 'slot_5' },
-        { type: 'text', key: 'accessibility_road_bullet_4_text_1' },
-        { type: 'highlight', key: 'accessibility_road_bullet_4_highlight_1', tone: 'taupe-light' },
-        { type: 'text', key: 'accessibility_road_bullet_4_text_2' },
+        { type: 'highlight', key: 'slot_5', tone: 'taupe-light' },
       ],
     },
   ],
@@ -101,51 +101,47 @@ export const safetyStory = {
 }
 
 export const safetyDetailsStory = {
-  titleKey: 'safety_detail_question',
   bubble: [
     {
-      id: 'positive',
+      id: 'firstMetric',
       segments: [
-        { type: 'text', key: 'safety_detail_bullet_1_text_1' },
         { type: 'metric', key: 'slot_0' },
-        { type: 'text', key: 'safety_detail_bullet_1_text_2' },
-        { type: 'highlight', key: 'safety_detail_bullet_1_highlight_1', tone: 'blue' },
-        { type: 'text', key: 'safety_detail_bullet_1_text_3' },
-        { type: 'metric', key: 'slot_1' },
-        { type: 'text', key: 'safety_detail_bullet_1_text_4' },
-        { type: 'highlight', key: 'safety_detail_bullet_1_highlight_2', tone: 'mint' },
+        { type: 'highlight', key: 'slot_0', tone: 'blue' },
       ],
     },
     {
-      id: 'neutral',
+      id: 'secondMetric',
+      segments: [
+        { type: 'metric', key: 'slot_1' },
+        { type: 'highlight', key: 'slot_1', tone: 'mint' },
+      ],
+    },
+    {
+      id: 'thirdMetric',
       segments: [
         { type: 'metric', key: 'slot_2' },
-        { type: 'text', key: 'safety_detail_bullet_2_text_1' },
-        { type: 'highlight', key: 'safety_detail_bullet_2_highlight_1', tone: 'yellow' },
+        { type: 'highlight', key: 'slot_2', tone: 'yellow' },
       ],
     },
     {
-      id: 'negative',
+      id: 'fourthMetric',
       segments: [
-        { type: 'text', key: 'safety_detail_bullet_3_text_1' },
-        { type: 'metric', key: 'negative_pair' },
-        { type: 'text', key: 'safety_detail_bullet_3_text_2' },
         { type: 'metric', key: 'slot_3' },
-        { type: 'text', key: 'safety_detail_bullet_3_text_3' },
-        { type: 'highlight', key: 'safety_detail_bullet_3_highlight_1', tone: 'orange-soft' },
-        { type: 'text', key: 'safety_detail_bullet_3_text_4' },
-        { type: 'metric', key: 'slot_4' },
-        { type: 'text', key: 'safety_detail_bullet_3_text_5' },
-        { type: 'highlight', key: 'safety_detail_bullet_3_highlight_2', tone: 'orange-light' },
+        { type: 'highlight', key: 'slot_3', tone: 'orange-soft' },
       ],
     },
     {
-      id: 'no-answer',
+      id: 'fifthMetric',
+      segments: [
+        { type: 'metric', key: 'slot_4' },
+        { type: 'highlight', key: 'slot_4', tone: 'orange-light' },
+      ],
+    },
+    {
+      id: 'sixthMetric',
       segments: [
         { type: 'metric', key: 'slot_5' },
-        { type: 'text', key: 'safety_detail_bullet_4_text_1' },
-        { type: 'highlight', key: 'safety_detail_bullet_4_highlight_1', tone: 'taupe-light' },
-        { type: 'text', key: 'safety_detail_bullet_4_text_2' },
+        { type: 'highlight', key: 'slot_5', tone: 'taupe-light' },
       ],
     },
   ],
@@ -169,38 +165,45 @@ export const othersAcceptanceInfo = {
   titleKey: null,
   bubble: [
     {
-      id: 'positive',
+      id: 'firstMetric',
       segments: [
-        { type: 'text', key: 'others_acceptance_bullet_1_text_1' },
         { type: 'metric', key: 'slot_0' },
-        { type: 'text', key: 'others_acceptance_bullet_1_text_2' },
-        { type: 'highlight', key: 'others_acceptance_bullet_1_highlight_1', tone: 'blue' },
-        { type: 'text', key: 'others_acceptance_bullet_1_text_3' },
-        { type: 'metric', key: 'slot_1' },
-        { type: 'text', key: 'others_acceptance_bullet_1_text_4' },
-        { type: 'highlight', key: 'others_acceptance_bullet_1_highlight_2', tone: 'mint' },
+        { type: 'highlight', key: 'slot_0', tone: 'blue' },
       ],
     },
     {
-      id: 'mixed',
+      id: 'secondMetric',
+      segments: [
+        { type: 'metric', key: 'slot_1' },
+        { type: 'highlight', key: 'slot_1', tone: 'mint' },
+      ],
+    },
+    {
+      id: 'thirdMetric',
       segments: [
         { type: 'metric', key: 'slot_2' },
-        { type: 'text', key: 'others_acceptance_bullet_2_text_1' },
-        { type: 'highlight', key: 'others_acceptance_bullet_2_highlight_1', tone: 'yellow' },
-        { type: 'text', key: 'others_acceptance_bullet_2_text_2' },
-        { type: 'metric', key: 'negative_pair' },
-        { type: 'text', key: 'others_acceptance_bullet_2_text_3' },
-        { type: 'highlight', key: 'others_acceptance_bullet_2_highlight_2', tone: 'orange-soft' },
-        { type: 'text', key: 'others_acceptance_bullet_2_text_4' },
+        { type: 'highlight', key: 'slot_2', tone: 'yellow' },
       ],
     },
     {
-      id: 'no-answer',
+      id: 'fourthMetric',
+      segments: [
+        { type: 'metric', key: 'slot_3' },
+        { type: 'highlight', key: 'slot_3', tone: 'orange-soft' },
+      ],
+    },
+    {
+      id: 'fifthMetric',
+      segments: [
+        { type: 'metric', key: 'slot_4' },
+        { type: 'highlight', key: 'slot_4', tone: 'orange-light' },
+      ],
+    },
+    {
+      id: 'sixthMetric',
       segments: [
         { type: 'metric', key: 'slot_5' },
-        { type: 'text', key: 'others_acceptance_bullet_3_text_1' },
-        { type: 'highlight', key: 'others_acceptance_bullet_3_highlight_1', tone: 'taupe-light' },
-        { type: 'text', key: 'others_acceptance_bullet_3_text_2' },
+        { type: 'highlight', key: 'slot_5', tone: 'taupe-light' },
       ],
     },
   ],
@@ -259,8 +262,8 @@ export const conclusionTransportUsage = [
 ]
 
 export const storyScenes = {
-  [accessibilityHappinessStory.sectionId]: accessibilityHappinessStory,
-  [accessibilityRoadStory.sectionId]: accessibilityRoadStory,
+  [sectionOne.sectionId]: sectionOne,
+  [sectionTwo.sectionId]: sectionTwo,
   [safetyStory.sectionId]: safetyStory,
   [othersQuestionStory.sectionId]: othersQuestionStory,
   [conclusionStory.sectionId]: conclusionStory,
@@ -268,8 +271,8 @@ export const storyScenes = {
 }
 
 export const orderedStoryScenes = [
-  accessibilityHappinessStory,
-  accessibilityRoadStory,
+  sectionOne,
+  sectionTwo,
   safetyDetailsStory,
   othersAcceptanceInfo,
   conclusionStory,

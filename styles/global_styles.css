@@ -23,7 +23,7 @@ body {
 
 .story-container:has(.thuringia-app) {
     background-image: linear-gradient(rgba(197, 176, 255, 1), rgba(255, 0, 0, 0));
-        font-family: 'General Sans', 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
+    font-family: 'General Sans', 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
 }
 
 .story-container:has(.vrr-app) {
@@ -165,14 +165,11 @@ body {
     width: max-content;
     max-width: 28vw;
     transform: translate3d(90%, -100%, 0);
-
     font-size: 1rem;
 }
 
 .speech-bubble:has(ul) {
-    min-width: 200px;
-    width: max-content;
-    max-width: 40vw;
+    width: max(240px, 32vw);
 }
 
 
@@ -620,34 +617,25 @@ body {
     transition-delay: 1400ms;
 }
 
-
-/* accessibility-happiness section */
-
-.accessibility-happiness-section.story-section--active .building-image-wrapper {
+.first-section.story-section--active .building-image-wrapper {
     opacity: 1;
     transform: translate3d(0, 0, 0) scaleY(1);
 }
 
 
-.accessibility-happiness-section.story-section--active .building-image-wrapper ul li {
+.first-section.story-section--active .building-image-wrapper ul li {
     transform: translate3d(0, 0, 0);
     opacity: 1;
 }
 
 
-
-
-
-
-/* accessibility-road section */
-
-.accessibility-road-section.story-section--active .building-image-wrapper {
+.second-section.story-section--active .building-image-wrapper {
     opacity: 1;
     transform: translate3d(0, 0, 0) scaleY(1);
 }
 
 
-.accessibility-road-section.story-section--active .building-image-wrapper ul li {
+.second-section.story-section--active .building-image-wrapper ul li {
     transform: translate3d(0, 0, 0);
     opacity: 1;
 }
