@@ -321,6 +321,7 @@ function buildTowerSegments(metrics) {
             value: metrics[key] ?? 0,
             height: `${metrics[key] ?? 0}%`,
             color: colorBySlot[key],
+            showLabel: (metrics[key] ?? 0) >= 5,
         }))
         .filter(seg => seg.value > 0);
 }
@@ -869,8 +870,8 @@ onUnmounted(() => {
 
 
         <!-- Story -->
-        <section v-if="categoryCount > 0" class="first-section"
-            :class="getStorySectionClasses('section-one')" :data-story-active="activeStorySectionId === 'section-one' &&
+        <section v-if="categoryCount > 0" class="first-section" :class="getStorySectionClasses('section-one')"
+            :data-story-active="activeStorySectionId === 'section-one' &&
                 activeStoryVisibilityBucket >= 50
                 " data-story-section="section-one">
             <div class="building-image-wrapper">
@@ -882,14 +883,14 @@ onUnmounted(() => {
                             height: metric.height,
                             backgroundColor: `color-mix(in srgb, ${metric.color} 80%, transparent)`,
                         }">
-                        {{ metric.value }}%
+                        <span v-if="metric.showLabel">{{ metric.value }}%</span>
                     </li>
                 </ul>
             </div>
         </section>
 
-        <section v-if="categoryCount > 1" class="second-section"
-            :class="getStorySectionClasses('section-two')" :data-story-active="activeStorySectionId === 'section-two' &&
+        <section v-if="categoryCount > 1" class="second-section" :class="getStorySectionClasses('section-two')"
+            :data-story-active="activeStorySectionId === 'section-two' &&
                 activeStoryVisibilityBucket >= 50
                 " data-story-section="section-two">
             <div class="building-image-wrapper">
@@ -901,7 +902,7 @@ onUnmounted(() => {
                             height: metric.height,
                             backgroundColor: `color-mix(in srgb, ${metric.color} 80%, transparent)`,
                         }">
-                        {{ metric.value }}%
+                        <span v-if="metric.showLabel">{{ metric.value }}%</span>
                     </li>
                 </ul>
             </div>
