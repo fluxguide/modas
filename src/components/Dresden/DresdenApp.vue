@@ -3,8 +3,8 @@ import { computed, onBeforeUnmount, onMounted, onUnmounted, reactive, ref, watch
 import { loadData, getCategoryMetrics, getCategoryName, getDistrictName } from '@composables/Dresden/useDataProcessing.js'
 import { useTranslations } from '@composables/Dresden/useTranslations.js'
 import {
-    accessibilityHappinessStory,
-    accessibilityRoadStory,
+    sectionOne,
+    sectionTwo,
     othersAcceptanceInfo,
     conclusionSummaryInfo,
     conclusionTransportUsage,
@@ -248,11 +248,20 @@ function resolveStorySceneMetrics(scene) {
         selectedScrollingSetup.transportationId,
         activeDistrictNum.value,
     );
+    const transport = selectedScrollingSetup.transportationId;
+    const cats = parsedData.value.categoryOrderByTransport[transport] ?? [];
+    const category = cats[categoryIndex];
+    const labels = parsedData.value.measurementOrderByCategory[category] ?? [];
+
+    const labelsBySlot = {};
+    labels.forEach((label, i) => {
+        labelsBySlot[`slot_${i}`] = label;
+    });
 
     return {
         ...slots,
         total: Object.values(slots).reduce((sum, v) => sum + v, 0),
-        negative_pair: (slots.slot_3 ?? 0) + (slots.slot_4 ?? 0),
+        labels: labelsBySlot,
     };
 }
 
@@ -317,11 +326,11 @@ function buildTowerSegments(metrics) {
 }
 
 const accessibilityHappinessMetrics = computed(() =>
-    resolveStorySceneMetrics(accessibilityHappinessStory),
+    resolveStorySceneMetrics(sectionOne),
 )
 
 const accessibilityRoadMetrics = computed(() =>
-    resolveStorySceneMetrics(accessibilityRoadStory),
+    resolveStorySceneMetrics(sectionTwo),
 )
 
 const accessibilityHappinessTowerSegments = computed(() =>
@@ -860,10 +869,10 @@ onUnmounted(() => {
 
 
         <!-- Story -->
-        <section v-if="categoryCount > 0" class="accessibility-happiness-section"
-            :class="getStorySectionClasses('accessibility-happiness')" :data-story-active="activeStorySectionId === 'accessibility-happiness' &&
+        <section v-if="categoryCount > 0" class="first-section"
+            :class="getStorySectionClasses('section-one')" :data-story-active="activeStorySectionId === 'section-one' &&
                 activeStoryVisibilityBucket >= 50
-                " data-story-section="accessibility-happiness">
+                " data-story-section="section-one">
             <div class="building-image-wrapper">
                 <img src="@img/Dresden/building.png" alt="" class="building-image" />
 
@@ -879,10 +888,10 @@ onUnmounted(() => {
             </div>
         </section>
 
-        <section v-if="categoryCount > 1" class="accessibility-road-section"
-            :class="getStorySectionClasses('accessibility-road')" :data-story-active="activeStorySectionId === 'accessibility-road' &&
+        <section v-if="categoryCount > 1" class="second-section"
+            :class="getStorySectionClasses('section-two')" :data-story-active="activeStorySectionId === 'section-two' &&
                 activeStoryVisibilityBucket >= 50
-                " data-story-section="accessibility-road">
+                " data-story-section="section-two">
             <div class="building-image-wrapper">
                 <img src="@img/Dresden/building.png" alt="" class="building-image" />
 
