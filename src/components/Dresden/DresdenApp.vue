@@ -277,8 +277,6 @@ const categoryCount = computed(() => {
     return Math.max(0, cats.length - 1);
 });
 
-// store user-edited titles, keyed by transport + scene position so each
-// transport/section combo keeps its own edited name
 const titleOverrides = ref({})
 
 function titleOverrideKey(scene) {
@@ -287,6 +285,8 @@ function titleOverrideKey(scene) {
 }
 
 function resolveSceneCategoryName(scene) {
+    if (scene?.isStatic) return '';
+
     const key = titleOverrideKey(scene);
     if (titleOverrides.value[key] != null) return titleOverrides.value[key];   // edited wins
 

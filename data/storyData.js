@@ -246,12 +246,14 @@ export const conclusionStory = {
   sectionId: 'conclusion',
   titleKey: 'conclusion_intro_question',
   bubble: [],
+  isStatic: true,
 }
 
 export const endStory = {
   sectionId: 'end',
   titleKey: 'end_closing_message',
   bubble: [],
+  isStatic: true,
 }
 
 export const conclusionTransportUsage = [
