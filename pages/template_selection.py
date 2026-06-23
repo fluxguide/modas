@@ -63,7 +63,7 @@ templates_first_row = [
 templates_second_row = [
     {
         "key": "story4",
-        "label": "Demnächst",
+        "label": "Was kostet ein PKW-Stellplatz die Kommune?",
         "img_url": f"{IMG_URL_BASE}/Dortmund-Preview.png",
         "img_file": f"{IMG_FILE_BASE}/Dortmund-Preview.png",
         "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
@@ -72,17 +72,17 @@ templates_second_row = [
         "data-requirements": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
         "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
     },
-    {
-        "key": "story5",
-        "label": "Demnächst",
-        "img_url": f"{IMG_URL_BASE}/Ilmenau-Preview.png",
-        "img_file": f"{IMG_FILE_BASE}/Ilmenau-Preview.png",
-        "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
-        "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
-        "structure-interaction": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
-        "data-requirements": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
-        "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
-    },
+    # {
+    #     "key": "story5",
+    #     "label": "Demnächst",
+    #     "img_url": f"{IMG_URL_BASE}/Ilmenau-Preview.png",
+    #     "img_file": f"{IMG_FILE_BASE}/Ilmenau-Preview.png",
+    #     "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
+    #     "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
+    #     "structure-interaction": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
+    #     "data-requirements": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
+    #     "suitable_for": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
+    # },
 ]
 
 uploaded_filename = html.escape(st.session_state.get("uploaded_filename", ""))
