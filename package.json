@@ -5,7 +5,9 @@
   "main": "index.js",
   "scripts": {
     "dev": "vite",
-    "build": "vite build"
+    "build": "vite build",
+    "start_docker": "chmod +x ./docker/*.sh && cd docker && ./start_docker.sh",
+    "stop_docker": "chmod +x ./docker/*.sh && cd docker && ./stop_docker.sh"
   },
   "repository": {
     "type": "git",

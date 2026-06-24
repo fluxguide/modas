@@ -1,7 +1,7 @@
 import streamlit.components.v1 as components
 import os
 
-_RELEASE = False
+_RELEASE = os.environ.get("STREAMLIT_RELEASE", "0") == "1"
 
 if not _RELEASE:
     _component = components.declare_component(
@@ -9,7 +9,7 @@ if not _RELEASE:
         url="http://localhost:5173",
     )
 else:
-    _build_dir = os.path.join(os.path.dirname(__file__), "../../dist")
+    _build_dir = os.path.join(os.path.dirname(__file__), "../dist")
     _component = components.declare_component("story_viewer", path=_build_dir)
 
 

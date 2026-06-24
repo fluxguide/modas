@@ -1,0 +1,6 @@
+# env files
+*.env
+
+# generated docker-setup files
+*--generated
+*/*--generated

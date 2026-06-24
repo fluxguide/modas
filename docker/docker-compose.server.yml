@@ -1,0 +1,56 @@
+version: '3.8'
+
+services:
+  {{COMPOSE_PROJECT_NAME}}-app:
+    container_name: {{COMPOSE_PROJECT_NAME}}-app
+    restart: always
+    build:
+      context: ../
+      dockerfile: docker/app/Dockerfile
+    volumes:
+      - ./../__logs/app:/app/__logs
+    environment:
+      - STREAMLIT_RELEASE=1
+    deploy:
+      resources:
+        limits:
+          memory: 3G
+    networks:
+      - web
+
+  {{COMPOSE_PROJECT_NAME}}-nginx:
+    container_name: {{COMPOSE_PROJECT_NAME}}-nginx
+    restart: always
+    build:
+      context: ../
+      dockerfile: docker/nginx/Dockerfile
+    environment:
+      - COMPOSE_PROJECT_NAME={{COMPOSE_PROJECT_NAME}}
+    volumes:
+      - ./nginx/nginx.conf--generated:/etc/nginx/nginx.conf
+      - ./../__logs/nginx:/var/log/nginx
+    depends_on:
+      - {{COMPOSE_PROJECT_NAME}}-app
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.{{COMPOSE_PROJECT_NAME}}.rule=Host(`{{DOMAIN}}`)"
+      - "traefik.http.routers.{{COMPOSE_PROJECT_NAME}}.entrypoints=websecure"
+      - "traefik.http.routers.{{COMPOSE_PROJECT_NAME}}.tls.certresolver=myresolver"
+      - "traefik.http.routers.{{COMPOSE_PROJECT_NAME}}.tls=true"
+      - "traefik.http.services.{{COMPOSE_PROJECT_NAME}}.loadbalancer.server.port=80"
+      # HTTP → HTTPS redirect (separate router, matching the nuxt pattern)
+      - "traefik.http.routers.{{COMPOSE_PROJECT_NAME}}-http.rule=Host(`{{DOMAIN}}`)"
+      - "traefik.http.routers.{{COMPOSE_PROJECT_NAME}}-http.entrypoints=web"
+      - "traefik.http.routers.{{COMPOSE_PROJECT_NAME}}-http.middlewares=redirect-to-https@docker"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.scheme=https"
+      - "traefik.http.middlewares.redirect-to-https.redirectscheme.permanent=true"
+    deploy:
+      resources:
+        limits:
+          memory: 500M
+    networks:
+      - web
+
+networks:
+  web:
+    external: true

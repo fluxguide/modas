@@ -1,0 +1,15 @@
+node_modules/
+.venv/
+dist/
+__pycache__/
+**/__pycache__/
+*.pyc
+*.pyo
+.git/
+.gitignore
+__logs/
+__uploads/
+*.--generated
+.env
+README.md
+CLAUDE.md

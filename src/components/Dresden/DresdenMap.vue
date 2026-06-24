@@ -1,7 +1,7 @@
 <script setup>
 import { nextTick, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { useTranslations } from '@composables/Dresden/useTranslations.js'
-import mapSvgRaw from '@img/Dresden/map.svg?raw'
+import mapSvgRaw from '@img/Dresden/DresdenMap.svg?raw'
 
 const props = defineProps({
     modelValue: {
