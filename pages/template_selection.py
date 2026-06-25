@@ -22,6 +22,7 @@ setup_page(
 
 IMG_URL_BASE = "/app/static/img/Suite/Template_Previews"  # for clickable_images
 IMG_FILE_BASE = "static/img/Suite/Template_Previews"  # for st.image local file read
+IMG_FILE_SLIDESHOW = "/app/static/img/Dortmund/Slideshow"
 GIF_FILE_BASE = "/app/static/gif"
 
 templates_first_row = [
@@ -66,7 +67,20 @@ templates_second_row = [
         "label": "Was kostet ein PKW-Stellplatz die Kommune?",
         "img_url": f"{IMG_URL_BASE}/Dortmund-Preview.png",
         "img_file": f"{IMG_FILE_BASE}/Dortmund-Preview.png",
-        "gif_file": f"{GIF_FILE_BASE}/Thuringia-Preview.gif",
+        "gif_file": None,
+        "carousel_images": [
+            f"{IMG_FILE_SLIDESHOW}/Intro.png",
+            f"{IMG_FILE_SLIDESHOW}/Main.png",
+            f"{IMG_FILE_SLIDESHOW}/Description-1.png",
+            f"{IMG_FILE_SLIDESHOW}/Description-2.png",
+            f"{IMG_FILE_SLIDESHOW}/Description-3.png",
+            f"{IMG_FILE_SLIDESHOW}/Description-4.png",
+            f"{IMG_FILE_SLIDESHOW}/Description-5.png",
+            f"{IMG_FILE_SLIDESHOW}/Summary-1.png",
+            f"{IMG_FILE_SLIDESHOW}/Summary-2.png",
+            f"{IMG_FILE_SLIDESHOW}/Summary-3.png",
+            f"{IMG_FILE_SLIDESHOW}/Summary-4.png",
+        ],
         "description": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
         "structure-interaction": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
         "data-requirements": "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nulla ut placerat tortor. Proin lorem mauris, pulvinar eget elementum eget, efficitur a ante. Donec luctus, metus ut fermentum gravida, tellus neque rutrum leo, aliquam fermentum velit nisl non lacus. ",
@@ -126,10 +140,19 @@ if "data" in st.session_state and st.session_state.data:
             unsafe_allow_html=True,
         )
 
-if "last_clicked_row_1" not in st.session_state:
-    st.session_state.last_clicked_row_1 = -1
-if "last_clicked_row_2" not in st.session_state:
-    st.session_state.last_clicked_row_2 = -1
+# Each click handler bumps the row's nonce so the clickable_images grid is
+# remounted fresh (returning -1) on the next run. Without this, the component
+# keeps returning the same index and a repeat/cross-row click is silently
+# ignored, leaving a stale preview_template (e.g. a first-row GIF) on screen.
+st.session_state.setdefault("row1_nonce", 0)
+st.session_state.setdefault("row2_nonce", 0)
+
+
+def _clear_carousel_state():
+    for k in list(st.session_state.keys()):
+        if k.startswith("carousel_idx_"):
+            del st.session_state[k]
+
 
 clicked1 = clickable_images(
     [t["img_url"] for t in templates_first_row],
@@ -150,12 +173,14 @@ clicked1 = clickable_images(
         "boxShadow": "0 2px 6px rgba(0,0,0,0.14)",
         "cursor": "pointer",
     },
-    key="templates_row_1",
+    key=f"templates_row_1_{st.session_state.row1_nonce}",
 )
 
-if clicked1 > -1 and clicked1 != st.session_state.last_clicked_row_1:
-    st.session_state.last_clicked_row_1 = clicked1
+if clicked1 > -1:
     st.session_state.preview_template = templates_first_row[clicked1]["key"]
+    _clear_carousel_state()
+    st.session_state.row1_nonce += 1
+    st.rerun()
 
 st.markdown(
     """
@@ -187,14 +212,15 @@ clicked2 = clickable_images(
         "borderRadius": "12px",
         "boxShadow": "0 2px 6px rgba(0,0,0,0.14)",
         "cursor": "pointer",
-        "filter": "grayscale(1)",
     },
-    key="templates_row_2",
+    key=f"templates_row_2_{st.session_state.row2_nonce}",
 )
 
-if clicked2 > -1 and clicked2 != st.session_state.last_clicked_row_2:
-    st.session_state.last_clicked_row_2 = clicked2
+if clicked2 > -1:
     st.session_state.preview_template = templates_second_row[clicked2]["key"]
+    _clear_carousel_state()
+    st.session_state.row2_nonce += 1
+    st.rerun()
 
 st.markdown(
     """
@@ -235,14 +261,48 @@ if preview_key and preview_key in template_by_key_all:
         left, right = st.columns([1.15, 1], gap="large")
 
         with left:
-            st.markdown(
-                f"""
-                <div class="gif-top-align">
-                    <img src="{tpl["gif_file"]}" alt="Preview GIF">
-                </div>
-                """,
-                unsafe_allow_html=True,
-            )
+            if tpl.get("carousel_images"):
+                carousel_key = f"carousel_idx_{tpl['key']}"
+                if carousel_key not in st.session_state:
+                    st.session_state[carousel_key] = 0
+
+                images = tpl["carousel_images"]
+                idx = st.session_state[carousel_key]
+
+                st.markdown(
+                    f"""
+                    <div class="gif-top-align">
+                        <img src="{images[idx]}" alt="Slide {idx + 1}" style="width:100%; border-radius:8px;">
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
+
+                col_prev, col_counter, col_next = st.columns([1, 2, 1])
+                with col_prev:
+                    if st.button("◀", key=f"prev_{tpl['key']}", disabled=(idx == 0)):
+                        st.session_state[carousel_key] -= 1
+                        st.rerun()
+                with col_counter:
+                    st.markdown(
+                        f"<div style='text-align:center; padding-top:6px'>{idx + 1} / {len(images)}</div>",
+                        unsafe_allow_html=True,
+                    )
+                with col_next:
+                    if st.button(
+                        "▶", key=f"next_{tpl['key']}", disabled=(idx == len(images) - 1)
+                    ):
+                        st.session_state[carousel_key] += 1
+                        st.rerun()
+            else:
+                st.markdown(
+                    f"""
+                    <div class="gif-top-align">
+                        <img src="{tpl["gif_file"]}" alt="Preview GIF">
+                    </div>
+                    """,
+                    unsafe_allow_html=True,
+                )
 
         with right:
             st.markdown(
