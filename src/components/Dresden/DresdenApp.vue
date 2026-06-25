@@ -750,16 +750,8 @@ watch(() => selectedScrollingSetup.cityPartId, () => {
     hasSelectedDistrict.value = true;
 })
 
-watch(
-    () => props.selectedCity,
-    (city) => {
-        console.log('DresdenApp received selectedCity:', city)
-    },
-    { immediate: true }
-)
-
-watch(() => props.scrollToCity, (val) => {
-    if (val) {
+watch(() => props.scrollToCity, (newVal, oldVal) => {
+    if (newVal === true && oldVal === false) {
         nextTick(() => scrollToCitySection())
     }
 })
@@ -770,10 +762,6 @@ onMounted(() => {
             isPresenting.value = false;
         }
     })
-
-    if (props.scrollToCity) {
-        nextTick(() => scrollToCitySection())
-    }
 
     scrollingSection.value?.addEventListener('wheel', handleSectionWheel, {
         passive: false,
