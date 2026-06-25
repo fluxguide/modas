@@ -37,7 +37,8 @@ CHART_COLUMNS_BY_TEMPLATE = {
         3: {"category", "percentage"},
     },
     "dresden": {
-        0: {""},
+        0: {"category name", "category measurement", "measurement value"},
+        1: {"category name", "category measurement", "measurement value"},
     },
 }
 
@@ -98,6 +99,7 @@ result = story_viewer(
     mode="simulation",
     key="story",
     selectedCity=selected_map_city,
+    scrollToCity=st.session_state.get("scroll_to_city", False)
 )
 
 if result and isinstance(result, dict) and result.get("action") == "open_data_editor":
@@ -328,6 +330,7 @@ if result and isinstance(result, dict) and result.get("action") == "open_map_edi
             if st.button("Auswahl speichern", width="stretch", key="map_save_btn"):
                 st.session_state.selected_map_city = selected_city
                 st.session_state["story"] = None
+                st.session_state["scroll_to_city"] = True
 
                 if "draft_selected_map_city" in st.session_state:
                     del st.session_state["draft_selected_map_city"]

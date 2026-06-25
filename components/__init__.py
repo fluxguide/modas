@@ -14,7 +14,7 @@ else:
 
 
 def story_viewer(
-    template, data=None, columnLabelMap=None, categoryColours=None, mode="view", height=900, key=None, selectedCity=None
+    template, data=None, columnLabelMap=None, categoryColours=None, mode="view", height=900, key=None, selectedCity=None, scrollToCity=False
 ):
     return _component(
         template=template,
@@ -26,4 +26,5 @@ def story_viewer(
         default=None,
         height=height,
         selectedCity=selectedCity,
+        scrollToCity=scrollToCity
     )

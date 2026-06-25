@@ -59,6 +59,7 @@ const props = defineProps({
     columnLabelMap: { type: Object, default: () => ({}) },
     categoryColours: { type: Object, default: () => ({}) },
     selectedCity: { type: String, default: 'Dresden' },
+    scrollToCity: { type: Boolean, default: false },
 });
 
 const scrollingSection = ref(null)
@@ -602,6 +603,21 @@ function scrollToCharacterSection() {
     })
 }
 
+function scrollToCitySection() {
+    const container = scrollingSection.value
+    const targetSection = container?.querySelector('.choose-city-section')
+
+    if (!container || !targetSection) return
+
+    const previousScrollBehavior = container.style.scrollBehavior
+    container.style.scrollBehavior = 'auto'
+    container.scrollLeft = targetSection.offsetLeft
+
+    requestAnimationFrame(() => {
+        container.style.scrollBehavior = previousScrollBehavior
+    })
+}
+
 function observeStorySections() {
     if (!scrollingSection.value) {
         return
@@ -748,6 +764,10 @@ onMounted(() => {
             isPresenting.value = false;
         }
     })
+
+    if (props.scrollToCity) {
+        nextTick(() => scrollToCitySection())
+    }
 
     scrollingSection.value?.addEventListener('wheel', handleSectionWheel, {
         passive: false,
