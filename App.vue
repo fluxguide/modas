@@ -36,7 +36,7 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
   }
   if (args.categoryColours) categoryColours.value = args.categoryColours;
   if (args.selectedCity) selectedCity.value = args.selectedCity;
-  if (args.scrollToCity) scrollToCity.value = args.scrollToCity;
+  scrollToCity.value = args.scrollToCity ?? false;
 
   // Set iframe to full viewport height
   Streamlit.setFrameHeight(window.screen.height - 250);

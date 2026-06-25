@@ -99,7 +99,7 @@ result = story_viewer(
     mode="simulation",
     key="story",
     selectedCity=selected_map_city,
-    scrollToCity=st.session_state.get("scroll_to_city", False)
+    scrollToCity=st.session_state.pop("scroll_to_city", False)
 )
 
 if result and isinstance(result, dict) and result.get("action") == "open_data_editor":

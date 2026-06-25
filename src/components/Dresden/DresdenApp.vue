@@ -758,6 +758,12 @@ watch(
     { immediate: true }
 )
 
+watch(() => props.scrollToCity, (val) => {
+    if (val) {
+        nextTick(() => scrollToCitySection())
+    }
+})
+
 onMounted(() => {
     document.addEventListener("fullscreenchange", () => {
         if (!document.fullscreenElement) {
