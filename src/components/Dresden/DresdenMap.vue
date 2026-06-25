@@ -68,16 +68,11 @@ function getDistrictId(groupId) {
 
 function syncRegionState() {
     const host = mapHost.value
-    console.log('[syncRegionState] host:', host)
 
 
-    if (!host) {
-        console.warn('[syncRegionState] no host, returning early')
-        return
-    }
+    if (!host) return
 
     const regionGroups = host.querySelectorAll('g[id]')
-    console.log('[syncRegionState] found regionGroups:', regionGroups.length)
 
     regionGroups.forEach((group) => {
         const isSelected = getDistrictId(group.id) === props.modelValue
@@ -122,9 +117,7 @@ function findRegionGroup(target) {
 }
 
 function handleClick(event) {
-    console.log('[handleClick] fired on:', event.target)
     const group = findRegionGroup(event.target)
-    console.log('[handleClick] group found:', group)
     if (!group) return
     selectRegion(group)
 }
@@ -168,7 +161,6 @@ watch(
         syncRegionState()
 
         const regionsAfterSync = mapHost.value?.querySelectorAll('g[id]')
-        regionsAfterSync?.forEach(g => console.log('  group:', g.id, 'classes:', g.className))
 
         mapHost.value?.addEventListener('click', handleClick)
         mapHost.value?.addEventListener('keydown', handleKeydown)
