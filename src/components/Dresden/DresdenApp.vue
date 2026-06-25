@@ -59,7 +59,6 @@ const props = defineProps({
     columnLabelMap: { type: Object, default: () => ({}) },
     categoryColours: { type: Object, default: () => ({}) },
     selectedCity: { type: String, default: 'Dresden' },
-    scrollToCity: { type: Boolean, default: false },
 });
 
 const scrollingSection = ref(null)
@@ -603,21 +602,6 @@ function scrollToCharacterSection() {
     })
 }
 
-function scrollToCitySection() {
-    const container = scrollingSection.value
-    const targetSection = container?.querySelector('.choose-city-section')
-
-    if (!container || !targetSection) return
-
-    const previousScrollBehavior = container.style.scrollBehavior
-    container.style.scrollBehavior = 'auto'
-    container.scrollLeft = targetSection.offsetLeft
-
-    requestAnimationFrame(() => {
-        container.style.scrollBehavior = previousScrollBehavior
-    })
-}
-
 function observeStorySections() {
     if (!scrollingSection.value) {
         return
@@ -750,11 +734,13 @@ watch(() => selectedScrollingSetup.cityPartId, () => {
     hasSelectedDistrict.value = true;
 })
 
-watch(() => props.scrollToCity, (newVal, oldVal) => {
-    if (newVal === true && oldVal === false) {
-        nextTick(() => scrollToCitySection())
-    }
-})
+watch(
+    () => props.selectedCity,
+    (city) => {
+        console.log('DresdenApp received selectedCity:', city)
+    },
+    { immediate: true }
+)
 
 onMounted(() => {
     document.addEventListener("fullscreenchange", () => {

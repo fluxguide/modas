@@ -5,7 +5,7 @@
     <VRRStory v-else-if="template === 'vrr'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
       :categoryColours="categoryColours" />
     <DresdenStory v-else-if="template === 'dresden'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
-      :categoryColours="categoryColours" :selectedCity="selectedCity" :scrollToCity="scrollToCity" />
+      :categoryColours="categoryColours" :selectedCity="selectedCity" />
     <div v-else class="loading">Loading story...</div>
   </div>
 </template>
@@ -23,7 +23,6 @@ const mode = ref("view");
 const template = ref(null);
 const categoryColours = ref(null);
 const selectedCity = ref("Dresden");
-const scrollToCity = ref(false);
 
 Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
   const args = event.detail.args;
@@ -36,8 +35,6 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
   }
   if (args.categoryColours) categoryColours.value = args.categoryColours;
   if (args.selectedCity) selectedCity.value = args.selectedCity;
-  scrollToCity.value = args.scrollToCity ?? false;
-
   // Set iframe to full viewport height
   Streamlit.setFrameHeight(window.screen.height - 250);
 });

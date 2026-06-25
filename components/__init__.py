@@ -1,7 +1,7 @@
 import streamlit.components.v1 as components
 import os
 
-_RELEASE = os.environ.get("STREAMLIT_RELEASE", "0") == "1"
+_RELEASE = False
 
 if not _RELEASE:
     _component = components.declare_component(
@@ -9,12 +9,12 @@ if not _RELEASE:
         url="http://localhost:5173",
     )
 else:
-    _build_dir = os.path.join(os.path.dirname(__file__), "../dist")
+    _build_dir = os.path.join(os.path.dirname(__file__), "../../dist")
     _component = components.declare_component("story_viewer", path=_build_dir)
 
 
 def story_viewer(
-    template, data=None, columnLabelMap=None, categoryColours=None, mode="view", height=900, key=None, selectedCity=None, scrollToCity=False
+    template, data=None, columnLabelMap=None, categoryColours=None, mode="view", height=900, key=None, selectedCity=None
 ):
     return _component(
         template=template,
@@ -26,5 +26,4 @@ def story_viewer(
         default=None,
         height=height,
         selectedCity=selectedCity,
-        scrollToCity=scrollToCity
     )
