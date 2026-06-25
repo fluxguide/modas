@@ -58,6 +58,7 @@ const props = defineProps({
     mode: { type: String, default: 'view' },
     columnLabelMap: { type: Object, default: () => ({}) },
     categoryColours: { type: Object, default: () => ({}) },
+    selectedCity: { type: String, default: 'Dresden' },
 });
 
 const scrollingSection = ref(null)
@@ -733,6 +734,14 @@ watch(() => selectedScrollingSetup.cityPartId, () => {
     hasSelectedDistrict.value = true;
 })
 
+watch(
+    () => props.selectedCity,
+    (city) => {
+        console.log('DresdenApp received selectedCity:', city)
+    },
+    { immediate: true }
+)
+
 onMounted(() => {
     document.addEventListener("fullscreenchange", () => {
         if (!document.fullscreenElement) {
@@ -826,7 +835,7 @@ onUnmounted(() => {
                         :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
                 </h1>
                 <DresdenMap v-model="selectedScrollingSetup.cityPartId" @update:model-value="hasSelectedDistrict = true"
-                    class="city-map" />
+                    class="city-map" :active-mode="activeMode" :selectedCity="selectedCity" />
 
                 <div class="city-selection-character">
                     <div class="city-selection--speech-bubble">

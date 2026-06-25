@@ -1,8 +1,11 @@
 <template>
   <div class="story-container" ref="container">
-    <ThuringiaStory v-if="template === 'thuringia'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap" :categoryColours="categoryColours" />
-    <VRRStory v-else-if="template === 'vrr'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap" :categoryColours="categoryColours" />
-    <DresdenStory v-else-if="template === 'dresden'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap" :categoryColours="categoryColours" />
+    <ThuringiaStory v-if="template === 'thuringia'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
+      :categoryColours="categoryColours" />
+    <VRRStory v-else-if="template === 'vrr'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
+      :categoryColours="categoryColours" />
+    <DresdenStory v-else-if="template === 'dresden'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
+      :categoryColours="categoryColours" :selectedCity="selectedCity" />
     <div v-else class="loading">Loading story...</div>
   </div>
 </template>
@@ -19,6 +22,7 @@ const columnLabelMap = ref({});
 const mode = ref("view");
 const template = ref(null);
 const categoryColours = ref(null);
+const selectedCity = ref("Dresden");
 
 Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
   const args = event.detail.args;
@@ -30,6 +34,7 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
     console.log("Received columnLabelMap:", args.columnLabelMap);
   }
   if (args.categoryColours) categoryColours.value = args.categoryColours;
+  if (args.selectedCity) selectedCity.value = args.selectedCity;
   // Set iframe to full viewport height
   Streamlit.setFrameHeight(window.screen.height - 250);
 });

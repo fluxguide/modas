@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 from components import story_viewer
 from shared import setup_page
+import base64
 
 STORY_COLOURS = {
     "thuringia": {
@@ -40,8 +41,22 @@ CHART_COLUMNS_BY_TEMPLATE = {
     },
 }
 
+CITIES = [
+    "Berlin",
+    "Cologne",
+    "Dortmund",
+    "Dresden",
+    "Dusseldorf",
+    "Frankfurt",
+    "Hamburg",
+    "Leipzig",
+    "Munich",
+    "Stuttgart",
+]
+
 selected = st.session_state.get("selected_template", "")
 selected_template_label = st.session_state.get("selected_template_label", "")
+selected_map_city = st.session_state.get("selected_map_city", "Dresden")
 
 data = st.session_state.get("data")
 if not data:
@@ -71,6 +86,10 @@ colours = get_story_colors(selected)
 if "category_colors" not in st.session_state:
     st.session_state.category_colors = colours.copy()
 
+if not isinstance(selected_map_city, str) or selected_map_city not in CITIES:
+    selected_map_city = "Dresden"
+    st.session_state.selected_map_city = "Dresden"
+
 result = story_viewer(
     template=selected,
     data=st.session_state.data,
@@ -78,6 +97,7 @@ result = story_viewer(
     categoryColours=st.session_state.category_colors,
     mode="simulation",
     key="story",
+    selectedCity=selected_map_city,
 )
 
 if result and isinstance(result, dict) and result.get("action") == "open_data_editor":
@@ -230,3 +250,65 @@ if result and isinstance(result, dict) and result.get("action") == "open_data_ed
 
 if result and isinstance(result, dict) and result.get("action") == "open_data_editor":
     edit_csv_dialog(selected, result.get("currentRange"), result.get("chartNumber"))
+
+if result and isinstance(result, dict) and result.get("action") == "open_map_editor":
+
+    @st.dialog("Karte bearbeiten")
+    def edit_map_dialog():
+        current_city = st.session_state.get("selected_map_city", "Dresden")
+
+        if current_city not in CITIES:
+            current_city = "Dresden"
+
+        selected_city = st.selectbox(
+            "Stadt auswählen",
+            CITIES,
+            index=CITIES.index(current_city),
+            key="draft_selected_map_city",
+        )
+
+        try:
+            with open(f"static/img/Dresden/{selected_city}Map.svg", "r") as f:
+                svg_preview = f.read()
+
+            svg_b64 = base64.b64encode(svg_preview.encode()).decode()
+
+            st.markdown(
+                f"""
+                <div style="
+                    border: 1.5px solid #e8e8e8;
+                    border-radius: 16px;
+                    padding: 16px;
+                    margin-top: 16px;
+                    margin-bottom: 24px;
+                    background: white;
+                    text-align: center;
+                ">
+                    <img 
+                        src="data:image/svg+xml;base64,{svg_b64}" 
+                        style="width: 100%; max-height: 360px; object-fit: contain; display: block;"
+                    />
+                    <p style="font-size: 16px; font-weight: 600; margin-top: 12px;">
+                        {selected_city}
+                    </p>
+                </div>
+                """,
+                unsafe_allow_html=True,
+            )
+
+        except FileNotFoundError:
+            st.warning(f"Keine SVG für {selected_city} gefunden.")
+
+        col1, col2 = st.columns([5, 1])
+
+        with col2:
+            if st.button("Auswahl speichern", width="stretch", key="map_save_btn"):
+                st.session_state.selected_map_city = selected_city
+                st.session_state["story"] = None
+
+                if "draft_selected_map_city" in st.session_state:
+                    del st.session_state["draft_selected_map_city"]
+
+                st.rerun()
+
+    edit_map_dialog()

@@ -7,3 +7,4 @@ dist/
 # Docker: generated files (created at deploy time by start_docker.sh)
 *--generated
 docker/.env
+static/img/.DS_Store
