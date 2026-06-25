@@ -3,6 +3,7 @@ from st_clickable_images import clickable_images
 from shared import setup_page, score_templates
 import pandas as pd
 import html
+import os
 
 # Debug
 print(
@@ -24,6 +25,18 @@ IMG_URL_BASE = "/app/static/img/Suite/Template_Previews"  # for clickable_images
 IMG_FILE_BASE = "static/img/Suite/Template_Previews"  # for st.image local file read
 IMG_FILE_SLIDESHOW = "/app/static/img/Dortmund/Slideshow"
 GIF_FILE_BASE = "/app/static/gif"
+
+
+def cache_bust(url):
+    if not url:
+        return url
+    local_path = url[len("/app/") :] if url.startswith("/app/") else url
+    try:
+        version = int(os.path.getmtime(local_path))
+    except OSError:
+        return url
+    sep = "&" if "?" in url else "?"
+    return f"{url}{sep}v={version}"
 
 templates_first_row = [
     {
@@ -155,7 +168,7 @@ def _clear_carousel_state():
 
 
 clicked1 = clickable_images(
-    [t["img_url"] for t in templates_first_row],
+    [cache_bust(t["img_url"]) for t in templates_first_row],
     titles=[t["label"] for t in templates_first_row],
     div_style={
         "display": "grid",
@@ -196,7 +209,7 @@ st.markdown(
 )
 
 clicked2 = clickable_images(
-    [t["img_url"] for t in templates_second_row],
+    [cache_bust(t["img_url"]) for t in templates_second_row],
     titles=[t["label"] for t in templates_second_row],
     div_style={
         "display": "grid",
@@ -272,7 +285,7 @@ if preview_key and preview_key in template_by_key_all:
                 st.markdown(
                     f"""
                     <div class="gif-top-align">
-                        <img src="{images[idx]}" alt="Slide {idx + 1}" style="width:100%; border-radius:8px;">
+                        <img src="{cache_bust(images[idx])}" alt="Slide {idx + 1}" style="width:100%; border-radius:8px;">
                     </div>
                     """,
                     unsafe_allow_html=True,
@@ -298,7 +311,7 @@ if preview_key and preview_key in template_by_key_all:
                 st.markdown(
                     f"""
                     <div class="gif-top-align">
-                        <img src="{tpl["gif_file"]}" alt="Preview GIF">
+                        <img src="{cache_bust(tpl["gif_file"])}" alt="Preview GIF">
                     </div>
                     """,
                     unsafe_allow_html=True,
