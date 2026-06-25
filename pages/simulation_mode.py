@@ -260,6 +260,29 @@ if result and isinstance(result, dict) and result.get("action") == "open_map_edi
         if current_city not in CITIES:
             current_city = "Dresden"
 
+        st.markdown(
+            """
+                <style>
+                
+                div[data-testid="stSelectbox"] > div > div {
+                    background-color: white !important;
+                    cursor: pointer !important;
+                }
+
+                div[data-testid="stSelectbox"] > div:focus-within {
+                    border-color: #010080 !important;
+                    box-shadow: none !important;
+                }
+
+                div[data-testid="stSelectbox"] label {
+                    font-size: 14px;
+                    color: #222222;
+                }
+                </style>
+            """,
+            unsafe_allow_html=True,
+        )
+
         selected_city = st.selectbox(
             "Stadt auswählen",
             CITIES,
