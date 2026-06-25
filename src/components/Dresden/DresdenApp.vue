@@ -602,6 +602,57 @@ function scrollToCharacterSection() {
     })
 }
 
+const SCROLL_STORAGE_KEY = 'dresden-story-scroll-left'
+
+function persistScrollPosition() {
+    const container = scrollingSection.value
+
+    if (!container) {
+        return
+    }
+
+    try {
+        sessionStorage.setItem(SCROLL_STORAGE_KEY, String(container.scrollLeft))
+    } catch (error) {
+        // sessionStorage may be unavailable (e.g. blocked third-party storage)
+    }
+}
+
+function restoreScrollPosition() {
+    const container = scrollingSection.value
+
+    if (!container) {
+        return
+    }
+
+    let saved = null
+
+    try {
+        saved = sessionStorage.getItem(SCROLL_STORAGE_KEY)
+    } catch (error) {
+        return
+    }
+
+    if (saved === null) {
+        return
+    }
+
+    const left = Number(saved)
+
+    if (Number.isNaN(left)) {
+        return
+    }
+
+    const previousScrollBehavior = container.style.scrollBehavior
+
+    container.style.scrollBehavior = 'auto'
+    container.scrollLeft = left
+
+    requestAnimationFrame(() => {
+        container.style.scrollBehavior = previousScrollBehavior
+    })
+}
+
 function observeStorySections() {
     if (!scrollingSection.value) {
         return
@@ -753,8 +804,17 @@ onMounted(() => {
         passive: false,
     })
 
+    scrollingSection.value?.addEventListener('scroll', persistScrollPosition, {
+        passive: true,
+    })
+
     observeStorySections()
     observeFullyVisibleItems()
+
+    // In release mode (deployed) a Streamlit rerun remounts this component, which
+    // resets the horizontal scroll to the start. Restore the last position so the
+    // user stays where they were (e.g. after picking a city). No-op on first load.
+    nextTick(() => requestAnimationFrame(restoreScrollPosition))
 })
 
 onBeforeUnmount(() => {
@@ -764,6 +824,7 @@ onBeforeUnmount(() => {
     }
 
     scrollingSection.value?.removeEventListener('wheel', handleSectionWheel)
+    scrollingSection.value?.removeEventListener('scroll', persistScrollPosition)
     storySectionObserver?.disconnect()
     storySectionObserver = null
     fullyVisibleItemObserver?.disconnect()
