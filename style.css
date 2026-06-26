@@ -401,7 +401,8 @@ div[data-testid="stDialog"] div.stButton {
     margin-left: 1rem;
 }
 
-[data-testid="stVerticalBlock"]:has(.gif-top-align) {
+[data-testid="stVerticalBlock"]:has(.gif-top-align),
+[data-testid="stVerticalBlock"]:has(.carousel-top-align) {
     justify-content: flex-start !important;
     gap: 0 !important;
 }

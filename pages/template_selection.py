@@ -3,6 +3,7 @@ from st_clickable_images import clickable_images
 from shared import setup_page, score_templates
 import pandas as pd
 import html
+import json
 import os
 
 # Debug
@@ -37,6 +38,7 @@ def cache_bust(url):
         return url
     sep = "&" if "?" in url else "?"
     return f"{url}{sep}v={version}"
+
 
 templates_first_row = [
     {
@@ -275,38 +277,104 @@ if preview_key and preview_key in template_by_key_all:
 
         with left:
             if tpl.get("carousel_images"):
-                carousel_key = f"carousel_idx_{tpl['key']}"
-                if carousel_key not in st.session_state:
-                    st.session_state[carousel_key] = 0
-
-                images = tpl["carousel_images"]
-                idx = st.session_state[carousel_key]
+                images = [cache_bust(src) for src in tpl["carousel_images"]]
+                images_json = json.dumps(images)
 
                 st.markdown(
-                    f"""
-                    <div class="gif-top-align">
-                        <img src="{cache_bust(images[idx])}" alt="Slide {idx + 1}" style="width:100%; border-radius:8px;">
-                    </div>
-                    """,
+                    '<div class="carousel-top-align"></div>',
                     unsafe_allow_html=True,
                 )
 
-                col_prev, col_counter, col_next = st.columns([1, 2, 1])
-                with col_prev:
-                    if st.button("◀", key=f"prev_{tpl['key']}", disabled=(idx == 0)):
-                        st.session_state[carousel_key] -= 1
-                        st.rerun()
-                with col_counter:
-                    st.markdown(
-                        f"<div style='text-align:center; padding-top:6px'>{idx + 1} / {len(images)}</div>",
-                        unsafe_allow_html=True,
-                    )
-                with col_next:
-                    if st.button(
-                        "▶", key=f"next_{tpl['key']}", disabled=(idx == len(images) - 1)
-                    ):
-                        st.session_state[carousel_key] += 1
-                        st.rerun()
+                st.components.v1.html(
+                    f"""
+                    <!DOCTYPE html>
+                    <html>
+                    <head>
+                    <style>
+                        * {{ box-sizing: border-box; margin: 0; padding: 0; }}
+                        body {{
+                            font-family: "Source Sans Pro", sans-serif;
+                            color: #31333f;
+                        }}
+                        .carousel {{
+                            display: flex;
+                            flex-direction: column;
+                            align-items: center;
+                            gap: 12px;
+                        }}
+                        .stage {{
+                            width: 100%;
+                            height: auto;
+                            display: flex;
+                            align-items: flex-start;
+                            justify-content: center;
+                        }}
+                        .stage img {{
+                            max-width: 100%;
+                            max-height: 100%;
+                            border-radius: 8px;
+                        }}
+                        .nav {{
+                            display: flex;
+                            align-items: center;
+                            justify-content: center;
+                            gap: 16px;
+                        }}
+                        .nav button {{
+                            border: none;
+                            background: #f0f2f6;
+                            border-radius: 8px;
+                            width: 40px;
+                            height: 40px;
+                            font-size: 16px;
+                            line-height: 1;
+                            cursor: pointer;
+                            transition: background 0.15s ease;
+                        }}
+                        .nav button:hover:not(:disabled) {{ background: #e0e3eb; }}
+                        .nav button:disabled {{ opacity: 0.35; cursor: default; }}
+                        .counter {{
+                            min-width: 56px;
+                            text-align: center;
+                            font-variant-numeric: tabular-nums;
+                        }}
+                    </style>
+                    </head>
+                    <body>
+                        <div class="carousel">
+                            <div class="stage"><img id="slide" alt="Slide"></div>
+                            <div class="nav">
+                                <button id="prev" aria-label="Vorheriges Bild">&larr;</button>
+                                <span class="counter" id="counter"></span>
+                                <button id="next" aria-label="Nächstes Bild">&rarr;</button>
+                            </div>
+                        </div>
+                        <script>
+                            const imgs = {images_json};
+                            let i = 0;
+                            const slide = document.getElementById("slide");
+                            const counter = document.getElementById("counter");
+                            const prev = document.getElementById("prev");
+                            const next = document.getElementById("next");
+                            function render() {{
+                                slide.src = imgs[i];
+                                counter.textContent = (i + 1) + " / " + imgs.length;
+                                prev.disabled = i === 0;
+                                next.disabled = i === imgs.length - 1;
+                            }}
+                            prev.addEventListener("click", () => {{
+                                if (i > 0) {{ i--; render(); }}
+                            }});
+                            next.addEventListener("click", () => {{
+                                if (i < imgs.length - 1) {{ i++; render(); }}
+                            }});
+                            render();
+                        </script>
+                    </body>
+                    </html>
+                    """,
+                    height=510,
+                )
             else:
                 st.markdown(
                     f"""
@@ -334,7 +402,14 @@ if preview_key and preview_key in template_by_key_all:
                 unsafe_allow_html=True,
             )
 
-            if st.button(
+            if tpl["key"] == "story4":
+                st.button(
+                    "In Arbeit",
+                    width="stretch",
+                    key=f"tpl_select_{tpl['key']}",
+                    disabled=True,
+                )
+            elif st.button(
                 "Wählen Sie diese Vorlage aus",
                 width="stretch",
                 key=f"tpl_select_{tpl['key']}",
