@@ -2,6 +2,7 @@ import streamlit as st
 import pandas as pd
 import re
 import base64
+import io
 from shared import setup_page
 
 setup_page(show_top_bar=False)
@@ -69,13 +70,16 @@ with col1:
     )
 
     uploaded_file = st.file_uploader(
-        "CSV-Datei hochladen", label_visibility="collapsed"
+        "CSV-Datei hochladen", type=["csv"], label_visibility="collapsed"
     )
 
     if uploaded_file:
-        first_line = uploaded_file.readline().decode("utf-8", errors="replace")
-        uploaded_file.seek(0)
+        raw = uploaded_file.getvalue()
+        if not raw.strip():
+            st.error("Die Datei ist leer. Bitte laden Sie eine CSV-Datei mit Daten hoch.")
+            st.stop()
 
+        first_line = raw.splitlines()[0].decode("utf-8", errors="replace")
         if "\t" in first_line:
             sep = "\t"
         elif ";" in first_line and first_line.count(";") > first_line.count(","):
@@ -83,13 +87,24 @@ with col1:
         else:
             sep = ","
 
-        try:
-            df = pd.read_csv(uploaded_file, sep=sep)
-        except pd.errors.ParserError as e:
+        df = None
+        for enc in ("utf-8-sig", "cp1252", "latin-1", "utf-16"):
+            try:
+                df = pd.read_csv(io.BytesIO(raw), sep=sep, encoding=enc)
+                break
+            except (UnicodeDecodeError, pd.errors.ParserError):
+                continue
+            except pd.errors.EmptyDataError:
+                st.error(
+                    "Die Datei enthält keine Spalten – handelt es sich evtl. um eine "
+                    "Excel-Datei? Bitte exportieren Sie die Daten als CSV."
+                )
+                st.stop()
+
+        if df is None:
             st.error(
                 f"Die Datei konnte nicht eingelesen werden. "
-                f"Bitte prüfen Sie das Format (erwartetes Trennzeichen: '{sep}'). "
-                f"Details: {e}"
+                f"Bitte prüfen Sie das Format (erwartetes Trennzeichen: '{sep}')."
             )
             st.stop()
 
