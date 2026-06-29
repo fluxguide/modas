@@ -756,7 +756,7 @@ function observeFullyVisibleItems() {
 const handleModeChange = (newMode) => {
     if (newMode === "presenter") {
         activeMode.value = "view";
-        const storyContainer = document.querySelector('.vrr-app');
+        const storyContainer = document.querySelector('.dresden-app');
         if (storyContainer?.requestFullscreen) {
             storyContainer.requestFullscreen();
             isPresenting.value = true;
@@ -837,6 +837,7 @@ onUnmounted(() => {
 </script>
 
 <template>
+    <div class="dresden-app">
     <SideMenu v-if="!isPresenting" :active-mode="activeMode" :background="dresdenBackground"
         @mode-change="handleModeChange"
         @update:background="val => { bgTintColor = val.tint; bgTintOpacity = val.opacity }" />
@@ -918,7 +919,7 @@ onUnmounted(() => {
                 <h1>
                     <EditableTextField :model-value="headers.section4"
                         @update:model-value="val => headers.section4 = val" :active-mode="activeMode" :rows="1"
-                        :width="`75vw`" :font-size="'7vh'" :line-height="1" :padding="'0vh'" :font-weight="'400'"
+                        :width="`75vw`" :font-size="'6vh'" :line-height="1" :padding="'0vh'" :font-weight="'400'"
                         :text-align="'center'" :text-transform="'uppercase'" :letter-spacing="'0.08em'" />
                 </h1>
                 <div class="transportation-grid" role="list"
@@ -1083,6 +1084,7 @@ onUnmounted(() => {
             </div>
         </section>
     </section>
+    </div>
 </template>
 
 
@@ -1289,5 +1291,30 @@ onUnmounted(() => {
     width: 100%;
     max-width: 64rem;
     padding-bottom: 5vh;
+}
+
+.exit-presenter {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #010080;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.40);
+    font-family: 'General Sans';
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
+}
+
+.dresden-app:fullscreen {
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
 }
 </style>
