@@ -649,10 +649,13 @@ function restoreScrollPosition() {
         return
     }
 
-    // The sections (and their images) may still be laying out, so the container's
-    // scrollWidth can be too small for `left` to stick on the first frame. Retry
-    // across a few frames until the position holds, then re-enable persistence.
+    // A data edit triggers a multi-stage re-render (chart redraw + the categoryCount
+    // watcher re-running observers on nextTick), and a later stage can reset the
+    // scroll back to 0 *after* a one-shot restore. So keep re-asserting the position
+    // until it has held steady for several consecutive frames, then re-enable
+    // persistence. This also covers the sections/images still laying out on mount.
     let attempts = 0
+    let stableFrames = 0
 
     const tryRestore = () => {
         const c = scrollingSection.value
@@ -662,14 +665,19 @@ function restoreScrollPosition() {
             return
         }
 
-        const previousScrollBehavior = c.style.scrollBehavior
-        c.style.scrollBehavior = 'auto'
-        c.scrollLeft = left
-        c.style.scrollBehavior = previousScrollBehavior
+        if (Math.abs(c.scrollLeft - left) > 2) {
+            const previousScrollBehavior = c.style.scrollBehavior
+            c.style.scrollBehavior = 'auto'
+            c.scrollLeft = left
+            c.style.scrollBehavior = previousScrollBehavior
+            stableFrames = 0
+        } else {
+            stableFrames += 1
+        }
 
         attempts += 1
 
-        if (Math.abs(c.scrollLeft - left) > 2 && attempts < 30) {
+        if (stableFrames < 6 && attempts < 150) {
             requestAnimationFrame(tryRestore)
         } else {
             hasRestoredScroll = true
