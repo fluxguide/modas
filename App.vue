@@ -24,16 +24,34 @@ const template = ref(null);
 const categoryColours = ref(null);
 const selectedCity = ref("Dresden");
 
+// Streamlit re-fires RENDER_EVENT on every rerun with freshly-serialised args, even
+// when nothing changed. Replacing these refs re-renders the story and resets scroll,
+// so only assign when the content actually differs.
+let lastDataJson = null;
+let lastColoursJson = null;
+
 Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
   const args = event.detail.args;
-  if (args.data) storyData.value = args.data;
+  if (args.data) {
+    const nextDataJson = JSON.stringify(args.data);
+    if (nextDataJson !== lastDataJson) {
+      lastDataJson = nextDataJson;
+      storyData.value = args.data;
+    }
+  }
   if (args.mode) mode.value = args.mode;
   if (args.template) template.value = args.template;
   if (args.columnLabelMap) {
     columnLabelMap.value = args.columnLabelMap ?? {};
     console.log("Received columnLabelMap:", args.columnLabelMap);
   }
-  if (args.categoryColours) categoryColours.value = args.categoryColours;
+  if (args.categoryColours) {
+    const nextColoursJson = JSON.stringify(args.categoryColours);
+    if (nextColoursJson !== lastColoursJson) {
+      lastColoursJson = nextColoursJson;
+      categoryColours.value = args.categoryColours;
+    }
+  }
   if (args.selectedCity) selectedCity.value = args.selectedCity;
   // Set iframe to full viewport height
   Streamlit.setFrameHeight(window.screen.height - 250);

@@ -872,6 +872,20 @@ watch(
     persistSelection,
 )
 
+// A Streamlit rerun does NOT remount this component (the Vue app persists and only
+// receives new args via App.vue's RENDER_EVENT). Replacing the data/colours props
+// re-renders the story and resets the horizontal scroll to the start, but onMounted
+// never fires again to fix it. So re-apply the saved scroll position whenever the
+// Streamlit args change. `flush: 'pre'` lets us freeze persistence *before* the DOM
+// resets scrollLeft to 0, so that reset can't clobber the saved value.
+watch(
+    () => [props.data, props.categoryColours, props.selectedCity],
+    () => {
+        hasRestoredScroll = false
+        nextTick(() => requestAnimationFrame(restoreScrollPosition))
+    },
+)
+
 watch(
     () => props.selectedCity,
     (city) => {
