@@ -887,7 +887,7 @@ watch(
 // Streamlit args change. `flush: 'pre'` lets us freeze persistence *before* the DOM
 // resets scrollLeft to 0, so that reset can't clobber the saved value.
 watch(
-    () => [props.data, props.categoryColours, props.selectedCity],
+    () => [props.data, props.categoryColours, props.selectedCity, props.columnLabelMap],
     () => {
         hasRestoredScroll = false
         nextTick(() => requestAnimationFrame(restoreScrollPosition))

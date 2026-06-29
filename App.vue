@@ -29,6 +29,7 @@ const selectedCity = ref("Dresden");
 // so only assign when the content actually differs.
 let lastDataJson = null;
 let lastColoursJson = null;
+let lastColumnMapJson = null;
 
 Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
   const args = event.detail.args;
@@ -42,8 +43,12 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
   if (args.mode) mode.value = args.mode;
   if (args.template) template.value = args.template;
   if (args.columnLabelMap) {
-    columnLabelMap.value = args.columnLabelMap ?? {};
-    console.log("Received columnLabelMap:", args.columnLabelMap);
+    const nextColumnMapJson = JSON.stringify(args.columnLabelMap);
+    if (nextColumnMapJson !== lastColumnMapJson) {
+      lastColumnMapJson = nextColumnMapJson;
+      columnLabelMap.value = args.columnLabelMap ?? {};
+      console.log("Received columnLabelMap:", args.columnLabelMap);
+    }
   }
   if (args.categoryColours) {
     const nextColoursJson = JSON.stringify(args.categoryColours);
