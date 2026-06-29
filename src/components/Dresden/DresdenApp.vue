@@ -603,11 +603,18 @@ function scrollToCharacterSection() {
 }
 
 const SCROLL_STORAGE_KEY = 'dresden-story-scroll-left'
+const SELECTION_STORAGE_KEY = 'dresden-story-selection'
+
+// On a Streamlit rerun this component remounts. The 'scroll' listener is attached
+// immediately, so the initial layout (scrollLeft === 0) would otherwise overwrite
+// the saved position before we get a chance to restore it. Gate writes until the
+// restore pass has finished.
+let hasRestoredScroll = false
 
 function persistScrollPosition() {
     const container = scrollingSection.value
 
-    if (!container) {
+    if (!container || !hasRestoredScroll) {
         return
     }
 
@@ -622,6 +629,7 @@ function restoreScrollPosition() {
     const container = scrollingSection.value
 
     if (!container) {
+        hasRestoredScroll = true
         return
     }
 
@@ -630,27 +638,94 @@ function restoreScrollPosition() {
     try {
         saved = sessionStorage.getItem(SCROLL_STORAGE_KEY)
     } catch (error) {
+        hasRestoredScroll = true
         return
     }
 
-    if (saved === null) {
+    const left = saved === null ? NaN : Number(saved)
+
+    if (Number.isNaN(left) || left <= 0) {
+        hasRestoredScroll = true
         return
     }
 
-    const left = Number(saved)
+    // The sections (and their images) may still be laying out, so the container's
+    // scrollWidth can be too small for `left` to stick on the first frame. Retry
+    // across a few frames until the position holds, then re-enable persistence.
+    let attempts = 0
 
-    if (Number.isNaN(left)) {
+    const tryRestore = () => {
+        const c = scrollingSection.value
+
+        if (!c) {
+            hasRestoredScroll = true
+            return
+        }
+
+        const previousScrollBehavior = c.style.scrollBehavior
+        c.style.scrollBehavior = 'auto'
+        c.scrollLeft = left
+        c.style.scrollBehavior = previousScrollBehavior
+
+        attempts += 1
+
+        if (Math.abs(c.scrollLeft - left) > 2 && attempts < 30) {
+            requestAnimationFrame(tryRestore)
+        } else {
+            hasRestoredScroll = true
+        }
+    }
+
+    tryRestore()
+}
+
+function persistSelection() {
+    try {
+        sessionStorage.setItem(
+            SELECTION_STORAGE_KEY,
+            JSON.stringify({
+                characterId: selectedScrollingSetup.characterId,
+                cityPartId: selectedScrollingSetup.cityPartId,
+                transportationId: selectedScrollingSetup.transportationId,
+                hasSelectedDistrict: hasSelectedDistrict.value,
+            }),
+        )
+    } catch (error) {
+        // sessionStorage may be unavailable
+    }
+}
+
+function restoreSelection() {
+    let saved = null
+
+    try {
+        saved = sessionStorage.getItem(SELECTION_STORAGE_KEY)
+    } catch (error) {
         return
     }
 
-    const previousScrollBehavior = container.style.scrollBehavior
+    if (!saved) {
+        return
+    }
 
-    container.style.scrollBehavior = 'auto'
-    container.scrollLeft = left
+    try {
+        const state = JSON.parse(saved)
 
-    requestAnimationFrame(() => {
-        container.style.scrollBehavior = previousScrollBehavior
-    })
+        if (state.characterId) {
+            selectedScrollingSetup.characterId = state.characterId
+        }
+        if (state.cityPartId) {
+            selectedScrollingSetup.cityPartId = state.cityPartId
+        }
+        if (state.transportationId) {
+            selectedScrollingSetup.transportationId = state.transportationId
+        }
+        if (typeof state.hasSelectedDistrict === 'boolean') {
+            hasSelectedDistrict.value = state.hasSelectedDistrict
+        }
+    } catch (error) {
+        // ignore malformed snapshots
+    }
 }
 
 function observeStorySections() {
@@ -785,6 +860,18 @@ watch(() => selectedScrollingSetup.cityPartId, () => {
     hasSelectedDistrict.value = true;
 })
 
+// Persist the story selections so they survive the remount caused by a Streamlit
+// rerun (e.g. after editing chart data or picking a map city).
+watch(
+    () => [
+        selectedScrollingSetup.characterId,
+        selectedScrollingSetup.cityPartId,
+        selectedScrollingSetup.transportationId,
+        hasSelectedDistrict.value,
+    ],
+    persistSelection,
+)
+
 watch(
     () => props.selectedCity,
     (city) => {
@@ -794,6 +881,10 @@ watch(
 )
 
 onMounted(() => {
+    // Restore the user's prior selections first so the data-driven sections render
+    // the right content before we restore the horizontal scroll position.
+    restoreSelection()
+
     document.addEventListener("fullscreenchange", () => {
         if (!document.fullscreenElement) {
             isPresenting.value = false;
