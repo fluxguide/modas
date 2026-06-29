@@ -27,6 +27,7 @@ const chartData = ref(null)
 const activeMode = ref('view');
 const isPresenting = ref(false);
 const yearLabels = ref(['Year 1', 'Year 2', 'Year 3', 'Year 4']);
+const emit = defineEmits(['update:yearLabels']);
 
 const headers = ref({
     section1: 'Anfragen über die verschiedenen Kanäle',
@@ -174,10 +175,10 @@ onUnmounted(() => {
             <SectionHeading v-model="headers.section1" :active-mode="activeMode" />
 
             <div class="chart-overlay">
-                <ArrowBubbleChart v-model:year-labels="yearLabels" :first-chart-data="chartData?.stats" :chart-number="1" :active-mode="activeMode"
-                    :height="'40vh'" :bubble-position="[28, 51, 75]" :timeline-start="20" :percentage-shift="23"
-                    :bubble-gap="1" :margin-top="`5%`" :category-names="chartData?.categoryNames"
-                    :category-colours="props.categoryColours?.[1]" />
+                <ArrowBubbleChart v-model:year-labels="yearLabels" :first-chart-data="chartData?.stats"
+                    :chart-number="1" :active-mode="activeMode" :height="'40vh'" :bubble-position="[28, 51, 75]"
+                    :timeline-start="20" :percentage-shift="23" :bubble-gap="1" :margin-top="`5%`"
+                    :category-names="chartData?.categoryNames" :category-colours="props.categoryColours?.[1]" />
             </div>
 
             <div class="bg-img">
@@ -251,7 +252,9 @@ onUnmounted(() => {
                         :phase-title="phases.phase2.title" :phase-description="phases.phase2.description"
                         :character-image="phases.phase2.characterImage" :character-alt="phases.phase2.characterAlt"
                         :phase-class="phases.phase2.phaseClass" />
-                    <Timeline />
+                    <Timeline :years="['year1', 'year2', 'year3', 'year4']"
+                        :year-labels="yearLabels" :active-mode="activeMode"
+                        @update:year-labels="val => { yearLabels = val; emit('update:yearLabels', val) }" />
                 </div>
             </div>
             <!-- ----------------------------------------------------- -->

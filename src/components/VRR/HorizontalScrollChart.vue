@@ -47,7 +47,11 @@ const chartProps = computed(() => {
     return rest
 })
 
+const emit = defineEmits(['update:yearLabels']);
+
 const textField = ref('Auf Basis der gesammelten Erfahrungen werden folgende Ziele verfolgt:\n\nAufbau eines vollautomatisierten KI-Chatbots inkl. LLM als nächste Entwicklungsstufe\n\nVernetzte, KI-gestützte Serviceplattform')
+
+const yearLabels = ref(['Year 5', 'Year 6', 'Year 7'])
 
 const containerRef = ref()
 const scrollX = ref(0)
@@ -132,7 +136,10 @@ defineExpose({
                                 </div>
                             </div>
                             <div class="timeline-at-bottom">
-                                <Timeline :years="['year5', 'year6', 'year7']" :start-point="25" :markers-gap="25" />
+                                <Timeline :active-mode="activeMode" :years="['year5', 'year6', 'year7']"
+                                    :year-labels="yearLabels"
+                                    @update:year-labels="val => { yearLabels = val; emit('update:yearLabels', val) }" :start-point="25"
+                                    :markers-gap="25" />
                             </div>
                             <div class="bg-theresa">
                                 <img id="theresa" src="@img/VRR/Characters/Theresa.svg" alt="Theresa" />
