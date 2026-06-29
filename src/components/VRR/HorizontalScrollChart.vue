@@ -116,9 +116,8 @@ defineExpose({
                                 :category-colours="props.categoryColours" :activeMode="activeMode"
                                 :years="['year1', 'year2', 'year3', 'year4']" :year-labels="arrowChartYearLabels"
                                 @update:year-labels="val => { arrowChartYearLabels = val; emit('update:yearLabels', val) }"
-                                :height="'45vh'"
-                                :bubble-position="[28, 53, 78]" :timeline-start="25" :percentage-shift="25"
-                                :bubble-gap="2" :margin-top="'0'" />
+                                :height="'45vh'" :bubble-position="[28, 53, 78]" :timeline-start="20"
+                                :percentage-shift="25" :bubble-gap="2" :margin-top="'0'" />
                             <div class="mehrwert-bg-img">
                                 <img id="theo" src="@img/VRR/Characters/Theo.svg" alt="Theo" />
                                 <img id="orange-tram" src="@img/VRR/Transport/TramOrange.svg" alt="Orange Tram" />
@@ -141,8 +140,8 @@ defineExpose({
                             <div class="timeline-at-bottom">
                                 <Timeline :active-mode="activeMode" :years="['year5', 'year6', 'year7']"
                                     :year-labels="yearLabels"
-                                    @update:year-labels="val => { yearLabels = val; emit('update:yearLabels', val) }" :start-point="25"
-                                    :markers-gap="25" />
+                                    @update:year-labels="val => { yearLabels = val; emit('update:yearLabels', val) }"
+                                    :start-point="20" :markers-gap="25" />
                             </div>
                             <div class="bg-theresa">
                                 <img id="theresa" src="@img/VRR/Characters/Theresa.svg" alt="Theresa" />
