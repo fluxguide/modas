@@ -1,8 +1,8 @@
 <script setup>
 import * as d3 from 'd3'
 import { ref, onMounted, onUnmounted, watch, nextTick, computed } from 'vue'
-import MapSVG from '@img/Thuringia/Map_svg.svg'
-
+import MapSVG from '@img/Thuringia/maps/ThuringiaMap.svg'
+ 
 // Props
 const props = defineProps({
     csvData: {
