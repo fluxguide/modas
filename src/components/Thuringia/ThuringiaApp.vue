@@ -17,9 +17,10 @@ import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
   data: { type: Array, default: () => [] },
-  columnLabelMap: { type: Object, default: () => ({}) },
   mode: { type: String, default: 'view' },
+  columnLabelMap: { type: Object, default: () => ({}) },
   categoryColours: { type: Object, default: () => [] },
+  selectedRegion: { type: String, default: 'Thüringen' }
 });
 
 const stats = ref(null);
@@ -253,7 +254,7 @@ onUnmounted(() => {
               :font-size="`24px`" :line-height="1.8" :padding="`5vh`" />
           </div>
           <div class="svg-map-container">
-            <MapSVG :csv-data="stats?.stops_within_300m" />
+            <MapSVG :csv-data="stats?.stops_within_300m" :active-mode="activeMode" :selectedRegion="selectedRegion" />
           </div>
         </div>
         <div v-if="showMapScrollytelling2" class="map-scrollytelling-2">
@@ -262,7 +263,8 @@ onUnmounted(() => {
               :font-size="`24px`" :line-height="1.8" :padding="`5vh`" />
           </div>
           <div class="svg-map-container">
-            <MapSVG :csv-data="stats?.townhallsWithoutStopsWithin300m" :color-fill="'#E14A2C'" />
+            <MapSVG :csv-data="stats?.townhallsWithoutStopsWithin300m" :color-fill="'#E14A2C'" :active-mode="activeMode"
+              :selectedRegion="selectedRegion" />
           </div>
         </div>
         <div v-if="showMapButton" class="pre-map-view">
