@@ -57,7 +57,7 @@ CITIES = [
 ]
 
 _REGIONS_PATH = os.path.join(
-    os.path.dirname(__file__), "..", "src", "data", "regions.json"
+    os.path.dirname(__file__), "..", "data", "regions.json"
 )
 with open(_REGIONS_PATH, encoding="utf-8") as _f:
     _REGIONS = json.load(_f)

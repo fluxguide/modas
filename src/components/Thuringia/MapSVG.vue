@@ -2,7 +2,7 @@
 import * as d3 from 'd3'
 import { ref, onMounted, onUnmounted, watch, nextTick, computed } from 'vue'
 import { Streamlit } from 'streamlit-component-lib';
-import regionConfig from '@src/data/regions.json'
+import regionConfig from '/data/regions.json'
 
 const props = defineProps({
     csvData: {
