@@ -3,3 +3,4 @@ node_modules/
 cache/
 static/img/.DS_Store
 __logs/
+.DS_Store
