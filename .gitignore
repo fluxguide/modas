@@ -2,3 +2,4 @@ __pycache__/
 node_modules/
 cache/
 static/img/.DS_Store
+__logs/
