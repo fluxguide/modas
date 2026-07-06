@@ -1,7 +1,7 @@
 <template>
   <div class="story-container" ref="container">
     <ThuringiaStory v-if="template === 'thuringia'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
-      :categoryColours="categoryColours" />
+      :categoryColours="categoryColours" :selectedRegion="selectedRegion" />
     <VRRStory v-else-if="template === 'vrr'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
       :categoryColours="categoryColours" />
     <DresdenStory v-else-if="template === 'dresden'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
@@ -23,10 +23,8 @@ const mode = ref("view");
 const template = ref(null);
 const categoryColours = ref(null);
 const selectedCity = ref("Dresden");
+const selectedRegion = ref("Thüringen");
 
-// Streamlit re-fires RENDER_EVENT on every rerun with freshly-serialised args, even
-// when nothing changed. Replacing these refs re-renders the story and resets scroll,
-// so only assign when the content actually differs.
 let lastDataJson = null;
 let lastColoursJson = null;
 let lastColumnMapJson = null;
@@ -58,6 +56,7 @@ Streamlit.events.addEventListener(Streamlit.RENDER_EVENT, (event) => {
     }
   }
   if (args.selectedCity) selectedCity.value = args.selectedCity;
+  if (args.selectedRegion) selectedRegion.value = args.selectedRegion;
   // Set iframe to full viewport height
   Streamlit.setFrameHeight(window.screen.height - 250);
 });
