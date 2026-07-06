@@ -18,4 +18,13 @@ export default defineConfig({
       "@img": path.resolve(__dirname, "static/img"),
     },
   },
+  build: {
+    rollupOptions: {
+      output: {
+        manualChunks: {
+          react: ['react', 'react-dom']
+        }
+      }
+    }
+  }
 });
