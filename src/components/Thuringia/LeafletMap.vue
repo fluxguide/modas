@@ -19,11 +19,11 @@ L.Icon.Default.mergeOptions({
 const props = defineProps({
   center: {
     type: Array,
-    default: () => [50.7787, 11.0328]
+    default: () => [51.07709, 10.33429]
   },
   zoom: {
     type: Number,
-    default: 8
+    default: 5.5
   },
   data: {
     type: Array,
