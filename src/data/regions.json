@@ -1,0 +1,146 @@
+{
+  "Baden-Württemberg": {
+    "bounds": [
+      7.5,
+      47.5,
+      10.5,
+      49.8
+    ],
+    "map": "BadenWürttembergMap.png"
+  },
+  "Bayern": {
+    "bounds": [
+      8.9,
+      47.2,
+      13.9,
+      50.6
+    ],
+    "map": "BayernMap.png"
+  },
+  "Berlin": {
+    "bounds": [
+      13.03,
+      52.3,
+      13.8,
+      52.7
+    ],
+    "map": "BerlinMap.svg"
+  },
+  "Brandenburg": {
+    "bounds": [
+      11.2,
+      51.3,
+      14.8,
+      53.6
+    ],
+    "map": "BrandenburgMap.png"
+  },
+  "Bremen": {
+    "bounds": [
+      9.4,
+      52.8,
+      8.0,
+      53.6
+    ],
+    "map": "BremenMap.svg"
+  },
+  "Hamburg": {
+    "bounds": [
+      9.78,
+      53.35,
+      10.35,
+      53.8
+    ],
+    "map": "HamburgMap.svg"
+  },
+  "Hessen": {
+    "bounds": [
+      7.7,
+      49.4,
+      10.25,
+      51.65
+    ],
+    "map": "HessenMap.png"
+  },
+  "Niedersachsen": {
+    "bounds": [
+      6.6,
+      51.25,
+      11.6,
+      53.9
+    ],
+    "map": "NiedersachsenMap.png"
+  },
+  "Mecklenburg-Western Pomerania": {
+    "bounds": [
+      10.55,
+      53.1,
+      14.45,
+      54.7
+    ],
+    "map": "MecklenburgWesternPomeraniaMap.png"
+  },
+  "Nordrhein-Westfalen": {
+    "bounds": [
+      5.8,
+      50.3,
+      9.5,
+      52.55
+    ],
+    "map": "NordrheinWestfalenMap.png"
+  },
+  "Rheineland-Pfalz": {
+    "bounds": [
+      6.1,
+      48.95,
+      8.55,
+      50.95
+    ],
+    "map": "RheinlandPfalzMap.png"
+  },
+  "Saarland": {
+    "bounds": [
+      6.35,
+      49.1,
+      7.45,
+      49.65
+    ],
+    "map": "SaarlandMap.png"
+  },
+  "Sachsen": {
+    "bounds": [
+      11.8,
+      50.15,
+      15.05,
+      51.7
+    ],
+    "map": "SachsenMap.png"
+  },
+  "Sachsen-Anhalt": {
+    "bounds": [
+      10.5,
+      50.9,
+      13.2,
+      53.05
+    ],
+    "map": "SachsenAnhaltMap.png"
+  },
+  "Schleswig-Holstein": {
+    "bounds": [
+      7.85,
+      53.35,
+      11.35,
+      55.1
+    ],
+    "map": "SchleswigHolsteinMap.png"
+  },
+  "Thüringen": {
+    "bounds": [
+      9.9,
+      50.2,
+      12.7,
+      51.65
+    ],
+    "map": "ThüringenMap.svg"
+  }
+}
