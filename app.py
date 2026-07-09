@@ -55,14 +55,14 @@ with col1:
         """
         <div class="left-container">
             <h1>Mobility Data Story-Suite (MoDaS)</h1>
-            <h4>Wie können abstrakte Mobilitätsdaten in leicht verständliche Storytelling-Formate übertragen werden?</h4>
-            <p>Die "Mobility Data Story Suite", eine gemeinsame Entwicklung von TU Ilmenau und fluxguide, Wien, ist ein innovatives Tool, das Verkehrsdaten durch digitales Storytelling visualisiert. Zielgruppe sind Mobilitätsplanende, politische Entscheidungstragende und Bürger*innen gleichermaßen.</p>
-            <p>Die Mobility Data Story Suite macht komplexe Daten interaktiv erfahrbar und nutzt moderne Storytelling-Methoden, um Entscheidungsprozesse zu unterstützen. So trägt sie dazu bei, Mobilitätsplanung effizienter, nachvollziehbarer und transparenter zu gestalten.</p>
-            <h3>Sind Sie bereit, Ihre eigene Geschichte zu erstellen?</h3>
+            <h3>Sind Sie bereit, Ihre eigene Geschichte mit Mobilitätsdaten zu erstellen?</h3>
             <ol>
-                <li><p>Laden Sie Ihre Datei mit den Mobilitätsdaten hoch und senden Sie sie ab.</p></li>
-                <li><p>Wählen Sie eine der verfügbaren Vorlagen aus.</p></li>
-                <li><p>Wechseln Sie in den Simulationsmodus und passen Sie die Vorlage bei Bedarf an.</p></li>
+                <li><p>Gehen Sie auf unsere Website <a href="https://modas-website.fluxguide.com/">https://modas-website.fluxguide.com/</a></p></li>
+                <li><p>Downloaden Sie die CSV-Datei "Beispiel-Datensatz" für die Story, die Sie ansehen/benutzen wollen</p></li>
+                <li><p>Befüllen Sie die CSV-Datei mit eigenen Daten und laden diese hier hoch.</p></li>
+                <li><p>Es wird Ihnen im nächsten Schritt empfohlen, die entsprechende Story-Vorlage zu öffnen</p></li>
+                <li><p>Bearbeiten Sie die Vorlage mit dem Stiftsymbol und passen Texte und Grafiken an.</p></li>
+                <li><p>Wechseln Sie in den Präsentationsmodus und erleben Sie Ihre Story im Fullscreen.</p></li>
             </ol>
         </div>
     """,
@@ -76,7 +76,9 @@ with col1:
     if uploaded_file:
         raw = uploaded_file.getvalue()
         if not raw.strip():
-            st.error("Die Datei ist leer. Bitte laden Sie eine CSV-Datei mit Daten hoch.")
+            st.error(
+                "Die Datei ist leer. Bitte laden Sie eine CSV-Datei mit Daten hoch."
+            )
             st.stop()
 
         first_line = raw.splitlines()[0].decode("utf-8", errors="replace")
