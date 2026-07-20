@@ -87,7 +87,7 @@ function get25YearTotal(spacesNum) {
                     <div v-for="category in segments" :key="category.label" class="category">
                         <span class="swatch" :style="{ backgroundColor: category.color }"></span>
                         <p>{{ category.label }} - {{ category.value }}€ ({{ Math.round(category.value / total * 100)
-                            }}%)
+                        }}%)
                         </p>
                     </div>
                 </div>
@@ -95,21 +95,21 @@ function get25YearTotal(spacesNum) {
             <div class="summary-screen__details" :class="`summary-screen__details--${currentIndex}`"
                 v-if="currentIndex === 2">
                 <div class="count-tree">
-                    <img src="../assets/Icons/Oak Tree.svg" alt="">
+                    <img src="@img/Story4/Icons/Oak Tree.svg" alt="">
                     <div>
                         <p><span>16 Straßenbäume</span></p>
                         <p>ca. 500 € pro Baum, inkl. Pflanzung</p>
                     </div>
                 </div>
                 <div class="count-bike">
-                    <img src="../assets/Icons/Bicycle.svg" alt="">
+                    <img src="@img/Story4/Icons/Bicycle.svg" alt="">
                     <div>
                         <p><span>9 Fahrradständer</span></p>
                         <p>mit Platz für jeweils 5 Fahrräder, zu ca. 850 € pro Fahrradträger</p>
                     </div>
                 </div>
                 <div class="count-bench">
-                    <img src="../assets/Icons/Park With Street Light.svg" alt="">
+                    <img src="@img/Story4/Icons/Park With Street Light.svg" alt="">
                     <div>
                         <p><span>82 Parkbänke</span></p>
                         <p>ca. 100€ pro Werkbank für die jährliche Wartung</p>
@@ -463,6 +463,7 @@ function get25YearTotal(spacesNum) {
 
 .summary-screen__next,
 .summary-screen__explore-again {
+    color: #000 !important;
     background: #fff;
     box-shadow: 1px 1px 5px 0 rgba(255, 255, 255, 0.6);
 

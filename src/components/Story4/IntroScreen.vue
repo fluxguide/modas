@@ -31,7 +31,7 @@ function closeSummary() {
         </p>
         <button id="start-button" @click="hideElements()">Explore more <span>&rarr;</span></button>
     </div>
-    <img v-if="!introDismissed" src="../assets/ParkingSign.svg" alt="Parking Sign" />
+    <img v-if="!introDismissed" src="@img/Story4/ParkingSign.svg" alt="Parking Sign" />
     <MainScreen v-if="!showSummary" :visibility="introDismissed" @summary="openSummary" />
     <SummaryScreen v-else @restart="closeSummary" />
 </template>
@@ -80,7 +80,7 @@ p {
     justify-content: center;
     align-items: center;
     background: #1D2F6F;
-    color: #FFF;
+    color: #FFF !important;
     font-size: 32px;
     font-weight: 500;
     line-height: 40px;
