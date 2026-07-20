@@ -8,4 +8,9 @@ import IntroScreen from '@components/Story4/IntroScreen.vue';
     </div>
 </template>
 
-<style scoped></style>
+<style scoped>
+.story4-app {
+    width: 100%;
+    height: 100%;
+}
+</style>

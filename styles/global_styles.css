@@ -49,6 +49,15 @@ body {
     font-family: "Albert Sans", sans-serif;
 }
 
+.story-container:has(.story4-app) :is(h1, h2, h3, h4, h5, h6, p, ul, li, label, span, a, button, input, textarea, select) {
+    font-family: "Albert Sans", sans-serif;
+    color: inherit;
+    letter-spacing: normal;
+    text-transform: none;
+    text-shadow: none;
+    -webkit-text-stroke: 0;
+}
+
 /******* Story Character *******/
 
 .character-wrapper {

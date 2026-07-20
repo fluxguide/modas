@@ -225,6 +225,7 @@ const nextSpot = computed(() =>
 
     .next-button,
     .summary-button {
+        color: #000;
         background: #fff;
         box-shadow: 1px 1px 5px 0 rgba(255, 255, 255, 0.6);
         font-weight: 600;

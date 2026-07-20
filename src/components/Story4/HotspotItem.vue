@@ -90,7 +90,7 @@ function selectSpot() {
     margin: var(--label-margin);
     padding: 8px 16px;
 
-    color: #fff;
+    color: #fff !important;
     font-size: 27px;
     font-weight: 500;
     line-height: 1;
