@@ -1,5 +1,5 @@
 <script setup>
-import IntroScreen from './IntroScreen.vue';
+import IntroScreen from '@components/Story4/IntroScreen.vue';
 </script>
 
 <template>

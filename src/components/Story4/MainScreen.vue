@@ -1,8 +1,8 @@
 <script setup>
 import { ref, watch } from 'vue';
 
-import HotspotDetail from './HotspotDetail.vue';
-import HotspotItem from './HotspotItem.vue';
+import HotspotDetail from '@components/Story4/HotspotDetail.vue';
+import HotspotItem from '@components/Story4/HotspotItem.vue';
 
 import { hotspots } from '@data/hotspots.js';
 import { useHotspotFocus } from '@composables/Story4/useHotspotFocus.js';

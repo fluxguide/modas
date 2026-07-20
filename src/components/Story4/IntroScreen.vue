@@ -1,7 +1,7 @@
 <script setup>
 import { ref } from 'vue';
-import MainScreen from './MainScreen.vue';
-import SummaryScreen from './SummaryScreen.vue';
+import MainScreen from '@components/Story4/MainScreen.vue';
+import SummaryScreen from '@components/Story4/SummaryScreen.vue';
 
 const introDismissed = ref(false);
 const showSummary = ref(false);
