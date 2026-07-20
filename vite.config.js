@@ -16,6 +16,7 @@ export default defineConfig({
       "@components": path.resolve(__dirname, "src/components"),
       "@composables": path.resolve(__dirname, "src/composables"),
       "@img": path.resolve(__dirname, "static/img"),
+      "@data": path.resolve(__dirname, "data"),
     },
   },
   build: {
