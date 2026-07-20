@@ -113,7 +113,7 @@ const nextSpot = computed(() =>
     display: flex;
     justify-content: center;
     align-items: center;
-    margin: 0 0 4vh auto;
+    margin: 0 0 0 auto;
     padding: 8px;
 
     color: #000 !important;
@@ -165,7 +165,7 @@ const nextSpot = computed(() =>
     flex-direction: row;
     align-items: center;
     justify-content: start;
-    margin-top: 32px;
+    margin-top: 8px;
     gap: 32px;
 
     .card1,
@@ -198,19 +198,23 @@ const nextSpot = computed(() =>
     .previous-button,
     .next-button,
     .summary-button {
-        padding: 8px 32px;
+        width: auto;
+        padding: clamp(6px, 0.8vw, 8px) clamp(16px, 2.2vw, 32px);
         display: flex;
         flex-direction: row;
+        align-items: center;
+        justify-content: center;
         border: none;
         border-radius: 24px;
         cursor: pointer;
+        white-space: nowrap;
 
-        font-size: 24px;
-        line-height: 40px;
+        font-size: clamp(0.85rem, 1.4vw, 1.5rem);
+        line-height: 1.4;
         font-family: inherit;
 
         span {
-            font-size: 32px;
+            font-size: clamp(1.1rem, 1.8vw, 2rem);
         }
     }
 

@@ -179,7 +179,7 @@ function get25YearTotal(spacesNum) {
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
-    margin: 0 0 8vh;
+    margin: 4vh 0 12vh;
     font-size: 20px;
     font-weight: 700;
 
@@ -280,6 +280,7 @@ function get25YearTotal(spacesNum) {
         flex-direction: row;
         justify-content: space-between;
         align-items: center;
+        margin-top: 16px;
 
         p {
             font-size: 20px;

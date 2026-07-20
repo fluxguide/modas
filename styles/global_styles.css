@@ -37,6 +37,7 @@ body {
 }
 
 .story-container:has(.story4-app) {
+    --bg-img: url('../static/img/Story4/background.png');
     width: 100%;
     height: 100vh;
     overflow: hidden;
