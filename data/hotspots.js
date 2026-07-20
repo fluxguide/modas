@@ -13,11 +13,11 @@ export const hotspots = [
         description: 'Jeder Anwohner, der hier parkt, benötigt eine Parkgenehmigung. Die Bearbeitung und Ausstellung dieser Genehmigung kostet die Gemeinde 30 € pro Stellplatz und Jahr. Bei insgesamt 350 Stellplätzen sind das 10.500 €.',
         card1: {
             headerNumber: '30€',
-            description: 'admin fee / year'
+            description: 'Verwaltungsgebühr / Jahr'
         },
         card2: {
             headerNumber: '750€',
-            description: 'over 25 years'
+            description: 'seit über 25 Jahren'
         },
         position: {
             bottom: '8vh',
@@ -40,11 +40,11 @@ export const hotspots = [
         description: 'Der größte Einzelposten bei den Betriebskosten ist derjenige, der am wenigsten ins Auge fällt: das Personal. Pro 350 Stellplätze wird ein Vollzeitmitarbeiter für die Verwaltung dieses Parkplatzes benötigt, was 170 € pro Stellplatz und Jahr entspricht. Das macht 76 % aller jährlichen Betriebskosten aus und übersteigt über einen Zeitraum von 25 Jahren die ursprünglichen Baukosten.',
         card1: {
             headerNumber: '170€',
-            description: 'personnel / year'
+            description: 'Personal / Jahr'
         },
         card2: {
             headerNumber: '4250€',
-            description: 'over 25 years'
+            description: 'seit über 25 Jahren'
         },
         position: {
             top: '50vh',
@@ -65,11 +65,11 @@ export const hotspots = [
         description: 'Die Instandhaltung der Oberfläche – Ausbessern, Markieren und Sicherstellen der Nutzbarkeit – kostet 25 € pro Stellplatz und Jahr, ohne Personalkosten. Für sich genommen ist das ein bescheidener Betrag, aber über 25 Jahre summiert sich das auf 625 € pro Stellplatz, was das Instandhaltungsbudget still und leise belastet.',
         card1: {
             headerNumber: '25€',
-            description: 'per space / year'
+            description: 'pro Stellplatz / Jahr'
         },
         card2: {
             headerNumber: '625€',
-            description: 'over 25 years'
+            description: 'seit über 25 Jahren'
         },
         position: {
             top: '0',
@@ -90,11 +90,11 @@ export const hotspots = [
         description: 'Noch bevor dort auch nur ein einziges Auto parkt, zahlt die Stadt 270 € pro m² für die Errichtung der Fahrbahn, wobei die Nebenkosten für die Bauarbeiten noch nicht enthalten sind. Damit belaufen sich die Vorlaufkosten für einen Standardparkplatz auf 3.375 €. Und das noch bevor auch nur ein Jahr an Betriebskosten anfällt.',
         card1: {
             headerNumber: '270€',
-            description: 'per m² (construction)'
+            description: 'pro m² (Bau)'
         },
         card2: {
             headerNumber: '3375€',
-            description: 'per parking space'
+            description: 'pro Parkplatz'
         },
         position: {
             top: '10vh',
@@ -114,11 +114,11 @@ export const hotspots = [
         description: 'Jeder Parkplatz nimmt 12,5 m² (5,0 × 2,5 Meter) ein, was in etwa der Fläche eines kleinen Badezimmers entspricht. Nach der Errichtung ist die Gemeinde für 25 Jahre an diese Fläche gebunden. Das ist eine ganze Generation, in der dieses Grundstück nicht als Sitzbank, Baumpflanzfläche oder Fahrradweg genutzt werden kann.',
         card1: {
             headerNumber: '12.5 m²',
-            description: 'per space'
+            description: 'pro Platz'
         },
         card2: {
-            headerNumber: '25 years',
-            description: 'committed lifespan'
+            headerNumber: '25 Jahre',
+            description: 'garantierte Lebensdauer'
         },
         position: {
             top: '36vh',
