@@ -116,7 +116,7 @@ const nextSpot = computed(() =>
     margin: 0 0 4vh auto;
     padding: 8px;
 
-    color: #000;
+    color: #000 !important;
     font: inherit;
     font-size: 24px;
     font-weight: bold;
