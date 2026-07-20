@@ -144,6 +144,7 @@ if "data" in st.session_state and st.session_state.data:
             "thuringia": "ÖPNV-Erreichbarkeit von Points of Interest",
             "vrr": "Veränderungen in Projekten",
             "dresden": "Städte in Bewegung",
+            "story4": "Was kostet ein PKW-Stellplatz die Kommune?",
         }
         rec_label = label_map.get(rec["recommended"], rec["recommended"])
         st.markdown(
@@ -401,15 +402,7 @@ if preview_key and preview_key in template_by_key_all:
                 """,
                 unsafe_allow_html=True,
             )
-
-            if tpl["key"] == "story4":
-                st.button(
-                    "In Arbeit",
-                    width="stretch",
-                    key=f"tpl_select_{tpl['key']}",
-                    disabled=True,
-                )
-            elif st.button(
+            if st.button(
                 "Wählen Sie diese Vorlage aus",
                 width="stretch",
                 key=f"tpl_select_{tpl['key']}",

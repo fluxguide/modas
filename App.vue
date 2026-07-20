@@ -6,6 +6,8 @@
       :categoryColours="categoryColours" />
     <DresdenStory v-else-if="template === 'dresden'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
       :categoryColours="categoryColours" :selectedCity="selectedCity" />
+    <Story4 v-else-if="template === 'story4'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
+      :categoryColours="categoryColours" />
     <div v-else class="loading">Loading story...</div>
   </div>
 </template>
@@ -16,6 +18,7 @@ import { Streamlit } from "streamlit-component-lib";
 import ThuringiaStory from "@components/Thuringia/ThuringiaApp.vue";
 import VRRStory from "@components/VRR/VRRApp.vue";
 import DresdenStory from "@components/Dresden/DresdenApp.vue";
+import Story4 from "@components/Story4/Story4App.vue"
 
 const storyData = ref(null);
 const columnLabelMap = ref({});

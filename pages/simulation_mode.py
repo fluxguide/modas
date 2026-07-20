@@ -25,6 +25,7 @@ STORY_COLOURS = {
     "dresden": {
         1: [""],
     },
+    "story4": {},
 }
 
 CHART_COLUMNS_BY_TEMPLATE = {
@@ -41,6 +42,7 @@ CHART_COLUMNS_BY_TEMPLATE = {
     "dresden": {
         0: {""},
     },
+    "story4": {},
 }
 
 CITIES = [
@@ -56,9 +58,7 @@ CITIES = [
     "Stuttgart",
 ]
 
-_REGIONS_PATH = os.path.join(
-    os.path.dirname(__file__), "..", "data", "regions.json"
-)
+_REGIONS_PATH = os.path.join(os.path.dirname(__file__), "..", "data", "regions.json")
 with open(_REGIONS_PATH, encoding="utf-8") as _f:
     _REGIONS = json.load(_f)
 
@@ -192,6 +192,15 @@ if selected == "thuringia":
         mode="simulation",
         key="story",
         selectedRegion=selected_map_region,
+    )
+elif selected == "story4":
+    result = story_viewer(
+        template=selected,
+        data=st.session_state.data,
+        columnLabelMap=st.session_state.get("columnLabelMap"),
+        categoryColours=st.session_state.category_colors,
+        mode="simulation",
+        key="story",
     )
 else:
     result = story_viewer(
