@@ -69,12 +69,12 @@ const nextSpot = computed(() =>
                     border: `2px solid ${previousSpot.color}`,
                     background: `color-mix(in srgb, ${previousSpot.color} 8%, transparent)`,
                 }" @click="emit('navigate', previousSpot.key)">
-                    <span>&larr;</span> Previous
+                    <span>&larr;</span> Zurück
                 </button>
                 <button v-if="nextSpot" class="next-button" @click="emit('navigate', nextSpot.key)">
-                    Next Spotlight <span>&rarr;</span>
+                    Nächstes Highlight <span>&rarr;</span>
                 </button>
-                <button v-else class="summary-button" @click="emit('summary')">See full summary</button>
+                <button v-else class="summary-button" @click="emit('summary')">Ganze Zusammenfassung</button>
             </div>
         </div>
     </aside>

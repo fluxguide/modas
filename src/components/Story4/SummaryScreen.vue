@@ -87,7 +87,7 @@ function get25YearTotal(spacesNum) {
                     <div v-for="category in segments" :key="category.label" class="category">
                         <span class="swatch" :style="{ backgroundColor: category.color }"></span>
                         <p>{{ category.label }} - {{ category.value }}€ ({{ Math.round(category.value / total * 100)
-                        }}%)
+                            }}%)
                         </p>
                     </div>
                 </div>
@@ -141,12 +141,12 @@ function get25YearTotal(spacesNum) {
 
         <div class="buttons">
             <button v-if="!isFirst" type="button" class="summary-screen__previous" @click="previousInsight">
-                <span>&larr;</span> Previous</button>
+                <span>&larr;</span> Zurück</button>
             <button v-if="!isLast" type="button" class="summary-screen__next" @click="nextInsight">
-                Next Insight <span>&rarr;</span>
+                Nächstes Highlight <span>&rarr;</span>
             </button>
-            <button class="summary-screen__explore-again" v-else @click="emit('restart')">Explore the story
-                again</button>
+            <button class="summary-screen__explore-again" v-else @click="emit('restart')">Geschichte neu
+                entdecken</button>
         </div>
     </section>
 </template>
