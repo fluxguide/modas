@@ -1,5 +1,5 @@
 function assetUrl(name) {
-    return new URL(`../src/assets/Hotspots/${name}`, import.meta.url).href;
+    return new URL(`../static/img/Story4/Hotspots/${name}`, import.meta.url).href;
 }
 
 export const hotspots = [
@@ -20,7 +20,7 @@ export const hotspots = [
             description: 'over 25 years'
         },
         position: {
-            bottom: '15vh',
+            bottom: '8vh',
             left: '65vw',
         },
         imageStyle: {
@@ -121,7 +121,7 @@ export const hotspots = [
             description: 'committed lifespan'
         },
         position: {
-            top: '30vh',
+            top: '36vh',
             right: '20vw',
         },
         labelMargin: '0 0 10px',
