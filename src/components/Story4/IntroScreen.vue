@@ -3,6 +3,10 @@ import { ref } from 'vue';
 import MainScreen from '@components/Story4/MainScreen.vue';
 import SummaryScreen from '@components/Story4/SummaryScreen.vue';
 
+const props = defineProps({
+    data: { type: Array, default: () => [] },
+});
+
 const introDismissed = ref(false);
 const showSummary = ref(false);
 
@@ -32,7 +36,7 @@ function closeSummary() {
         <button id="start-button" @click="hideElements()">Explore more <span>&rarr;</span></button>
     </div>
     <img v-if="!introDismissed" src="@img/Story4/ParkingSign.svg" alt="Parking Sign" />
-    <MainScreen v-if="!showSummary" :visibility="introDismissed" @summary="openSummary" />
+    <MainScreen v-if="!showSummary" :visibility="introDismissed" :data="props.data" @summary="openSummary" />
     <SummaryScreen v-else @restart="closeSummary" />
 </template>
 

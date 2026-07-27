@@ -51,6 +51,43 @@ TEMPLATE_COLUMN_REQUIREMENTS = {
         "year3": {"label": "Wert Year3", "example": "25882", "required": False},
         "Percentage": {"label": "Prozentwert", "example": "70", "required": False},
     },
+    "story4": {
+        "category": {
+            "label": "Kategorie-Name (Hotspot)",
+            "example": "Verwaltung",
+            "required": True,
+        },
+        "header": {
+            "label": "Überschrift der Detailansicht",
+            "example": "Verwaltungsgebühr",
+            "required": True,
+        },
+        "details": {
+            "label": "Beschreibungstext",
+            "example": "Jeder Anwohner, der hier parkt, benötigt eine Parkgenehmigung...",
+            "required": True,
+        },
+        "insight1": {
+            "label": "Kennzahl 1",
+            "example": "30€",
+            "required": False,
+        },
+        "insight1 label": {
+            "label": "Beschreibung Kennzahl 1",
+            "example": "Verwaltungsgebühr / Jahr",
+            "required": False,
+        },
+        "insight2": {
+            "label": "Kennzahl 2",
+            "example": "750€",
+            "required": False,
+        },
+        "insight2 label": {
+            "label": "Beschreibung Kennzahl 2",
+            "example": "seit über 25 Jahren",
+            "required": False,
+        },
+    },
 }
 
 

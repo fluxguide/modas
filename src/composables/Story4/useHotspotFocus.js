@@ -1,4 +1,4 @@
-import { computed, ref } from 'vue';
+import { computed, ref, unref } from 'vue';
 
 export function useHotspotFocus(sceneRef, spots, options = {}) {
     const zoom = options.zoom ?? 2.2;
@@ -8,7 +8,7 @@ export function useHotspotFocus(sceneRef, spots, options = {}) {
     const sceneTransform = ref('none');
 
     const activeSpot = computed(() => {
-        return spots.find((spot) => spot.key === activeKey.value) ?? null;
+        return unref(spots).find((spot) => spot.key === activeKey.value) ?? null;
     });
 
     const sceneStyle = computed(() => ({
@@ -63,7 +63,7 @@ export function useHotspotFocus(sceneRef, spots, options = {}) {
 
     function focusSpotByKey(key) {
         const scene = sceneRef.value;
-        const spot = spots.find((candidate) => candidate.key === key);
+        const spot = unref(spots).find((candidate) => candidate.key === key);
 
         if (!scene || !spot) {
             return;

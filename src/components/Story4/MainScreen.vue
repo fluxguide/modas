@@ -1,10 +1,10 @@
 <script setup>
-import { ref, watch } from 'vue';
+import { computed, ref, watch } from 'vue';
 
 import HotspotDetail from '@components/Story4/HotspotDetail.vue';
 import HotspotItem from '@components/Story4/HotspotItem.vue';
 
-import { hotspots } from '@data/hotspots.js';
+import { hotspots as defaultHotspots } from '@data/hotspots.js';
 import { useHotspotFocus } from '@composables/Story4/useHotspotFocus.js';
 
 const props = defineProps({
@@ -12,9 +12,49 @@ const props = defineProps({
         type: Boolean,
         default: false,
     },
+    data: {
+        type: Array,
+        default: () => [],
+    },
 });
 
 defineEmits(["summary"]);
+
+function cell(row, key) {
+    const value = row?.[key];
+    return value === undefined || value === null ? '' : String(value).trim();
+}
+
+const FALLBACK_TEXT = {
+    label: 'Kategorie',
+    property: 'Überschrift',
+    description: 'Für diesen Bereich wurde noch keine Beschreibung hinterlegt.',
+    card1Number: '–',
+    card1Description: 'Keine Angabe',
+    card2Number: '–',
+    card2Description: 'Keine Angabe',
+};
+
+const hotspots = computed(() => {
+    return defaultHotspots.map((defaults, index) => {
+        const row = props.data?.[index];
+
+        return {
+            ...defaults,
+            label: cell(row, 'category') || FALLBACK_TEXT.label,
+            property: cell(row, 'header') || FALLBACK_TEXT.property,
+            description: cell(row, 'details') || FALLBACK_TEXT.description,
+            card1: {
+                headerNumber: cell(row, 'insight1') || FALLBACK_TEXT.card1Number,
+                description: cell(row, 'insight1 label') || FALLBACK_TEXT.card1Description,
+            },
+            card2: {
+                headerNumber: cell(row, 'insight2') || FALLBACK_TEXT.card2Number,
+                description: cell(row, 'insight2 label') || FALLBACK_TEXT.card2Description,
+            },
+        };
+    });
+});
 
 const sceneRef = ref(null);
 
