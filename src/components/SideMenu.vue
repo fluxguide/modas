@@ -14,9 +14,41 @@ const props = defineProps({
         })
     },
     background: Object,
+    allowImageUpload: { type: Boolean, default: false },
 });
 
 const emit = defineEmits(['mode-change', 'update:background'])
+
+function handleBackgroundImageUpload(event) {
+    const file = event.target.files?.[0];
+    if (!file) return;
+
+    if (props.background?.image?.startsWith('blob:')) {
+        URL.revokeObjectURL(props.background.image);
+    }
+
+    emit('update:background', { ...props.background, image: URL.createObjectURL(file) });
+    event.target.value = '';
+}
+
+function resetBackgroundImage() {
+    if (props.background?.image?.startsWith('blob:')) {
+        URL.revokeObjectURL(props.background.image);
+    }
+
+    emit('update:background', { ...props.background, image: null });
+}
+
+watch(() => props.background?.image, (image) => {
+    const container = document.querySelector('.story-container');
+    if (!container) return;
+
+    if (image) {
+        container.style.setProperty('--bg-img', `url(${image})`);
+    } else {
+        container.style.removeProperty('--bg-img');
+    }
+});
 
 const setActive = (tileName) => {
     emit('mode-change', tileName);
@@ -152,6 +184,17 @@ watch(() => props.activeMode, (mode) => {
                                 class="gradient-range" />
                             <span class="gradient-angle-val">{{ Math.round(background.opacity * 100) }}%</span>
                         </div>
+                    </div>
+                    <div v-if="allowImageUpload" class="gradient-row">
+                        <label class="gradient-label">Hintergrundbild</label>
+                        <label class="bg-upload-button">
+                            Bild hochladen
+                            <input type="file" accept="image/*" class="bg-upload-input"
+                                @change="handleBackgroundImageUpload" />
+                        </label>
+                        <button v-if="background.image" class="gradient-reset" @click="resetBackgroundImage">
+                            Standardbild verwenden
+                        </button>
                     </div>
                 </template>
 
@@ -385,6 +428,31 @@ span.is-active path {
 .gradient-reset:hover {
     color: #333;
     border-color: #999;
+}
+
+.bg-upload-button {
+    display: block;
+    width: 100%;
+    padding: 8px 0;
+    text-align: center;
+    font-size: 13px;
+    background: none;
+    border: 1px dashed #ccc;
+    border-radius: 7px;
+    color: #888;
+    cursor: pointer;
+}
+
+.bg-upload-button:hover {
+    color: #333;
+    border-color: #999;
+}
+
+.bg-upload-input {
+    opacity: 0;
+    position: absolute;
+    width: 0;
+    height: 0;
 }
 
 /* Slide-in transition */
