@@ -43,7 +43,7 @@ function closeSummary() {
     <img v-if="!introDismissed" src="@img/Story4/ParkingSign.svg" alt="Parking Sign" />
     <MainScreen v-if="!showSummary" :visibility="introDismissed" :data="props.data" :background="props.background"
         @summary="openSummary" />
-    <SummaryScreen v-else @restart="closeSummary" />
+    <SummaryScreen v-else :active-mode="props.activeMode" @restart="closeSummary" />
 </template>
 
 <style scoped>
