@@ -16,6 +16,10 @@ const props = defineProps({
         type: Array,
         default: () => [],
     },
+    background: {
+        type: Object,
+        default: () => ({}),
+    },
 });
 
 defineEmits(["summary"]);
@@ -87,6 +91,8 @@ watch(
 <template>
     <main v-if="visibility" class="hotspot-scene">
         <div ref="sceneRef" class="hotspot-scene__canvas" :style="sceneStyle">
+            <div class="hotspot-scene__tint" aria-hidden="true"
+                :style="{ backgroundColor: background?.tint, opacity: background?.opacity }" />
             <HotspotItem v-for="spot in hotspots" :key="spot.key" :spot="spot" :active="activeKey === spot.key"
                 :dimmed="Boolean(activeKey && activeKey !== spot.key)" @select="handleSpotSelect" />
         </div>
@@ -118,6 +124,13 @@ watch(
     transform-origin: 0 0;
     transition: transform 0.6s cubic-bezier(0.25, 1, 0.5, 1);
     will-change: transform;
+}
+
+.hotspot-scene__tint {
+    position: absolute;
+    inset: 0;
+    pointer-events: none;
+    mix-blend-mode: multiply;
 }
 
 @media (prefers-reduced-motion: reduce) {
