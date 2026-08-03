@@ -1,16 +1,41 @@
 <script setup>
-import { computed, ref } from 'vue';
+import { computed, reactive, ref, watch } from 'vue';
 
-import { summaryInsights } from '@data/summaryInsights.js';
+import { summaryInsights as defaultSummaryInsights } from '@data/summaryInsights.js';
+import EditableTextField from '@components/EditableTextField.vue';
+
+const props = defineProps({
+    activeMode: { type: String, default: 'view' },
+});
 
 const emit = defineEmits(['restart'])
 
+const summaryInsights = ref(defaultSummaryInsights.map((insight) => ({ ...insight })));
+
+const enabledMap = reactive(
+    Object.fromEntries(defaultSummaryInsights.map((insight) => [insight.id, true])),
+);
+
+const visibleInsights = computed(() =>
+    props.activeMode === 'edit'
+        ? summaryInsights.value
+        : summaryInsights.value.filter((insight) => enabledMap[insight.id] !== false),
+);
+
 const currentIndex = ref(0);
 
-const currentInsight = computed(() => summaryInsights[currentIndex.value]);
+const currentInsight = computed(() => visibleInsights.value[currentIndex.value] ?? null);
+
+const displayIndex = computed(() => String(currentIndex.value + 1).padStart(2, '0'));
 
 const isFirst = computed(() => currentIndex.value === 0)
-const isLast = computed(() => currentIndex.value >= summaryInsights.length - 1);
+const isLast = computed(() => currentIndex.value >= visibleInsights.value.length - 1);
+
+watch(visibleInsights, (list) => {
+    if (currentIndex.value > list.length - 1) {
+        currentIndex.value = Math.max(0, list.length - 1);
+    }
+});
 
 function previousInsight() {
     return currentIndex.value -= 1;
@@ -22,16 +47,39 @@ function nextInsight() {
     }
 }
 
-const segments = [
+function toggleCurrentInsight(checked) {
+    if (!currentInsight.value) return;
+    enabledMap[currentInsight.value.id] = checked;
+}
+
+const texts = ref({
+    summaryTitle: 'Summary',
+    slide0Total: '8,250€',
+    slide0Card1Number: '3,375€',
+    slide0Card1Desc: 'Baukosten von 270 €/m²',
+    slide0Card2Number: '4,875€',
+    slide0Card2Desc: 'Laufende Summe – 195€ pro Stellplatz/Jahr',
+    slide2TreeTitle: '16 Straßenbäume',
+    slide2TreeDesc: 'ca. 500 € pro Baum, inkl. Pflanzung',
+    slide2BikeTitle: '9 Fahrradständer',
+    slide2BikeDesc: 'mit Platz für jeweils 5 Fahrräder, zu ca. 850 € pro Fahrradträger',
+    slide2BenchTitle: '82 Parkbänke',
+    slide2BenchDesc: 'ca. 100€ pro Werkbank für die jährliche Wartung',
+    slide3Label1: 'Baukosten',
+    slide3Label2: 'Jährlicher Lauf',
+    slide3Label3: 'Gesamtwert über 25 Jahre',
+});
+
+const segments = ref([
     { label: 'Personnel', value: 170, color: '#6D01E0' },
     { label: 'Maintenance', value: 25, color: '#00EAFF' },
-];
+]);
 
-const total = computed(() => segments.reduce((sum, s) => sum + s.value, 0));
+const total = computed(() => segments.value.reduce((sum, s) => sum + s.value, 0));
 
 const bars = computed(() => {
     let x = 0;
-    return segments.map((s) => {
+    return segments.value.map((s) => {
         const pct = (s.value / total.value) * 100;
         const bar = { ...s, x, pct };
         x += pct;
@@ -57,92 +105,140 @@ function get25YearTotal(spacesNum) {
 
 <template>
     <section class="summary-screen">
-        <div class="summary-screen__body">
+        <div v-if="currentInsight" class="summary-screen__body">
+            <label v-if="props.activeMode === 'edit'" class="summary-screen__toggle">
+                <input type="checkbox" :checked="enabledMap[currentInsight.id] !== false"
+                    @change="e => toggleCurrentInsight(e.target.checked)" />
+                In Zusammenfassung anzeigen
+            </label>
             <div class="summary-screen__counter">
-                <h1>Summary</h1>
-                <p>{{ currentInsight.id }}<span>/0{{ summaryInsights.length }}</span></p>
+                <EditableTextField :model-value="texts.summaryTitle"
+                    @update:model-value="val => texts.summaryTitle = val" :active-mode="props.activeMode" :rows="1"
+                    :width="'fit-content'" :font-size="'88px'" :line-height="'88px'" :font-weight="'700'" />
+                <p>{{ displayIndex }}<span>/0{{ visibleInsights.length }}</span></p>
             </div>
-            <p class="summary-screen__question">{{ currentInsight.description }}</p>
-            <div class="summary-screen__details" :class="`summary-screen__details--${currentIndex}`"
-                v-if="currentIndex === 0">
-                <h2>8,250€</h2>
+            <EditableTextField class="summary-screen__question" :model-value="currentInsight.description"
+                @update:model-value="val => currentInsight.description = val" :active-mode="props.activeMode" :rows="2"
+                :width="'100%'" :font-size="'28px'" :line-height="'40px'" :font-weight="'300'" />
+
+            <div class="summary-screen__details summary-screen__details--0" v-if="currentInsight.id === '01'">
+                <EditableTextField :model-value="texts.slide0Total" @update:model-value="val => texts.slide0Total = val"
+                    :active-mode="props.activeMode" :rows="1" :width="'16vw'" :font-size="'72px'"
+                    :font-weight="'700'" />
                 <h2><span>&rarr;</span></h2>
                 <div class="card">
-                    <h4>3,375€</h4>
-                    <p>Baukosten von 270 €/m²</p>
+                    <EditableTextField :model-value="texts.slide0Card1Number"
+                        @update:model-value="val => texts.slide0Card1Number = val" :active-mode="props.activeMode"
+                        :rows="1" :width="'16vw'" :font-size="'40px'" :line-height="'40px'" :font-weight="'700'" />
+                    <EditableTextField :model-value="texts.slide0Card1Desc"
+                        @update:model-value="val => texts.slide0Card1Desc = val" :active-mode="props.activeMode"
+                        :rows="2" :width="'16vw'" :font-size="'22px'" :line-height="'40px'" />
                 </div>
                 <h2><span>&#43;</span></h2>
                 <div class="card">
-                    <h4>4,875€</h4>
-                    <p>Laufende Summe – 195€ pro Stellplatz/Jahr</p>
+                    <EditableTextField :model-value="texts.slide0Card2Number"
+                        @update:model-value="val => texts.slide0Card2Number = val" :active-mode="props.activeMode"
+                        :rows="1" :width="'16vw'" :font-size="'40px'" :line-height="'40px'" :font-weight="'700'" />
+                    <EditableTextField :model-value="texts.slide0Card2Desc"
+                        @update:model-value="val => texts.slide0Card2Desc = val" :active-mode="props.activeMode"
+                        :rows="2" :width="'16vw'" :font-size="'22px'" :line-height="'40px'" />
                 </div>
             </div>
-            <div class="summary-screen__details" :class="`summary-screen__details--${currentIndex}`"
-                v-if="currentIndex === 1">
+            <div class="summary-screen__details summary-screen__details--1" v-if="currentInsight.id === '02'">
                 <svg viewBox="0 0 100 6" preserveAspectRatio="none" class="bar">
-                    <rect v-for="bar in bars" :key="bar.label" :x="bar.x" :width="bar.pct" y="0" height="6"
+                    <rect v-for="(bar, i) in bars" :key="i" :x="bar.x" :width="bar.pct" y="0" height="6"
                         :fill="bar.color"></rect>
                 </svg>
                 <div class="legend">
-                    <div v-for="category in segments" :key="category.label" class="category">
+                    <div v-for="(category, i) in segments" :key="i" class="category">
                         <span class="swatch" :style="{ backgroundColor: category.color }"></span>
-                        <p>{{ category.label }} - {{ category.value }}€ ({{ Math.round(category.value / total * 100)
-                            }}%)
+                        <EditableTextField :model-value="category.label"
+                            @update:model-value="val => segments[i].label = val" :active-mode="props.activeMode"
+                            :rows="1" :width="'fit-content'" :font-size="'20px'" :line-height="'40px'"
+                            :font-weight="'300'" />
+                        <p v-if="props.activeMode !== 'edit'">
+                            &nbsp;- {{ category.value }}€ ({{ Math.round(category.value / total * 100) }}%)
+                        </p>
+                        <p v-else class="category__value-edit">
+                            &nbsp;-
+                            <input type="number" min="0" class="category__value-input" :value="category.value"
+                                @input="e => segments[i].value = Number(e.target.value) || 0" />
+                            € ({{ Math.round(category.value / total * 100) }}%)
                         </p>
                     </div>
                 </div>
             </div>
-            <div class="summary-screen__details" :class="`summary-screen__details--${currentIndex}`"
-                v-if="currentIndex === 2">
+            <div class="summary-screen__details summary-screen__details--2" v-if="currentInsight.id === '03'">
                 <div class="count-tree">
                     <img src="@img/Story4/Icons/Oak Tree.svg" alt="">
                     <div>
-                        <p><span>16 Straßenbäume</span></p>
-                        <p>ca. 500 € pro Baum, inkl. Pflanzung</p>
+                        <EditableTextField :model-value="texts.slide2TreeTitle"
+                            @update:model-value="val => texts.slide2TreeTitle = val" :active-mode="props.activeMode"
+                            :rows="1" :width="'100%'" :font-size="'24px'" :line-height="'40px'" />
+                        <EditableTextField :model-value="texts.slide2TreeDesc"
+                            @update:model-value="val => texts.slide2TreeDesc = val" :active-mode="props.activeMode"
+                            :rows="2" :width="'100%'" :font-size="'18px'" :line-height="'40px'" :font-weight="'300'" />
                     </div>
                 </div>
                 <div class="count-bike">
                     <img src="@img/Story4/Icons/Bicycle.svg" alt="">
                     <div>
-                        <p><span>9 Fahrradständer</span></p>
-                        <p>mit Platz für jeweils 5 Fahrräder, zu ca. 850 € pro Fahrradträger</p>
+                        <EditableTextField :model-value="texts.slide2BikeTitle"
+                            @update:model-value="val => texts.slide2BikeTitle = val" :active-mode="props.activeMode"
+                            :rows="1" :width="'100%'" :font-size="'24px'" :line-height="'40px'" />
+                        <EditableTextField :model-value="texts.slide2BikeDesc"
+                            @update:model-value="val => texts.slide2BikeDesc = val" :active-mode="props.activeMode"
+                            :rows="2" :width="'100%'" :font-size="'18px'" :line-height="'40px'" :font-weight="'300'" />
                     </div>
                 </div>
                 <div class="count-bench">
                     <img src="@img/Story4/Icons/Park With Street Light.svg" alt="">
                     <div>
-                        <p><span>82 Parkbänke</span></p>
-                        <p>ca. 100€ pro Werkbank für die jährliche Wartung</p>
+                        <EditableTextField :model-value="texts.slide2BenchTitle"
+                            @update:model-value="val => texts.slide2BenchTitle = val" :active-mode="props.activeMode"
+                            :rows="1" :width="'100%'" :font-size="'24px'" :line-height="'40px'" />
+                        <EditableTextField :model-value="texts.slide2BenchDesc"
+                            @update:model-value="val => texts.slide2BenchDesc = val" :active-mode="props.activeMode"
+                            :rows="2" :width="'100%'" :font-size="'18px'" :line-height="'40px'" :font-weight="'300'" />
                     </div>
                 </div>
             </div>
-            <div class="summary-screen__details" :class="`summary-screen__details--${currentIndex}`"
-                v-if="currentIndex === 3">
+            <div class="summary-screen__details summary-screen__details--3" v-if="currentInsight.id === '04'">
                 <div class="slider-container">
                     <input type="range" class="slider" min="1" max="100" v-model.number="sliderValue">
                     <p class="value-display">{{ sliderValue }} spaces</p>
                 </div>
                 <div class="count-categories">
                     <div>
-                        <p>Baukosten</p>
+                        <EditableTextField :model-value="texts.slide3Label1"
+                            @update:model-value="val => texts.slide3Label1 = val" :active-mode="props.activeMode"
+                            :rows="1" :width="'100%'" :font-size="'18px'" :line-height="'40px'" />
                         <p><span>{{ getBuildingCost(sliderValue) }}€</span></p>
                     </div>
                     <div>
-                        <p>Jährlicher Lauf</p>
+                        <EditableTextField :model-value="texts.slide3Label2"
+                            @update:model-value="val => texts.slide3Label2 = val" :active-mode="props.activeMode"
+                            :rows="1" :width="'100%'" :font-size="'18px'" :line-height="'40px'" />
                         <p><span>{{ getAnnualCost(sliderValue) }}€</span></p>
                     </div>
                     <div>
-                        <p>Gesamtwert über 25 Jahre</p>
+                        <EditableTextField :model-value="texts.slide3Label3"
+                            @update:model-value="val => texts.slide3Label3 = val" :active-mode="props.activeMode"
+                            :rows="1" :width="'100%'" :font-size="'18px'" :line-height="'40px'" />
                         <p><span>{{ get25YearTotal(sliderValue) }}€</span></p>
                     </div>
                 </div>
             </div>
         </div>
+        <div v-else class="summary-screen__empty">
+            <p>Keine Zusammenfassungsseiten ausgewählt.</p>
+        </div>
 
         <div class="buttons">
-            <button v-if="!isFirst" type="button" class="summary-screen__previous" @click="previousInsight">
+            <button v-if="currentInsight && !isFirst" type="button" class="summary-screen__previous"
+                @click="previousInsight">
                 <span>&larr;</span> Zurück</button>
-            <button v-if="!isLast" type="button" class="summary-screen__next" @click="nextInsight">
+            <button v-if="currentInsight && !isLast" type="button" class="summary-screen__next" @click="nextInsight">
                 Nächstes Highlight <span>&rarr;</span>
             </button>
             <button class="summary-screen__explore-again" v-else @click="emit('restart')">Geschichte neu
@@ -164,6 +260,21 @@ function get25YearTotal(spacesNum) {
 
     color: #fff;
     background: rgba(0, 0, 0, 0.92);
+}
+
+.summary-screen :deep(.editable-text-comp textarea),
+.summary-screen :deep(.editable-text-comp .v-field__input) {
+    color: #fff !important;
+    caret-color: #fff;
+}
+
+.summary-screen__empty {
+    width: 100%;
+    height: 80%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 24px;
 }
 
 .summary-screen__body {
@@ -202,12 +313,19 @@ function get25YearTotal(spacesNum) {
     }
 }
 
+.summary-screen__toggle {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin: 0 0 0 auto;
+    font-size: 16px;
+    font-weight: 400;
+    cursor: pointer;
+}
+
 .summary-screen__question {
     width: 100%;
     margin: 0 0 4vh;
-    font-size: 28px;
-    font-weight: 300;
-    line-height: 40px;
 }
 
 .summary-screen__details {
@@ -244,23 +362,6 @@ function get25YearTotal(spacesNum) {
         border-radius: 8px;
         border: 2px solid #FFF;
         background: rgba(255, 255, 255, 0.08);
-
-        h4,
-        p {
-            margin: 0;
-            padding: 0;
-            line-height: 40px;
-        }
-
-        h4 {
-            font-size: 40px;
-            font-weight: 700;
-        }
-
-        p {
-            font-size: 22px;
-            font-weight: 400;
-        }
     }
 }
 
@@ -301,6 +402,22 @@ function get25YearTotal(spacesNum) {
             border-radius: 6px;
             margin: 0 8px 0 0;
         }
+
+        .category__value-edit {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+
+        .category__value-input {
+            width: 4.5em;
+            padding: 2px 6px;
+            color: #fff;
+            font: inherit;
+            background: rgba(255, 255, 255, 0.08);
+            border: 1px dashed #808080;
+            border-radius: 6px;
+        }
     }
 }
 
@@ -324,18 +441,6 @@ function get25YearTotal(spacesNum) {
         img {
             width: auto;
             height: 100%;
-        }
-
-        &>div>p {
-            font-size: 18px;
-            font-weight: 300;
-            line-height: 40px;
-            margin: 0 0 8px 0;
-
-            span {
-                font-size: 24px;
-                font-weight: 400;
-            }
         }
     }
 }
