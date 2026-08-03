@@ -144,7 +144,7 @@ def score_templates(df):
     print(f"\n=== score_templates ===")
     print(f"Columns found: {cols}")
 
-    scores = {"thuringia": 0, "vrr": 0, "dresden": 0}
+    scores = {"thuringia": 0, "vrr": 0, "dresden": 0, "story4": 0}
 
     # Thuringia signals
     coord_match = any(c in cols for c in ["latitude", "longitude", "lat", "lon", "lng"])
@@ -197,6 +197,24 @@ def score_templates(df):
         scores["dresden"] += 4
 
     print(f"Dresden: survey_cols={has_survey} → {scores['dresden']}")
+
+    # Story4 signals
+    has_header = "header" in cols
+    has_insights = any(
+        c in cols for c in ["insight1", "insight2", "insight1 label", "insight2 label"]
+    )
+    has_category_or_details = any(c in cols for c in ["category", "details"])
+
+    if has_header:
+        scores["story4"] += 4
+    if has_insights:
+        scores["story4"] += 3
+    if has_category_or_details:
+        scores["story4"] += 1
+
+    print(
+        f"Story4: header={has_header}, insights={has_insights}, category_or_details={has_category_or_details} → {scores['story4']}"
+    )
 
     total = sum(scores.values())
     best = max(scores, key=scores.get)
