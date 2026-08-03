@@ -44,7 +44,7 @@ const exitPresenter = () => {
         <SideMenu v-if="!isPresenting" :active-mode="activeMode" :background="background" :allow-image-upload="true"
             @mode-change="handleModeChange" @update:background="val => background = val" />
         <button v-if="isPresenting" class="exit-presenter" @click="exitPresenter">Präsentationsansicht beenden</button>
-        <IntroScreen :data="props.data" :background="background" />
+        <IntroScreen :data="props.data" :background="background" :active-mode="activeMode" />
     </div>
 </template>
 
@@ -52,5 +52,31 @@ const exitPresenter = () => {
 .story4-app {
     width: 100%;
     height: 100%;
+}
+
+.story4-app:fullscreen {
+    background: var(--bg-img) top / cover no-repeat;
+}
+
+.story4-app:fullscreen::backdrop {
+    background: var(--bg-img) top / cover no-repeat;
+}
+
+.exit-presenter {
+    position: fixed;
+    top: 20px;
+    right: 20px;
+    z-index: 1001;
+    padding: 10px 20px;
+    font-size: 16px;
+    background-color: #010080;
+    color: #fff !important;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    box-shadow: 1px 1px 4px 0 rgba(0, 0, 0, 0.40);
+    font-style: normal;
+    font-weight: 500;
+    line-height: normal;
 }
 </style>
