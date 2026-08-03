@@ -2,11 +2,17 @@
 import { ref } from 'vue';
 import MainScreen from '@components/Story4/MainScreen.vue';
 import SummaryScreen from '@components/Story4/SummaryScreen.vue';
+import EditableTextField from '@components/EditableTextField.vue';
 
 const props = defineProps({
     data: { type: Array, default: () => [] },
     background: { type: Object, default: () => ({}) },
+    activeMode: { type: String, default: 'view' },
 });
+
+const textField = ref(
+    'Was kostet ein Pkw-Stellplatz wirklich?\n\nDas Zukunftsnetz Mobilität hat 2022 gemeinsam mit kommunalen Verbänden in NRW Ansätze zur Berechnung der Stellplatzkosten vorgestellt.'
+);
 
 const introDismissed = ref(false);
 const showSummary = ref(false);
@@ -28,13 +34,11 @@ function closeSummary() {
 <template>
     <div v-if="!introDismissed" class="intro">
         <p>
-            Was kostet ein Pkw-Stellplatz wirklich?
-            <br />
-            <br />
-            Das Zukunftsnetz Mobilität hat 2022 gemeinsam mit kommunalen Verbänden in NRW Ansätze zur Berechnung der
-            Stellplatzkosten vorgestellt.
+            <EditableTextField :model-value="textField" @update:model-value="val => textField = val"
+                :active-mode="props.activeMode" :rows="6" :width="'100%'" :font-size="'32px'" :line-height="'40px'"
+                :font-weight="'400'" />
         </p>
-        <button id="start-button" @click="hideElements()">Explore more <span>&rarr;</span></button>
+        <button id="start-button" @click="hideElements()">Mehr entdecken<span>&rarr;</span></button>
     </div>
     <img v-if="!introDismissed" src="@img/Story4/ParkingSign.svg" alt="Parking Sign" />
     <MainScreen v-if="!showSummary" :visibility="introDismissed" :data="props.data" :background="props.background"
@@ -67,16 +71,12 @@ p {
 }
 
 .intro p {
-    width: 50%;
+    width: 50vw;
     position: relative;
-    padding: 48px;
     background: #FFF;
-    font-size: 32px;
-    font-weight: 400;
-    line-height: 40px;
+    padding: 48px;
     border-radius: 16px;
     border: 3px solid #1D2F6F;
-    gap: 10px;
 }
 
 .intro button {
