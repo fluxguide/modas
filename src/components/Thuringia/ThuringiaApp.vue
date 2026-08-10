@@ -239,8 +239,7 @@ onUnmounted(() => {
           <ArrowChart v-if="stats" ref="arrowChartRef" :stats="stats" :currentRange="currentRange"
             :active-mode="activeMode" :categoryColours="props.categoryColours" />
           <HeaderRange ref="headerRangeRef" :stats="stats" :stats-percentages="statsPercentages"
-            :currentRange="currentRange" v-if="stats" :active-mode="activeMode"
-            :columnLabelMap="props.columnLabelMap" />
+            :currentRange="currentRange" v-if="stats" :active-mode="activeMode" />
         </div>
         <div class="character">
           <img src="@img/Thuringia/Bus_Stop.png" alt="Bus Stop" id="busStopImage" />
@@ -278,7 +277,7 @@ onUnmounted(() => {
       </div>
       <div class="ground-content">
         <TextRange ref="textRangeRef" :stats="stats" :currentRange="currentRange" v-if="stats && arrowVisible"
-          :active-mode="activeMode" :columnLabelMap="props.columnLabelMap" />
+          :active-mode="activeMode" />
       </div>
       <div v-if="showMapOverlay" class="map-overlay">
         <LeafletMap :data="rawData" :stats="stats" :visible-layers="visibleLayers" @map-ready="handleMapReady"
@@ -375,6 +374,7 @@ p {
 
 .ground-content {
   width: 100%;
+  height: 100%;
   padding: 20px;
   display: flex;
   flex-direction: column;
