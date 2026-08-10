@@ -1,9 +1,7 @@
 <script setup>
-import { toRef } from 'vue';
 import { useTextStats } from '@composables/Thuringia/useTextStats.js';
 import { computed } from 'vue';
-import { scaleRange, rangeKeyByRangeIndex } from '@src/composables/utils.js';
-import { useColumnLabels } from '@composables/useColumnLabels.js';
+import { scaleRange } from '@src/composables/utils.js';
 import EditableTextField from '@src/components/EditableTextField.vue';
 
 const props = defineProps({
@@ -11,10 +9,7 @@ const props = defineProps({
   statsPercentages: Object,
   currentRange: Number,
   activeMode: String,
-  columnLabelMap: { type: Object, default: () => ({}) },
 });
-
-const { col } = useColumnLabels(toRef(props, "columnLabelMap"))
 
 const {
   headerData,
@@ -22,10 +17,7 @@ const {
 } = useTextStats(computed(() => props.stats), computed(() => props.statsPercentages), computed(() => props.currentRange));
 
 const getHeaderString = (header) => {
-  const rangeKey = rangeKeyByRangeIndex[props.currentRange] || "stops_within_300m";
-  const colName = col(rangeKey, `${header.distance}`);
-
-  return `Im Umkreis von ${colName} haben ${header.stops}% der Rathäuser mindestens eine Haltestelle, ${header.noStops}% haben keine Haltestelle.`
+  return `Im Umkreis von ${header.distance} haben ${header.stops}% der Rathäuser mindestens eine Haltestelle, ${header.noStops}% haben keine Haltestelle.`
 }
 
 defineExpose({
