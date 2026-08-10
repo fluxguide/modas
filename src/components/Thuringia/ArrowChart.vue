@@ -51,10 +51,13 @@ watch(resolvedColors, redraw, { deep: true });
 </script>
 
 <template>
-    <div ref="chartContainer" class="arrow-chart" :style="{
-        transform: `scaleX(${scaleRange(props.currentRange)})`,
-        transformOrigin: 'right center'
-    }">
+    <div class="arrow-chart-wrapper">
+        <div ref="chartContainer" class="arrow-chart" :style="{
+            transform: `scaleX(${scaleRange(props.currentRange)})`,
+            transformOrigin: 'right center'
+        }">
+            <svg ref="svgRef" class="svg" :class="{ 'is-edit': activeMode === 'edit' }"></svg>
+        </div>
         <button v-if="activeMode === 'edit'" class="chart-edit-btn" @click.stop="openEditor"
             title="Diagrammdaten bearbeiten" aria-label="Diagrammdaten bearbeiten">
             <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
@@ -63,11 +66,16 @@ watch(resolvedColors, redraw, { deep: true });
                     fill="#F3F3F3" />
             </svg>
         </button>
-        <svg ref="svgRef" class="svg" :class="{ 'is-edit': activeMode === 'edit' }"></svg>
     </div>
 </template>
 
 <style scoped>
+.arrow-chart-wrapper {
+    position: relative;
+    height: 100%;
+    width: 100%;
+}
+
 .arrow-chart {
     height: 100%;
     width: 100%;
