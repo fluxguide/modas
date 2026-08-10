@@ -385,8 +385,7 @@ p {
 .init-mid {
   position: relative;
   width: 50%;
-  margin-left: calc(25% + 50% / 5);
-  margin-right: calc(100% - (25% + 50% / 5));
+  margin-left: 30vw;
   margin-top: 5vh;
   z-index: 10;
   pointer-events: auto;
