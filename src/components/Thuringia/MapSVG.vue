@@ -267,14 +267,13 @@ onMounted(() => {
 }
 
 .map-svg {
-    /* width: 100%; */
     height: 100%;
 }
 
 .chart-edit-btn {
     position: absolute;
     bottom: 10%;
-    right: -10px;
+    right: 72px;
     width: 44px;
     height: 44px;
     border-radius: 50%;
