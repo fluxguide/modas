@@ -529,21 +529,34 @@ if (
                 f"**{proper_region}** sind."
             )
 
+            st.markdown(
+                """
+                <style>
+                .st-key-mismatch_continue_btn,
+                .st-key-mismatch_change_btn {
+                    width: fit-content !important;
+                    align-self: baseline;
+                    margin-left: 0 !important;
+                }
+                </style>
+                """,
+                unsafe_allow_html=True,
+            )
+
             col1, col2 = st.columns(2)
 
             with col1:
                 if st.button(
                     "Mit dieser Karte fortfahren",
-                    width="stretch",
                     key="mismatch_continue_btn",
                 ):
                     st.session_state.map_mismatch_ack = selected_map_region
+                    st.session_state["story"] = None
                     st.rerun()
 
             with col2:
                 if st.button(
                     "Karte ändern",
-                    width="stretch",
                     key="mismatch_change_btn",
                 ):
                     st.session_state.map_mismatch_ack = None
