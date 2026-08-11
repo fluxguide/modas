@@ -45,7 +45,6 @@ let handleScroll = null;
 const textFields = ref({
   first: "Unser Rathaus hat nur wenige Haltestellen innerhalb von 300m. \n\nUnd was bedeutet das für Inge?",
   second: "Ein genauerer Blick auf die Karte zeigt, in welchen Teilen des Landes Rathäuser gut erreichbar sind und wo der öffentliche Nahverkehr eher Lücken aufweist.",
-  third: "Wirklich abgehängt ist kaum ein Rathaus. Nur 7 Prozent liegen weiter als 300 Meter von der nächsten Haltestelle entfernt. Das heißt aber auch: Für einige bleibt der Weg zur Bushaltestelle ein kleiner Spaziergang.",
   forth: "Erkunden Sie selbst, wie gut Thüringens Rathäuser erreichbar sind. \nNutzen Sie die Filter und klicken Sie auf die Marker für Details.",
 })
 
@@ -175,6 +174,12 @@ watch(
       stats.value = out.stats;
       statsPercentages.value = out.statsPercentages;
       console.log("stats computed OK:", stats.value);
+
+      const withoutStopsCount = out.stats.townhallsWithoutStopsWithin300m.length;
+      const percentWithoutStops = rawData_parsed.length > 0
+        ? Math.round((withoutStopsCount / rawData_parsed.length) * 100)
+        : 0;
+      textFields.value.third = `Wirklich abgehängt ist kaum ein Rathaus. Nur ${percentWithoutStops} Prozent liegen weiter als 300 Meter von der nächsten Haltestelle entfernt. Das heißt aber auch: Für einige bleibt der Weg zur Bushaltestelle ein kleiner Spaziergang.`;
     } catch (e) {
       console.error("computeStats failed:", e);
       stats.value = null;
