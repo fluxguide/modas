@@ -79,8 +79,8 @@ const editModeActive = ref(true);
 const bgTintColor = ref('rgba(255, 255, 255, 0)')
 const bgTintOpacity = ref(0.3)
 
-const openEditor = () => {
-    Streamlit.setComponentValue({ action: "open_data_editor", chartNumber: props.chartNumber });
+const openEditor = (chartNumber) => {
+    Streamlit.setComponentValue({ action: "open_data_editor", chartNumber });
 };
 
 const dresdenBackground = computed(() => ({
@@ -308,14 +308,32 @@ function setSceneTitle(scene, val) {
     };
 }
 
-function buildTowerSegments(metrics) {
+const defaultSlotColours = [
+    'var(--blue)',
+    'var(--mint)',
+    'var(--yellow)',
+    'var(--orange-soft)',
+    'var(--orange-light)',
+    'var(--taupe-light)',
+]
+
+function slotColour(chartNumber, slotIndex) {
+    const slotColours = props.categoryColours?.[chartNumber] ?? []
+    return slotColours[slotIndex] || defaultSlotColours[slotIndex]
+}
+
+function paletteFor(chartNumber) {
+    return [0, 1, 2, 3, 4, 5].map(i => slotColour(chartNumber, i))
+}
+
+function buildTowerSegments(metrics, chartNumber) {
     const colorBySlot = {
-        slot_0: 'var(--blue)',
-        slot_1: 'var(--mint)',
-        slot_2: 'var(--yellow)',
-        slot_3: 'var(--orange-soft)',
-        slot_4: 'var(--orange-light)',
-        slot_5: 'var(--taupe-light)',
+        slot_0: slotColour(chartNumber, 0),
+        slot_1: slotColour(chartNumber, 1),
+        slot_2: slotColour(chartNumber, 2),
+        slot_3: slotColour(chartNumber, 3),
+        slot_4: slotColour(chartNumber, 4),
+        slot_5: slotColour(chartNumber, 5),
     }
 
     return Object.keys(metrics)
@@ -341,13 +359,11 @@ const accessibilityRoadMetrics = computed(() =>
 )
 
 const accessibilityHappinessTowerSegments = computed(() =>
-    buildTowerSegments(
-        accessibilityHappinessMetrics.value,
-    ),
+    buildTowerSegments(accessibilityHappinessMetrics.value, 1),
 )
 
 const accessibilityRoadTowerSegments = computed(() =>
-    buildTowerSegments(accessibilityRoadMetrics.value),
+    buildTowerSegments(accessibilityRoadMetrics.value, 2),
 )
 
 const safetyDetailsMetrics = computed(() =>
@@ -360,6 +376,7 @@ const safetyTreeItems = computed(() => {
             ...item,
             image: treeImages[item.imageKey],
             value: safetyDetailsMetrics.value[item.metricKey] ?? 0,
+            color: slotColour(3, Number(item.metricKey.split('_')[1])),
         }))
         .filter((item) => item.value > 0);
 
@@ -398,6 +415,14 @@ const activeStoryScene = computed(
 const activeStorySceneMetrics = computed(() =>
     resolveStorySceneMetrics(activeStoryScene.value),
 )
+
+const activeStoryChartNumber = computed(() => {
+    if (activeStoryScene.value === sectionOne) return 1
+    if (activeStoryScene.value === sectionTwo) return 2
+    return null
+})
+
+const activeStorySceneColours = computed(() => paletteFor(activeStoryChartNumber.value))
 
 const activeStorySceneTitleParams = computed(() => ({
     transportGroup: getTranslation(
@@ -1063,7 +1088,8 @@ onUnmounted(() => {
                 <SpeechBubbleContent
                     :title="resolveSceneCategoryName(activeStoryScene) || getTranslation(activeStoryScene.titleKey, activeStorySceneTitleParams)"
                     @update:title="val => setSceneTitle(activeStoryScene, val)" :lines="activeStoryScene.bubble"
-                    :metrics="activeStorySceneMetrics" :active-mode="activeMode" :edit-mode-active="editModeActive" />
+                    :metrics="activeStorySceneMetrics" :active-mode="activeMode" :edit-mode-active="editModeActive"
+                    :highlight-colours="activeStorySceneColours" />
             </article>
         </div>
 
@@ -1075,7 +1101,7 @@ onUnmounted(() => {
                 activeStoryVisibilityBucket >= 50
                 " data-story-section="section-one">
             <div class="building-image-wrapper" :class="{ 'is-edit': activeMode === 'edit' }">
-                <button v-if="activeMode === 'edit'" class="chart-edit-btn" @click.stop="openEditor"
+                <button v-if="activeMode === 'edit'" class="chart-edit-btn" @click.stop="openEditor(1)"
                     title="Diagrammdaten bearbeiten" aria-label="Diagrammdaten bearbeiten">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <path
@@ -1102,7 +1128,7 @@ onUnmounted(() => {
                 activeStoryVisibilityBucket >= 50
                 " data-story-section="section-two">
             <div class="building-image-wrapper" :class="{ 'is-edit': activeMode === 'edit' }">
-                <button v-if="activeMode === 'edit'" class="chart-edit-btn" @click.stop="openEditor"
+                <button v-if="activeMode === 'edit'" class="chart-edit-btn" @click.stop="openEditor(2)"
                     title="Diagrammdaten bearbeiten" aria-label="Diagrammdaten bearbeiten">
                     <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                         <path
@@ -1129,7 +1155,7 @@ onUnmounted(() => {
                 " data-story-section="safety">
             <div class="trees-wrapper">
                 <div :class="{ 'is-edit': activeMode === 'edit' }" class="trees-container">
-                    <button v-if="activeMode === 'edit'" class="chart-edit-btn" @click.stop="openEditor"
+                    <button v-if="activeMode === 'edit'" class="chart-edit-btn" @click.stop="openEditor(3)"
                         title="Diagrammdaten bearbeiten" aria-label="Diagrammdaten bearbeiten">
                         <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 16 16" fill="none">
                             <path
@@ -1140,14 +1166,14 @@ onUnmounted(() => {
                     <div v-for="treeItem in safetyTreeItems" :key="treeItem.id" class="tree-wrapper"
                         :class="`tree-wrapper--${treeItem.id}`" :style="{ '--tree-height': treeItem.height + 'vh' }">
                         <img :src="treeItem.image" alt="" class="tree" />
-                        <h3 class="tree-value" :class="`tree-value--${treeItem.tone}`">{{ treeItem.value }}%</h3>
+                        <h3 class="tree-value" :style="{ color: treeItem.color }">{{ treeItem.value }}%</h3>
                     </div>
                 </div>
 
                 <div class="trees-info white-info-box">
                     <SpeechBubbleContent :title="resolveSceneCategoryName(safetyDetailsStory)"
                         @update:title="val => setSceneTitle(safetyDetailsStory, val)" :lines="safetyDetailsStory.bubble"
-                        :metrics="safetyDetailsMetrics" />
+                        :metrics="safetyDetailsMetrics" :highlight-colours="paletteFor(3)" />
                 </div>
             </div>
         </section>

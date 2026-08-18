@@ -5,6 +5,7 @@ from shared import setup_page
 import base64
 import json
 import os
+import re
 
 STORY_COLOURS = {
     "thuringia": {
@@ -23,7 +24,9 @@ STORY_COLOURS = {
         ],
     },
     "dresden": {
-        1: [""],
+        1: ["#3091cf", "#a8dadc", "#ffb703", "#ff9d38", "#ff6945", "#c6ad9e"],
+        2: ["#3091cf", "#a8dadc", "#ffb703", "#ff9d38", "#ff6945", "#c6ad9e"],
+        3: ["#3091cf", "#a8dadc", "#ffb703", "#ff9d38", "#ff6945", "#c6ad9e"],
     },
     "story4": {},
 }
@@ -40,7 +43,18 @@ CHART_COLUMNS_BY_TEMPLATE = {
         3: {"category", "percentage"},
     },
     "dresden": {
-        0: {""},
+        1: {
+            "category measurement",
+            "measurement value",
+        },
+        2: {
+            "category measurement",
+            "measurement value",
+        },
+        3: {
+            "category measurement",
+            "measurement value",
+        },
     },
     "story4": {},
 }
@@ -65,6 +79,7 @@ with open(_REGIONS_PATH, encoding="utf-8") as _f:
 REGIONS = list(_REGIONS.keys())
 REGION_BOUNDS = {region: cfg["bounds"] for region, cfg in _REGIONS.items()}
 REGION_MAP_FILES = {region: cfg["map"] for region, cfg in _REGIONS.items()}
+
 
 def detect_data_region(data, threshold=0.7):
     coords = []
@@ -172,8 +187,19 @@ def get_story_colors(template):
 
 colours = get_story_colors(selected)
 
+HEX_COLOR_RE = re.compile(r"^#(?:[0-9a-fA-F]{3}|[0-9a-fA-F]{6})$")
+
 if "category_colors" not in st.session_state:
-    st.session_state.category_colors = colours.copy()
+    st.session_state.category_colors = {}
+
+for _chart_key, _defaults in (colours or {}).items():
+    _cached = st.session_state.category_colors.get(_chart_key)
+    if (
+        not isinstance(_cached, list)
+        or len(_cached) != len(_defaults)
+        or not all(HEX_COLOR_RE.match(c or "") for c in _cached)
+    ):
+        st.session_state.category_colors[_chart_key] = list(_defaults)
 
 if not isinstance(selected_map_city, str) or selected_map_city not in CITIES:
     selected_map_city = "Dresden"

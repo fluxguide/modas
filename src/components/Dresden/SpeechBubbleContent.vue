@@ -24,6 +24,10 @@ const props = defineProps({
     type: Boolean,
     default: false,
   },
+  highlightColours: {
+    type: Array,
+    default: () => [],
+  },
 })
 
 const emit = defineEmits(['update:title'])
@@ -49,9 +53,11 @@ const resolvedLines = computed(() =>
         }
 
         if (segment.type === 'highlight' && segment.key) {
+          const slotIndex = Number(segment.key.split('_')[1])
           return {
             ...segment,
             value: props.metrics.labels?.[segment.key] ?? '',
+            color: props.highlightColours[slotIndex] || null,
           }
         }
 
@@ -81,7 +87,8 @@ const resolvedTitle = computed(() => props.title || '');
         <template v-for="(segment, index) in line.segments" :key="`${line.id}-${index}`">
           <span v-if="segment.type === 'highlight'">
             -
-            <span class="speech-content__highlight" :class="`speech-content__highlight--${segment.tone}`">{{
+            <span class="speech-content__highlight" :class="`speech-content__highlight--${segment.tone}`"
+              :style="segment.color ? { textDecorationColor: segment.color } : {}">{{
               segment.value }}</span>
           </span>
           <span v-else>{{ segment.value }}</span>
