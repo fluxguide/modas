@@ -2,7 +2,7 @@
   <div class="story-container" ref="container">
     <ThuringiaStory v-if="template === 'thuringia'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
       :categoryColours="categoryColours" :selectedRegion="selectedRegion" />
-    <VRRStory v-else-if="template === 'vrr'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
+    <ProjectDevelopmentStory v-else-if="template === 'project_development'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
       :categoryColours="categoryColours" />
     <DresdenStory v-else-if="template === 'dresden'" :data="storyData" :mode="mode" :columnLabelMap="columnLabelMap"
       :categoryColours="categoryColours" :selectedCity="selectedCity" />
@@ -16,7 +16,7 @@
 import { ref, onMounted } from "vue";
 import { Streamlit } from "streamlit-component-lib";
 import ThuringiaStory from "@components/Thuringia/ThuringiaApp.vue";
-import VRRStory from "@components/VRR/VRRApp.vue";
+import ProjectDevelopmentStory from "@components/ProjectDevelopment/ProjectDevelopmentApp.vue";
 import DresdenStory from "@components/Dresden/DresdenApp.vue";
 import Story4 from "@components/Story4/Story4App.vue"
 

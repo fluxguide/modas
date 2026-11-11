@@ -116,7 +116,7 @@ On the home screen, upload a `.csv` file containing your mobility data.
 
 **Step 2 — Select a template**
 
-After submitting your file, you'll be taken to the template selection page. Click on a template preview to see details about it, then select the one that fits your data best. Available templates include: Thuringia, VRR, Dresden, and more.
+After submitting your file, you'll be taken to the template selection page. Click on a template preview to see details about it, then select the one that fits your data best. Available templates include: Thuringia, Project Development, Dresden, and more.
 
 **Step 3 — Simulate your story**
 

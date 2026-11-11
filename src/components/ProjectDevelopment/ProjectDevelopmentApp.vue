@@ -1,6 +1,6 @@
 <script setup>
 import { ref, watch, computed, onMounted, onUnmounted } from 'vue';
-import { loadData } from '@composables/VRR/useDataProcessing';
+import { loadData } from '@composables/ProjectDevelopment/useDataProcessing';
 
 import ArrowBubbleChart from './ArrowBubbleChart.vue';
 import Timeline from './Timeline.vue';
@@ -12,9 +12,9 @@ import ColouredSection from './ColouredSection.vue';
 import SideMenu from '@src/components/SideMenu.vue';
 import EditableTextField from '@src/components/EditableTextField.vue';
 
-import robotHandsUp from '@img/VRR/Robot/HandsUp.svg';
-import paul from '@img/VRR/Characters/Paul.svg';
-import robotHandsDown from '@img/VRR/Robot/HandsDown.svg';
+import robotHandsUp from '@img/ProjectDevelopment/Robot/HandsUp.svg';
+import paul from '@img/ProjectDevelopment/Characters/Paul.svg';
+import robotHandsDown from '@img/ProjectDevelopment/Robot/HandsDown.svg';
 
 const props = defineProps({
     data: { type: Array, default: () => [] },
@@ -96,7 +96,7 @@ const characterMessage = computed(() => {
 const handleModeChange = (newMode) => {
     if (newMode === "presenter") {
         activeMode.value = "view";
-        const storyContainer = document.querySelector('.vrr-app');
+        const storyContainer = document.querySelector('.project-development-app');
         if (storyContainer?.requestFullscreen) {
             storyContainer.requestFullscreen();
             isPresenting.value = true;
@@ -141,7 +141,7 @@ onUnmounted(() => {
 </script>
 
 <template>
-    <div class="vrr-app">
+    <div class="project-development-app">
         <SideMenu v-if="!isPresenting" :active-mode="activeMode" :default-gradient="{
             angle: 180,
             stops: [{ color: '#ffffff', position: 0 }, { color: '#e1ffd6', position: 50 }, { color: '#d6f5ff', position: 100 }]
@@ -160,14 +160,14 @@ onUnmounted(() => {
         <main>
             <!-- Part 1 -->
             <div class="chat-img">
-                <img id="openai-chat" src="@img/VRR/OpenAI-Chat.svg" alt="OpenAI Chat" />
-                <img id="vrr-chat" src="@img/VRR/VRR-Chat.svg" alt="VRR Chat" />
+                <img id="openai-chat" src="@img/ProjectDevelopment/OpenAI-Chat.svg" alt="OpenAI Chat" />
+                <img id="project-development-chat" src="@img/ProjectDevelopment/ProjectDevelopment-Chat.svg" alt="Project Development Chat" />
             </div>
 
             <div class="tp-img"> <!-- tp -> transport & people -->
-                <img id="red-tram" src="@img/VRR/Transport/TramRed.svg" alt="Red Tram" />
-                <img id="people" src="@img/VRR/Characters/People.svg" alt="People" />
-                <img id="red-bus" src="@img/VRR/Transport/BusRed.svg" alt="Red Bus" />
+                <img id="red-tram" src="@img/ProjectDevelopment/Transport/TramRed.svg" alt="Red Tram" />
+                <img id="people" src="@img/ProjectDevelopment/Characters/People.svg" alt="People" />
+                <img id="red-bus" src="@img/ProjectDevelopment/Transport/BusRed.svg" alt="Red Bus" />
             </div>
             <!-- ----------------------------------------------------- -->
 
@@ -182,8 +182,8 @@ onUnmounted(() => {
             </div>
 
             <div class="bg-img">
-                <img id="orange-tram" src="@img/VRR/Transport/TramOrange.svg" alt="Orange Tram" />
-                <img id="ava" src="@img/VRR/Characters/Ava.svg" alt="Ava" />
+                <img id="orange-tram" src="@img/ProjectDevelopment/Transport/TramOrange.svg" alt="Orange Tram" />
+                <img id="ava" src="@img/ProjectDevelopment/Characters/Ava.svg" alt="Ava" />
             </div>
             <!-- ----------------------------------------------------- -->
 
@@ -193,17 +193,17 @@ onUnmounted(() => {
             <ColouredSection>
                 <template #background>
                     <div class="characters">
-                        <img id="theo" src="@img/VRR/Characters/Theo.svg" alt="Theo" />
-                        <img id="ava" src="@img/VRR/Characters/Ava.svg" alt="Ava" />
+                        <img id="theo" src="@img/ProjectDevelopment/Characters/Theo.svg" alt="Theo" />
+                        <img id="ava" src="@img/ProjectDevelopment/Characters/Ava.svg" alt="Ava" />
                     </div>
                     <div class="tram-bus">
-                        <img id="orange-tram-second" src="@img/VRR/Transport/TramOrange.svg" alt="Orange Tram" />
-                        <img id="green-bus" src="@img/VRR/Transport/BusGreen.svg" alt="Green Bus" />
+                        <img id="orange-tram-second" src="@img/ProjectDevelopment/Transport/TramOrange.svg" alt="Orange Tram" />
+                        <img id="green-bus" src="@img/ProjectDevelopment/Transport/BusGreen.svg" alt="Green Bus" />
                     </div>
-                    <img id="theresa" src="@img/VRR/Characters/Theresa.svg" alt="Theresa">
+                    <img id="theresa" src="@img/ProjectDevelopment/Characters/Theresa.svg" alt="Theresa">
                 </template>
 
-                <img id="paul" src="@img/VRR/Characters/Paul.svg" alt="Paul">
+                <img id="paul" src="@img/ProjectDevelopment/Characters/Paul.svg" alt="Paul">
                 <EditableTextField :model-value="textFields.third" @update:model-value="val => textFields.third = val"
                     :active-mode="activeMode" :rows="6" :width="'100%'" :font-size="'32px'" :line-height="1.6"
                     :padding="'0'" />
@@ -217,10 +217,10 @@ onUnmounted(() => {
                 <template #background>
                     <div class="testlauf-bg-img">
                         <div class="bus-crosswalk">
-                            <img id="green-bus" src="@img/VRR/Transport/BusGreen.svg" alt="Green Bus" />
-                            <img id="crosswalk" src="@img/VRR/Characters/Crosswalk.svg" alt="People on a crosswalk">
+                            <img id="green-bus" src="@img/ProjectDevelopment/Transport/BusGreen.svg" alt="Green Bus" />
+                            <img id="crosswalk" src="@img/ProjectDevelopment/Characters/Crosswalk.svg" alt="People on a crosswalk">
                         </div>
-                        <img id="orange-tram" src="@img/VRR/Transport/TramOrange.svg" alt="Orange Tram">
+                        <img id="orange-tram" src="@img/ProjectDevelopment/Transport/TramOrange.svg" alt="Orange Tram">
                     </div>
                 </template>
 
@@ -235,11 +235,11 @@ onUnmounted(() => {
 
             <div class="section-wrapper">
                 <div class="characters-tram">
-                    <img id="theo" src="@img/VRR/Characters/Theo.svg" alt="Theo" />
-                    <img id="orange-tram" src="@img/VRR/Transport/TramOrange.svg" alt="Orange Tram" />
-                    <img id="ava" src="@img/VRR/Characters/Ava.svg" alt="Ava" />
+                    <img id="theo" src="@img/ProjectDevelopment/Characters/Theo.svg" alt="Theo" />
+                    <img id="orange-tram" src="@img/ProjectDevelopment/Transport/TramOrange.svg" alt="Orange Tram" />
+                    <img id="ava" src="@img/ProjectDevelopment/Characters/Ava.svg" alt="Ava" />
                 </div>
-                <img id="theresa-phases" src="@img/VRR/Characters/Theresa.svg" alt="Theresa">
+                <img id="theresa-phases" src="@img/ProjectDevelopment/Characters/Theresa.svg" alt="Theresa">
 
                 <div class="phase-cards">
                     <PhaseCard :active-mode="activeMode" @update:phaseTitle="val => phases.phase1.title = val"
@@ -268,7 +268,7 @@ onUnmounted(() => {
                     :padding="'0'" />
 
                 <template #extra>
-                    <img id="paul-big" src="@img/VRR/Characters/Paul.svg" alt="Paul">
+                    <img id="paul-big" src="@img/ProjectDevelopment/Characters/Paul.svg" alt="Paul">
                 </template>
             </ColouredSection>
             <!-- ----------------------------------------------------- -->
@@ -276,7 +276,7 @@ onUnmounted(() => {
             <!-- Part 7 -->
             <SectionHeading v-model="headers.section6" :active-mode="activeMode" />
             <div class="whole-robot-section">
-                <img id="robot-cheering" src="@img/VRR/Robot/HandsUpCheering.svg" alt="Robot with hands up cheering">
+                <img id="robot-cheering" src="@img/ProjectDevelopment/Robot/HandsUpCheering.svg" alt="Robot with hands up cheering">
                 <div class="robot-chatbot-section">
                     <div class="message">
                         <EditableTextField :model-value="textFields.sixth"
@@ -316,8 +316,8 @@ onUnmounted(() => {
 
             <div class="robot-form">
                 <div class="stars-robot">
-                    <img id="stars" src="@img/VRR/Stars.svg" alt="Stars">
-                    <img id="robot-hands-up-cheering" src="@img/VRR/Robot/HandsUpCheering.svg"
+                    <img id="stars" src="@img/ProjectDevelopment/Stars.svg" alt="Stars">
+                    <img id="robot-hands-up-cheering" src="@img/ProjectDevelopment/Robot/HandsUpCheering.svg"
                         alt="Cheering robot with hands up">
                 </div>
                 <ColouredSection wrapper-class="robot-form-wrapper" coloured-class="robot-form-coloured"
@@ -329,7 +329,7 @@ onUnmounted(() => {
                     <div class="form">
                         <h1>Gesprächsbewertung</h1>
                         <h1><span>Vielen Dank für das Gespräch. Konnten wir Ihnen behilflich sein?</span></h1>
-                        <img src="@img/VRR/StarsForm.svg" alt="Stars for rating">
+                        <img src="@img/ProjectDevelopment/StarsForm.svg" alt="Stars for rating">
                         <div class="submit-button">
                             <h1>BEWERTUNG SENDEN</h1>
                         </div>
@@ -355,7 +355,7 @@ onUnmounted(() => {
 </template>
 
 <style scoped>
-.vrr-app {
+.project-development-app {
     height: 100vh;
     width: 100%;
     overflow-x: hidden;
@@ -405,7 +405,7 @@ main {
     width: 60%;
 }
 
-#vrr-chat {
+#project-development-chat {
     width: 25%;
 }
 
@@ -879,17 +879,17 @@ main {
     line-height: normal;
 }
 
-.vrr-app:fullscreen::backdrop {
+.project-development-app:fullscreen::backdrop {
     background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(225, 255, 214, 1), rgba(214, 245, 255, 1)) !important;
 }
 
-.vrr-app:fullscreen {
+.project-development-app:fullscreen {
     background: transparent !important;
 }
 
-.vrr-app:-webkit-full-screen,
-.vrr-app:-moz-full-screen,
-.vrr-app:-ms-fullscreen {
+.project-development-app:-webkit-full-screen,
+.project-development-app:-moz-full-screen,
+.project-development-app:-ms-fullscreen {
     background: transparent !important;
 }
 </style>

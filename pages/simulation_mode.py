@@ -13,7 +13,7 @@ STORY_COLOURS = {
         1: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
         2: ["#E14A2C", "#9DAEFF", "#EFD33F", "#007E4E"],
     },
-    "vrr": {
+    "project_development": {
         1: ["#001C0C", "#004F22", "#43A86B"],
         2: [
             "#001C0C",
@@ -37,7 +37,7 @@ CHART_COLUMNS_BY_TEMPLATE = {
         1: {"townhall_name", "townhall_city", "stops_within_200m"},
         2: {"townhall_name", "townhall_city", "stops_within_300m"},
     },
-    "vrr": {
+    "project_development": {
         1: {"category", "chart number", "year1", "year2", "year3"},
         2: {"category", "chart number", "year1", "year2", "year3"},
         3: {"category", "percentage"},

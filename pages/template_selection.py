@@ -53,11 +53,11 @@ templates_first_row = [
         "suitable_for": "Diese Vorlage eignet sich zur Darstellung von Distanzen und zur Analyse der räumlichen Erreichbarkeit von Standorten, insbesondere im Kontext von Mobilität und Infrastruktur.",
     },
     {
-        "key": "vrr",
+        "key": "project_development",
         "label": "Veränderungen in Projekten",
-        "img_url": f"{IMG_URL_BASE}/VRR-Preview.png",
-        "gif_file": f"{GIF_FILE_BASE}/VRR-Preview.gif",
-        "img_file": f"{IMG_FILE_BASE}/VRR-Preview.png",
+        "img_url": f"{IMG_URL_BASE}/ProjectDevelopment-Preview.png",
+        "gif_file": f"{GIF_FILE_BASE}/ProjectDevelopment-Preview.gif",
+        "img_file": f"{IMG_FILE_BASE}/ProjectDevelopment-Preview.png",
         "description": "Diese Vorlage zeigt, wie sich z. B. Verkehrsunternehmen oder (Mobilitäts-) Projekte im Laufe der letzten Jahre verändert haben. Dies kann verschiedene Fachbereiche des Unternehmens betreffen, z. B. die Kundenkommunikation.",
         "structure-interaction": "Die Data Story folgt dem Scrollytelling-Prinzip (vertikales Scrollen), wobei verschiedene Visualisierungstypen wie Zeitstrahle und Kreisdiagramme eingesetzt werden.",
         "data-requirements": "Strukturierte Daten mit Jahresvergleichen, Daten und Fakten zum Projektablauf und Projektergebnissen",
@@ -142,7 +142,7 @@ if "data" in st.session_state and st.session_state.data:
     if rec["confidence"] >= 0.5 and rec["scores"][rec["recommended"]] >= 3:
         label_map = {
             "thuringia": "ÖPNV-Erreichbarkeit von Points of Interest",
-            "vrr": "Veränderungen in Projekten",
+            "project_development": "Veränderungen in Projekten",
             "dresden": "Städte in Bewegung",
             "story4": "Was kostet ein PKW-Stellplatz die Kommune?",
         }

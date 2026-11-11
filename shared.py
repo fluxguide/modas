@@ -39,7 +39,7 @@ TEMPLATE_COLUMN_REQUIREMENTS = {
             "required": True,
         },
     },
-    "vrr": {
+    "project_development": {
         "category": {
             "label": "Kategorie-Tag",
             "example": "telefon / bke / sm / mehrwert / pie",
@@ -144,7 +144,7 @@ def score_templates(df):
     print(f"\n=== score_templates ===")
     print(f"Columns found: {cols}")
 
-    scores = {"thuringia": 0, "vrr": 0, "dresden": 0, "story4": 0}
+    scores = {"thuringia": 0, "project_development": 0, "dresden": 0, "story4": 0}
 
     # Thuringia signals
     coord_match = any(c in cols for c in ["latitude", "longitude", "lat", "lon", "lng"])
@@ -169,23 +169,23 @@ def score_templates(df):
         f"Thuringia: coord={coord_match}, radius={radius_match}, location={location_match}, no_category={no_category} → {scores['thuringia']}"
     )
 
-    # VRR signals
+    # Project Development signals
     has_category = "category" in cols
     has_years = any(c in cols for c in ["year1", "year2", "year3", "year4"])
     has_label = "label" in cols
     has_percentage = "Percentage" in cols
 
     if has_category:
-        scores["vrr"] += 3
+        scores["project_development"] += 3
     if has_years:
-        scores["vrr"] += 3
+        scores["project_development"] += 3
     if has_label:
-        scores["vrr"] += 2
+        scores["project_development"] += 2
     if has_percentage:
-        scores["vrr"] += 1
+        scores["project_development"] += 1
 
     print(
-        f"VRR: category={has_category}, years={has_years}, label={has_label}, percentage={has_percentage} → {scores['vrr']}"
+        f"Project Development: category={has_category}, years={has_years}, label={has_label}, percentage={has_percentage} → {scores['project_development']}"
     )
 
     # Dresden signals

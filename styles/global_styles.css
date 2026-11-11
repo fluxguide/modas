@@ -27,7 +27,7 @@ body {
     font-family: 'General Sans', 'Inter', 'Segoe UI', 'Roboto', 'Helvetica Neue', Arial, sans-serif !important;
 }
 
-.story-container:has(.vrr-app) {
+.story-container:has(.project-development-app) {
     background-image: linear-gradient(rgba(255, 255, 255, 1), rgba(225, 255, 214, 1), rgba(214, 245, 255, 1));
 }
 

@@ -119,14 +119,14 @@ defineExpose({
                                 :height="'45vh'" :bubble-position="[28, 53, 78]" :timeline-start="20"
                                 :percentage-shift="25" :bubble-gap="2" :margin-top="'0'" />
                             <div class="mehrwert-bg-img">
-                                <img id="theo" src="@img/VRR/Characters/Theo.svg" alt="Theo" />
-                                <img id="orange-tram" src="@img/VRR/Transport/TramOrange.svg" alt="Orange Tram" />
+                                <img id="theo" src="@img/ProjectDevelopment/Characters/Theo.svg" alt="Theo" />
+                                <img id="orange-tram" src="@img/ProjectDevelopment/Transport/TramOrange.svg" alt="Orange Tram" />
                             </div>
                         </div>
                         <div v-if="panelIndex === 2" class="panel-content">
                             <div class="content-above-timeline">
                                 <div class="section-wrapper">
-                                    <img id="waving-robot" src="@img/VRR/Robot/Waving.svg" alt="Waving Robot">
+                                    <img id="waving-robot" src="@img/ProjectDevelopment/Robot/Waving.svg" alt="Waving Robot">
                                     <div class="coloured-space">
                                         <div class="white-space">
                                             <EditableTextField :model-value="textField"
@@ -144,7 +144,7 @@ defineExpose({
                                     :start-point="20" :markers-gap="25" />
                             </div>
                             <div class="bg-theresa">
-                                <img id="theresa" src="@img/VRR/Characters/Theresa.svg" alt="Theresa" />
+                                <img id="theresa" src="@img/ProjectDevelopment/Characters/Theresa.svg" alt="Theresa" />
                             </div>
                         </div>
                     </div>
